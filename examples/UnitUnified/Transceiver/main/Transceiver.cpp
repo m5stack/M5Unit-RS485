@@ -27,9 +27,6 @@
 // #define USING_ATOMIC_RS485_BASE
 #endif
 
-// *************************************************************
-// Optional: bypass UnitRS485 and use Serial directly
-// *************************************************************
 namespace {
 auto& lcd = M5.Display;
 m5::unit::UnitUnified Units;
