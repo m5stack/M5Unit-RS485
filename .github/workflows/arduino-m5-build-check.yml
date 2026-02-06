@@ -112,31 +112,31 @@ jobs:
 
         include:
           # HAT
-          - sketch: Transceiver
+          - sketch: Transceiver  
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus2
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_coreink
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: arduino_nesso_n1
             build-properties: "-DUSING_HAT_RS485"
@@ -144,21 +144,21 @@ jobs:
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_atom
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_atoms3
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.2.5
-            platform: esp32
+            platform: m5stack
             archi: esp32
             board: m5stack_atoms3r
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
