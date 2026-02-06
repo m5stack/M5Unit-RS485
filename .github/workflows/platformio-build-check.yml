@@ -95,7 +95,7 @@ jobs:
             espressif32: latest
           - example: Transceiver
             unit: 'HatRS485'
-            board: CoreINK
+            board: CoreInk
             framework: Arduino
             espressif32: latest
           - example: Transceiver
