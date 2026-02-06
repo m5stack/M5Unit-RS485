@@ -123,8 +123,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Build examples
         uses: karniv00l/platformio-run-action@v1
