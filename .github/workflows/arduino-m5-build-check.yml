@@ -163,8 +163,6 @@ jobs:
             board: m5stack_atoms3r
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
 
-
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
