@@ -92,7 +92,7 @@ struct Sample0 {
     float b{-12.75f};
 };
 
-void write_float_bytes(const float v, const bool little_endian)
+size_t write_float_bytes(const float v, const bool little_endian)
 {
     uint8_t tmp[sizeof(float)]{};
     std::memcpy(tmp, &v, sizeof(tmp));
@@ -101,7 +101,38 @@ void write_float_bytes(const float v, const bool little_endian)
             std::swap(tmp[i], tmp[sizeof(tmp) - 1 - i]);
         }
     }
-    unit.write(tmp, sizeof(tmp));
+    return unit.write(tmp, sizeof(tmp));
+}
+
+size_t write_chunked(Stream& s, const uint8_t* data, const size_t len, const uint32_t timeout_ms = 200)
+{
+    if (data == nullptr || len == 0) {
+        return 0;
+    }
+
+    const auto timeout_at = m5::utility::millis() + timeout_ms;
+    size_t total{};
+
+    while (total < len && m5::utility::millis() <= timeout_at) {
+        const int available = s.availableForWrite();
+        if (available <= 0) {
+            m5::utility::delay(1);
+            continue;
+        }
+
+        size_t to_write = static_cast<size_t>(available);
+        if (to_write > (len - total)) {
+            to_write = len - total;
+        }
+
+        const size_t wrote = s.write(data + total, to_write);
+        if (wrote == 0) {
+            m5::utility::delay(1);
+            continue;
+        }
+        total += wrote;
+    }
+    return total;
 }
 
 //
@@ -392,22 +423,27 @@ void loop()
     if (M5.BtnA.wasClicked()) {
         static uint32_t step{};
         M5.Log.printf("Send:>>>>\n");
+        size_t sent{};
         if (step < m5::stl::size(message_table)) {
             const char* msg = message_table[step];
             M5.Log.printf("%s\n", msg);
-            stream.print(msg);
+            const size_t len = std::strlen(msg);
+            sent             = write_chunked(stream, reinterpret_cast<const uint8_t*>(msg), len);
+            if (sent != len) {
+                M5_LOGW("TX timeout: %u/%u bytes", static_cast<uint32_t>(sent), static_cast<uint32_t>(len));
+            }
         } else if (step == m5::stl::size(message_table)) {
             Sample0 s0{};
             M5.Log.printf("Sample0 (LE): a=0x%04X b=%f\n", s0.a, s0.b);
             unit.writeValue<uint16_t, true>(s0.a);
-            write_float_bytes(s0.b, true);
+            sent = write_float_bytes(s0.b, true);
         } else {
             Sample0 s0{};
             M5.Log.printf("Sample0 (BE): a=0x%04X b=%f\n", s0.a, s0.b);
             unit.writeValue<uint16_t, false>(s0.a);
-            write_float_bytes(s0.b, false);
+            sent = write_float_bytes(s0.b, false);
         }
-        M5.Log.printf("<<<<\n");
+        M5.Log.printf("<<<< %zu sent\n", sent);
         step = (step + 1) % (m5::stl::size(message_table) + 2);
     }
 

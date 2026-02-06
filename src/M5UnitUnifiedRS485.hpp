@@ -8,7 +8,7 @@
   @brief Main header of M5Unit-RS485 using M5UnitUnified
 
   @mainpage M5Unit-RS485
-  Library for UnitRS485 using M5UnitUnified.
+  Library for UnitRS485/HatRS485/AtomicRS485Base using M5UnitUnified.
 */
 #ifndef M5_UNIT_UNIFIED_RS485_HPP
 #define M5_UNIT_UNIFIED_RS485_HPP
