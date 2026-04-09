@@ -5,7 +5,7 @@
  */
 /*!
   @file M5UnitUnifiedRS485.h
-  @brief Main header of M5Unit-RS485 using M5UnitUnfied
+  @brief Main header of M5Unit-RS485 using M5UnitUnified
   @note This header is for Arduino build systems that expect a .h entry point.
 */
 #ifndef M5_UNIT_UNIFIED_RS485_H
