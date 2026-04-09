@@ -10,11 +10,11 @@
 // Choose one define symbol to match the unit you are using
 // *************************************************************
 #if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
-// For UnitRS485
+// For UnitRS485 (U034)
 // #define USING_UNIT_RS485
-// For HatRS485
+// For HatRS485 (U067)
 // #define USING_HAT_RS485
-// For AtomRS485
+// For Atomic RS485 Base (A131)
 // #define USING_ATOMIC_RS485_BASE
 #endif
 #include "main/Transceiver.cpp"
