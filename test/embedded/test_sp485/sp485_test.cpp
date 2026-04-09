@@ -29,6 +29,62 @@
 using namespace m5::unit::googletest;
 using namespace m5::unit;
 
+// Hat port UART pins (RX=SCL, TX=SDA of Hat connector)
+#if defined(USING_HAT_RS485)
+namespace hat {
+struct UartPins {
+    int rx;
+    int tx;
+};
+
+UartPins get_hat_uart_pins(const m5::board_t board)
+{
+    switch (board) {
+        case m5::board_t::board_M5StickS3:
+            return {0, 8};
+        case m5::board_t::board_M5StackCoreInk:
+            return {26, 25};
+        case m5::board_t::board_M5StickC:
+        case m5::board_t::board_M5StickCPlus:
+        case m5::board_t::board_M5StickCPlus2:
+            return {26, 0};
+        case m5::board_t::board_ArduinoNessoN1:
+            return {7, 6};
+        default:
+            return {-1, -1};
+    }
+}
+}  // namespace hat
+#endif
+
+// AtomBase UART pins
+#if defined(USING_ATOMIC_RS485_BASE)
+namespace atombase {
+struct UartPins {
+    int rx;
+    int tx;
+};
+
+UartPins get_atombase_uart_pins(const m5::board_t board)
+{
+    switch (board) {
+        case m5::board_t::board_M5AtomLite:
+        case m5::board_t::board_M5AtomMatrix:
+            return {22, 19};
+        case m5::board_t::board_M5AtomS3:
+        case m5::board_t::board_M5AtomS3Lite:
+        case m5::board_t::board_M5AtomS3R:
+        case m5::board_t::board_M5AtomEchoS3R:
+        case m5::board_t::board_M5AtomS3RCam:
+        case m5::board_t::board_M5AtomS3RExt:
+            return {5, 6};
+        default:
+            return {-1, -1};
+    }
+}
+}  // namespace atombase
+#endif
+
 namespace {
 struct SampleTrivial {
     uint16_t a;
@@ -40,9 +96,7 @@ static_assert(std::is_trivially_copyable<SampleTrivial>::value && std::is_standa
 
 }  // namespace
 
-const ::testing::Environment* global_fixture = ::testing::AddGlobalTestEnvironment(new GlobalFixture<400000U>());
-
-class TestSP485 : public UARTComponentTestBase<UnitSP485, bool> {
+class TestSP485 : public UARTComponentTestBase<UnitSP485> {
 protected:
     virtual UnitSP485* get_instance() override
     {
@@ -50,28 +104,42 @@ protected:
         return ptr;
     }
 
-    virtual bool is_using_hal() const override
-    {
-        return GetParam();
-    };
-
     virtual HardwareSerial* init_serial() override
     {
+#if defined(USING_HAT_RS485)
+        auto board       = M5.getBoard();
+        const auto pins  = hat::get_hat_uart_pins(board);
+        auto pin_num_in  = pins.rx;
+        auto pin_num_out = pins.tx;
+#elif defined(USING_ATOMIC_RS485_BASE)
+        auto board       = M5.getBoard();
+        const auto pins  = atombase::get_atombase_uart_pins(board);
+        auto pin_num_in  = pins.rx;
+        auto pin_num_out = pins.tx;
+#else
         auto pin_num_in  = M5.getPin(m5::pin_name_t::port_c_rxd);
         auto pin_num_out = M5.getPin(m5::pin_name_t::port_c_txd);
         if (pin_num_in < 0 || pin_num_out < 0) {
+            if (M5.getBoard() == m5::board_t::board_M5NanoC6) {
+                M5.Ex_I2C.release();
+            }
             Wire.end();
             pin_num_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
             pin_num_out = M5.getPin(m5::pin_name_t::port_a_pin2);
         }
+#endif
 
-#if SOC_UART_NUM > 2
-        auto& s = Serial2;
+        // clang-format off
+#if defined(CONFIG_IDF_TARGET_ESP32C6)
+    auto& s = Serial1;
+#elif SOC_UART_NUM > 2
+    auto& s = Serial2;
 #elif SOC_UART_NUM > 1
-        auto& s = Serial1;
+    auto& s = Serial1;
 #else
 #error "Not enough Serial"
 #endif
+        // clang-format on
 
         s.end();
         s.begin(19200, SERIAL_8N1, pin_num_in, pin_num_out);
@@ -82,17 +150,13 @@ protected:
     }
 };
 
-// INSTANTIATE_TEST_SUITE_P(ParamValues, TestSP485, ::testing::Values(false, true));
-// INSTANTIATE_TEST_SUITE_P(ParamValues, TestSP485, ::testing::Values(true));
-INSTANTIATE_TEST_SUITE_P(ParamValues, TestSP485, ::testing::Values(false));
-
-namespace {
-}  // namespace
-
-TEST_P(TestSP485, WriteFlushFlag)
+TEST_F(TestSP485, WriteFlushFlag)
 {
     SCOPED_TRACE(ustr);
-    ASSERT_NE(serial, nullptr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
 
     while (unit->available()) {
         unit->read();
@@ -103,10 +167,13 @@ TEST_P(TestSP485, WriteFlushFlag)
     EXPECT_GT(unit->write(b, true), 0u);
 }
 
-TEST_P(TestSP485, WriteValueReturnsTrue)
+TEST_F(TestSP485, WriteValueReturnsTrue)
 {
     SCOPED_TRACE(ustr);
-    ASSERT_NE(serial, nullptr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
 
     while (unit->available()) {
         unit->read();
