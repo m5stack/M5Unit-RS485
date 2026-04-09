@@ -339,9 +339,6 @@ UartPins get_atombase_uart_pins(const m5::board_t board)
 
 void setup()
 {
-
-    delay(2000);
-
     M5.begin();
     M5.setTouchButtonHeightByRatio(100);
 
