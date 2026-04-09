@@ -49,6 +49,7 @@ public:
       @brief Constructor
      */
     UnitSP485();
+    //! @brief Destructor
     virtual ~UnitSP485() = default;
 
     /*!
@@ -67,7 +68,6 @@ public:
 
     ///@name Settings for begin
     ///@{
-    /*! @brief Gets the configration */
     /*!
       @brief Gets the configuration
       @return Current configuration
@@ -89,6 +89,7 @@ public:
     ///@note See also Arduino documents
     ///@name Arduino Serial Compatibility API
     ///@{
+    //! @brief Returns true if the unit is registered
     inline operator bool() const
     {
         return isRegistered();
@@ -143,7 +144,7 @@ public:
      */
     inline size_t read(char *buffer, const size_t size)
     {
-        return read((uint8_t *)buffer, size);
+        return read(reinterpret_cast<uint8_t *>(buffer), size);
     }
     /*!
       @brief Reads bytes with timeout defined by underlying Serial
@@ -163,7 +164,7 @@ public:
      */
     inline size_t readBytes(char *buffer, const size_t length)
     {
-        return readBytes((uint8_t *)buffer, length);
+        return readBytes(reinterpret_cast<uint8_t *>(buffer), length);
     }
     /*!
       @brief Flushes the serial port
@@ -184,7 +185,8 @@ public:
       @brief Writes one byte
       @param d Byte to write
       @param flush If true, flush TX before returning
-      @return Number of bytes written
+      @return Number of bytes written (0 if receive buffer is not empty due to half-duplex constraint)
+      @note Returns 0 without writing when available() > 0, as RS485 half-duplex cannot transmit while data is pending
      */
     size_t write(const uint8_t d, const bool flush = true);
     /*!
@@ -242,8 +244,7 @@ public:
       @brief Write the any number value
       @tparam T Type
       @tparam LittleEndian Outgoing data is little-endian if true
-      @param value Receive variable
-      @param timeout_ms Timeout(ms)
+      @param value Value to write
       @return True if successful
      */
     template <typename T, bool LittleEndian = true>
@@ -257,8 +258,7 @@ public:
         }
         uint8_t buf[sizeof(T)]{};
         std::memcpy(buf, &tmp, sizeof(T));
-        size_t n = _serial->write(buf, sizeof(T));
-        return n == sizeof(T);
+        return write(buf, sizeof(T), true) == sizeof(T);
     }
     ///@}
 

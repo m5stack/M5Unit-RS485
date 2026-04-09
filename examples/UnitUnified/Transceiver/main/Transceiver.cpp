@@ -19,11 +19,11 @@
 // Choose one define symbol to match the unit you are using
 // *************************************************************
 #if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
-// For UnitRS485
+// For UnitRS485 (U034)
 // #define USING_UNIT_RS485
-// For HatRS485
+// For HatRS485 (U067)
 // #define USING_HAT_RS485
-// For AtomRS485
+// For Atomic RS485 Base (A131)
 // #define USING_ATOMIC_RS485_BASE
 #endif
 
@@ -64,7 +64,7 @@ constexpr char message_0[] =
 constexpr char message_1[] =
     "Hat RS485 is an RS485 converter compatible with M5SticKC.\n"
     "It integrates SP485EEN internally, mainly consisting of a 485 automatic transceiver circuit and a DC-DC buck "
-    "circuit (which can step down the input voltage to 5V)n"
+    "circuit (which can step down the input voltage to 5V).\n"
     "RS485 is a standard used to define the electrical characteristics of drivers and receivers for serial "
     "communication systems, widely used in industrial fields, supporting multi-point systems.\n"
     "This product is used to convert TTL standard to RS485 standard.\n"
@@ -371,7 +371,7 @@ void setup()
     M5_LOGI("Pin Rx:%d,Tx:%d", pin_num_in, pin_num_out);
     if (pin_num_in < 0 || pin_num_out < 0) {
         M5_LOGE("Illegal Pin number");
-        lcd.clear(TFT_RED);
+        lcd.fillScreen(TFT_RED);
         while (true) {
             m5::utility::delay(10000);
         }
@@ -397,13 +397,13 @@ void setup()
     }
     if (!Units.add(unit, s) || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.clear(TFT_RED);
+        lcd.fillScreen(TFT_RED);
         while (true) {
             m5::utility::delay(10000);
         }
     }
 
-    M5_LOGI("M5UnitUnified has been begun");
+    M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
     lcd.fillScreen(TFT_DARKGREEN);
 

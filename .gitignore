@@ -59,3 +59,15 @@ bin/
 obj/
 
 *.code-workspace
+
+# Generated documentation
+docs/html/
+
+# Temporary files
+tmp/
+
+# Secrets
+.env*
+*.pem
+*.key
+*.cert
