@@ -11,8 +11,8 @@
            transmitting and low after transmission completes.
            Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34).
   @note The public API is framework-agnostic. Framework-specific direction-pin control
-        (pinMode / digitalWrite on Arduino, gpio_set_level on ESP-IDF native etc.) is
-        confined to the translation unit.
+        (ESP-IDF gpio_config / gpio_set_level, HardwareSerial on Arduino) is confined
+        to the translation unit.
  */
 #ifndef M5_UNIT_RS485_UNIT_SIT3088_HPP
 #define M5_UNIT_RS485_UNIT_SIT3088_HPP
@@ -31,37 +31,87 @@ class UnitSIT3088 : public RS485Component {
 
 public:
     /*!
-      @brief Constructor
+      @struct config_t
+      @brief Settings for begin (extends RS485Component::config_t with the SIT3088 DIR pin)
+      @note Following M5UnitUnified convention, config is a begin-time setting: changing any
+            field after begin() has succeeded has no effect (the DIR pin is captured during
+            begin() and the ISerial decorator is already installed).
+     */
+    struct config_t : public RS485Component::config_t {
+        int8_t dir_pin{-1};  //!< DIR (DE/RE tied) GPIO number; -1 = unset (begin() fails)
+    };
+
+    /*!
+      @brief Default constructor. dir_pin remains unset; set via config() before begin().
      */
     UnitSIT3088();
+    /*!
+      @brief Constructor that bakes the DIR pin into config().
+      @param dir_pin DIR (DE/RE tied) GPIO number for this board.
+     */
+    explicit UnitSIT3088(const int8_t dir_pin);
     //! @brief Destructor
     virtual ~UnitSIT3088() = default;
 
     /*!
-      @brief Sets the DIR (DE/RE tied) pin used to drive the SIT3088 direction.
-      @param pin GPIO number for DIR, or -1 to leave unset.
-      @note Must be called before begin(). Wiring helpers such as
-            m5::unit::rs485::wiring::addTab5BuiltinRS485UART() set this automatically.
+      @brief Configure the DIR pin, then begin using the registered UART adapter.
+      @return True if successful; false if dir_pin is unset or the adapter is invalid.
      */
-    inline void dirPin(const int8_t pin)
+    virtual bool begin() override;
+
+    ///@name Settings for begin
+    ///@{
+    /*!
+      @brief Gets the configuration
+      @return Current configuration
+     */
+    inline config_t config()
     {
-        _dir_pin = pin;
+        return _sit_cfg;
     }
     /*!
-      @brief Gets the DIR pin currently configured.
-      @return DIR pin GPIO number, or -1 if unset.
+      @brief Sets the configuration
+      @param cfg Configuration settings
+      @note Call before Units.begin(). Post-begin mutations have no effect.
      */
-    inline int8_t dirPin() const
+    inline void config(const config_t &cfg)
     {
-        return _dir_pin;
+        _sit_cfg = cfg;
+        // Sync inherited fields (flushRX) to the parent's storage so RS485Component::begin() sees them.
+        RS485Component::config(cfg);
     }
+    ///@}
 
 protected:
+    /*!
+      @brief One-time setup of the DIR pin as an output (called by begin()).
+      @param pin GPIO number to configure.
+      @note Override to customize pin setup (e.g. use hardware RS-485 RTS mode via
+            uart_set_mode).
+     */
+    virtual void configure_dir_pin(const int8_t pin);
+    /*!
+      @brief Switch the transceiver into transmit (true) or receive (false) mode.
+      @param tx_enable true = drive DIR high (TX), false = drive DIR low (RX).
+      @note Called on every write from the ISerial decorator. Must be fast (a single
+            GPIO write) so as not to eat into the RS-485 turn-around budget.
+     */
+    virtual void set_transmit(const bool tx_enable);
     // Install a direction-pin-controlled ISerial decorator around the raw HardwareSerial.
     virtual std::unique_ptr<ISerial> make_serial(AdapterUART *ad) override;
 
+    inline int8_t configured_dir_pin() const
+    {
+        return _configured_dir_pin;
+    }
+
 private:
-    int8_t _dir_pin{-1};
+    config_t _sit_cfg{};
+    int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
+
+#if defined(ARDUINO)
+    friend struct DirControlledSerial;  // internal decorator needs set_transmit() access
+#endif
 };
 
 }  // namespace unit

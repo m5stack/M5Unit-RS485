@@ -10,8 +10,12 @@
 #include "unit_SIT3088.hpp"
 #include <M5Utility.hpp>
 
+#if defined(ESP_PLATFORM)
+#include <driver/gpio.h>  // gpio_config / gpio_set_level / gpio_num_t
+#endif
+
 #if defined(ARDUINO)
-#include <Arduino.h>  // pinMode / digitalWrite / OUTPUT / HIGH / LOW / HardwareSerial
+#include <HardwareSerial.h>  // decorator wraps HardwareSerial; no Arduino.h dependency needed
 #endif
 
 using namespace m5::utility::mmh3;
@@ -23,17 +27,15 @@ namespace unit {
 #if defined(ARDUINO)
 //
 // DIR-pin-controlled ISerial decorator for SIT3088.
-// Read side passes through to HardwareSerial. Write side raises DIR before the transfer,
-// blocks on flush() to guarantee the last stop bit is on the wire, then lowers DIR to
-// re-enable the receiver. Timing per SIT3088E datasheet: tPHZ / tPLZ <= 85 ns (driver
-// disable) and receiver enable from shutdown <= 500 ns, so the small extra pin toggle is
-// well within RS-485 turn-around budgets.
+// Read side passes through to HardwareSerial. Write side calls the unit's protected
+// set_transmit() before the transfer, blocks on flush() to guarantee the last stop bit
+// is on the wire, then calls set_transmit(false) to re-enable the receiver.
+// Timing per SIT3088E datasheet: driver tPHZ / tPLZ <= 85 ns, receiver enable from
+// shutdown <= 500 ns, so the small extra pin toggle stays within RS-485 turn-around.
 //
 struct DirControlledSerial final : public RS485Component::ISerial {
-    DirControlledSerial(HardwareSerial *hs, const int8_t dir_pin) : _hs(hs), _dir_pin(dir_pin)
+    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : _hs(hs), _unit(unit)
     {
-        pinMode(_dir_pin, OUTPUT);
-        digitalWrite(_dir_pin, LOW);  // Start in RX mode
     }
 
     inline int available() override
@@ -73,18 +75,18 @@ struct DirControlledSerial final : public RS485Component::ISerial {
         if (n == 0) {
             return 0;
         }
-        digitalWrite(_dir_pin, HIGH);
+        _unit->set_transmit(true);
         const size_t written = _hs->write(b, n);
         _hs->flush();  // block until TX complete before releasing DIR
-        digitalWrite(_dir_pin, LOW);
+        _unit->set_transmit(false);
         return written;
     }
     size_t write(uint8_t b) override
     {
-        digitalWrite(_dir_pin, HIGH);
+        _unit->set_transmit(true);
         const size_t written = _hs->write(b);
         _hs->flush();
-        digitalWrite(_dir_pin, LOW);
+        _unit->set_transmit(false);
         return written;
     }
     inline uint32_t baudRate() const override
@@ -93,7 +95,7 @@ struct DirControlledSerial final : public RS485Component::ISerial {
     }
 
     HardwareSerial *_hs{};
-    int8_t _dir_pin{-1};
+    UnitSIT3088 *_unit{};
 };
 #endif  // ARDUINO
 
@@ -106,14 +108,51 @@ UnitSIT3088::UnitSIT3088() : RS485Component(DEFAULT_ADDRESS)
 {
 }
 
+UnitSIT3088::UnitSIT3088(const int8_t dir_pin) : UnitSIT3088()
+{
+    _sit_cfg.dir_pin = dir_pin;
+}
+
+bool UnitSIT3088::begin()
+{
+    if (_sit_cfg.dir_pin < 0) {
+        M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin must be set via config()");
+        return false;
+    }
+    configure_dir_pin(_sit_cfg.dir_pin);
+    _configured_dir_pin = _sit_cfg.dir_pin;
+    set_transmit(false);  // start in RX mode
+    return RS485Component::begin();
+}
+
+void UnitSIT3088::configure_dir_pin(const int8_t pin)
+{
+#if defined(ESP_PLATFORM)
+    gpio_config_t cfg{};
+    cfg.pin_bit_mask = 1ULL << static_cast<uint64_t>(pin);
+    cfg.mode         = GPIO_MODE_OUTPUT;
+    cfg.pull_up_en   = GPIO_PULLUP_DISABLE;
+    cfg.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    cfg.intr_type    = GPIO_INTR_DISABLE;
+    gpio_config(&cfg);
+#else
+    (void)pin;
+#endif
+}
+
+void UnitSIT3088::set_transmit(const bool tx_enable)
+{
+#if defined(ESP_PLATFORM)
+    gpio_set_level(static_cast<gpio_num_t>(_configured_dir_pin), tx_enable ? 1 : 0);
+#else
+    (void)tx_enable;
+#endif
+}
+
 std::unique_ptr<UnitSIT3088::ISerial> UnitSIT3088::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)
-    if (_dir_pin < 0) {
-        M5_LIB_LOGE("UnitSIT3088::make_serial(): dirPin() must be set before begin()");
-        return std::unique_ptr<ISerial>();
-    }
-    return std::unique_ptr<ISerial>(new DirControlledSerial(ad->impl()->getSerial(), _dir_pin));
+    return std::unique_ptr<ISerial>(new DirControlledSerial(ad->impl()->getSerial(), this));
 #else
     (void)ad;
     M5_LIB_LOGE("UnitSIT3088::make_serial(): non-Arduino frameworks are not yet supported");

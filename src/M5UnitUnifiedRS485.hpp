@@ -42,9 +42,20 @@ using HatRS485 = m5::unit::UnitSP485;
  */
 using AtomicRS485Base = m5::unit::UnitSP485;
 /*!
-  @brief Tab5BuiltinRS485 alias of UnitSIT3088 (M5Stack Tab5 built-in; SIT3088 manual DIR pin)
+  @class Tab5BuiltinRS485
+  @brief M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)
+  @details Thin UnitSIT3088 subclass that bakes the Tab5-specific DIR pin (G34) into
+           config() so that `Tab5BuiltinRS485 unit;` alone yields a ready-to-begin
+           instance. The wiring helper `m5::unit::rs485::wiring::addTab5BuiltinRS485UART`
+           still handles Serial pins and baud.
  */
-using Tab5BuiltinRS485 = m5::unit::UnitSIT3088;
+class Tab5BuiltinRS485 : public m5::unit::UnitSIT3088 {
+public:
+    Tab5BuiltinRS485() : m5::unit::UnitSIT3088(34)
+    {
+    }
+    virtual ~Tab5BuiltinRS485() = default;
+};
 
 }  // namespace unit
 }  // namespace m5

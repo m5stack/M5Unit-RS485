@@ -62,5 +62,5 @@ TEST_F(TestTab5BuiltinRS485, DirPinConfigured)
 {
     SCOPED_TRACE(ustr);
     // Wiring helper must have installed DIR = GPIO34 for Tab5.
-    EXPECT_EQ(unit->dirPin(), 34);
+    EXPECT_EQ(unit->config().dir_pin, 34);
 }

@@ -170,7 +170,10 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
                 static_cast<int>(M5.getBoard()), static_cast<int>(p.rx), static_cast<int>(p.tx),
                 static_cast<int>(p.dir), static_cast<unsigned long>(baud));
 
-    unit.dirPin(p.dir);
+    auto cfg    = unit.config();
+    cfg.dir_pin = p.dir;
+    unit.config(cfg);
+
     HardwareSerial& serial = m5::unit::wiring::defaultUartSerial();
     serial.end();
     serial.begin(baud, config, p.rx, p.tx);
