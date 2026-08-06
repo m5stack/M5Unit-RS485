@@ -12,6 +12,8 @@
 #include <M5UnitUnified.hpp>
 #include <googletest/test_template.hpp>
 #include <unit/unit_SP485.hpp>
+#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
+#include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <chrono>
 #include <cmath>
 #include <iostream>
@@ -28,62 +30,6 @@
 
 using namespace m5::unit::googletest;
 using namespace m5::unit;
-
-// Hat port UART pins (RX=SCL, TX=SDA of Hat connector)
-#if defined(USING_HAT_RS485)
-namespace hat {
-struct UartPins {
-    int rx;
-    int tx;
-};
-
-UartPins get_hat_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5StickS3:
-            return {0, 8};
-        case m5::board_t::board_M5StackCoreInk:
-            return {26, 25};
-        case m5::board_t::board_M5StickC:
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_M5StickCPlus2:
-            return {26, 0};
-        case m5::board_t::board_ArduinoNessoN1:
-            return {7, 6};
-        default:
-            return {-1, -1};
-    }
-}
-}  // namespace hat
-#endif
-
-// AtomBase UART pins
-#if defined(USING_ATOMIC_RS485_BASE)
-namespace atombase {
-struct UartPins {
-    int rx;
-    int tx;
-};
-
-UartPins get_atombase_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5AtomLite:
-        case m5::board_t::board_M5AtomMatrix:
-            return {22, 19};
-        case m5::board_t::board_M5AtomS3:
-        case m5::board_t::board_M5AtomS3Lite:
-        case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
-        case m5::board_t::board_M5AtomS3RCam:
-        case m5::board_t::board_M5AtomS3RExt:
-            return {5, 6};
-        default:
-            return {-1, -1};
-    }
-}
-}  // namespace atombase
-#endif
 
 namespace {
 struct SampleTrivial {
@@ -104,49 +50,27 @@ protected:
         return ptr;
     }
 
+    // Overridden begin() takes over the whole UART bring-up; init_serial() is unused.
     virtual HardwareSerial* init_serial() override
     {
+        return nullptr;
+    }
+
+    virtual bool begin() override
+    {
+        bool ok = false;
 #if defined(USING_HAT_RS485)
-        auto board       = M5.getBoard();
-        const auto pins  = hat::get_hat_uart_pins(board);
-        auto pin_num_in  = pins.rx;
-        auto pin_num_out = pins.tx;
+        ok = m5::unit::wiring::addHatUART(Units, *unit, 19200);
 #elif defined(USING_ATOMIC_RS485_BASE)
-        auto board       = M5.getBoard();
-        const auto pins  = atombase::get_atombase_uart_pins(board);
-        auto pin_num_in  = pins.rx;
-        auto pin_num_out = pins.tx;
-#else
-        auto pin_num_in  = M5.getPin(m5::pin_name_t::port_c_rxd);
-        auto pin_num_out = M5.getPin(m5::pin_name_t::port_c_txd);
-        if (pin_num_in < 0 || pin_num_out < 0) {
-            if (M5.getBoard() == m5::board_t::board_M5NanoC6) {
-                M5.Ex_I2C.release();
-            }
-            Wire.end();
-            pin_num_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-            pin_num_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-        }
+        ok = m5::unit::rs485::wiring::addAtomicBaseUART(Units, *unit, 19200);
+#else  // USING_UNIT_RS485
+        ok = m5::unit::wiring::addUART(Units, *unit, 19200);
 #endif
-
-        // clang-format off
-#if defined(CONFIG_IDF_TARGET_ESP32C6)
-    auto& s = Serial1;
-#elif SOC_UART_NUM > 2
-    auto& s = Serial2;
-#elif SOC_UART_NUM > 1
-    auto& s = Serial1;
-#else
-#error "Not enough Serial"
-#endif
-        // clang-format on
-
-        s.end();
-        s.begin(19200, SERIAL_8N1, pin_num_in, pin_num_out);
-        while (s.available()) {
-            s.read();
+        if (!ok) {
+            return false;
         }
-        return &s;
+        serial = &m5::unit::wiring::defaultUartSerial();
+        return Units.begin();
     }
 };
 

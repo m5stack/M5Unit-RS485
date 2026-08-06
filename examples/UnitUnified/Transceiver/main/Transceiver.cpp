@@ -9,6 +9,8 @@
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedRS485.h>
+#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
+#include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -289,52 +291,6 @@ void flush_received(LogView& view)
     receive_bytes.clear();
 }
 
-#if defined(USING_HAT_RS485) || defined(USING_ATOMIC_RS485_BASE)
-struct UartPins {
-    int rx;
-    int tx;
-};
-
-#if defined(USING_HAT_RS485)
-UartPins get_hat_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5StickS3:
-            return {0, 8};
-        case m5::board_t::board_M5StackCoreInk:
-            return {26, 25};
-        case m5::board_t::board_M5StickC:
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_M5StickCPlus2:
-            return {26, 0};
-        case m5::board_t::board_ArduinoNessoN1:
-            return {7, 6};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
-
-#if defined(USING_ATOMIC_RS485_BASE)
-UartPins get_atombase_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5AtomLite:
-        case m5::board_t::board_M5AtomMatrix:
-            return {22, 19};
-        case m5::board_t::board_M5AtomS3:
-        case m5::board_t::board_M5AtomS3Lite:
-        case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
-        case m5::board_t::board_M5AtomS3RCam:
-        case m5::board_t::board_M5AtomS3RExt:
-            return {5, 6};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
-#endif
 }  // namespace
 
 void setup()
@@ -347,55 +303,21 @@ void setup()
         lcd.setRotation(1);
     }
 
-#if defined(USING_UNIT_RS485)
-    auto pin_num_in  = M5.getPin(m5::pin_name_t::port_c_rxd);
-    auto pin_num_out = M5.getPin(m5::pin_name_t::port_c_txd);
-    if (pin_num_in < 0 || pin_num_out < 0) {
-        M5_LOGW("PortC is not available");
-        Wire.end();
-        pin_num_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-        pin_num_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-#elif defined(USING_HAT_RS485)
-    // HAT interface
-    const auto pins  = get_hat_uart_pins(M5.getBoard());
-    auto pin_num_in  = pins.rx;
-    auto pin_num_out = pins.tx;
-#elif defined(USING_ATOMIC_RS485_BASE)
-    // AtomBase interface
-    const auto pins  = get_atombase_uart_pins(M5.getBoard());
-    auto pin_num_in  = pins.rx;
-    auto pin_num_out = pins.tx;
-#endif
-
-    M5_LOGI("Pin Rx:%d,Tx:%d", pin_num_in, pin_num_out);
-    if (pin_num_in < 0 || pin_num_out < 0) {
-        M5_LOGE("Illegal Pin number");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-
-    // clang-format off
-#if defined(CONFIG_IDF_TARGET_ESP32C6)
-    auto& s = Serial1;
-#elif SOC_UART_NUM > 2
-    auto& s = Serial2;
-#elif SOC_UART_NUM > 1
-    auto& s = Serial1;
-#else
-#error "Not enough Serial"
-#endif
-    // clang-format on
-
-    s.begin(UART_BAUD, SERIAL_8N1, pin_num_in, pin_num_out);
     {
         auto cfg    = unit.config();
         cfg.flushRX = true;
         unit.config(cfg);
     }
-    if (!Units.add(unit, s) || !Units.begin()) {
+
+#if defined(USING_HAT_RS485)
+    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
+#elif defined(USING_ATOMIC_RS485_BASE)
+    const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+#else  // USING_UNIT_RS485
+    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
+#endif
+
+    if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
         lcd.fillScreen(TFT_RED);
         while (true) {
