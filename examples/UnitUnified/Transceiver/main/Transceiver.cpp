@@ -20,13 +20,16 @@
 // *************************************************************
 // Choose one define symbol to match the unit you are using
 // *************************************************************
-#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
+#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE) && \
+    !defined(USING_TAB5_BUILTIN_RS485)
 // For UnitRS485 (U034)
 // #define USING_UNIT_RS485
 // For HatRS485 (U067)
 // #define USING_HAT_RS485
 // For Atomic RS485 Base (A131)
 // #define USING_ATOMIC_RS485_BASE
+// For Tab5 built-in RS-485 (SIT3088)
+// #define USING_TAB5_BUILTIN_RS485
 #endif
 
 namespace {
@@ -41,6 +44,9 @@ m5::unit::HatRS485 unit;
 #elif defined(USING_ATOMIC_RS485_BASE)
 #pragma message "Using AtomicRS485Base"
 m5::unit::AtomicRS485Base unit;
+#elif defined(USING_TAB5_BUILTIN_RS485)
+#pragma message "Using Tab5BuiltinRS485"
+m5::unit::Tab5BuiltinRS485 unit;
 #else
 #error Please choose unit!
 #endif
@@ -313,6 +319,8 @@ void setup()
     const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
 #elif defined(USING_ATOMIC_RS485_BASE)
     const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+#elif defined(USING_TAB5_BUILTIN_RS485)
+    const bool wired = m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD);
 #else  // USING_UNIT_RS485
     const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
 #endif
