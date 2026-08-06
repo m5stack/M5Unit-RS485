@@ -11,7 +11,7 @@
 #define M5_UNIT_RS485_UNIT_SP485_STREAM_HPP
 
 #if defined(ARDUINO)
-#include "unit_SP485.hpp"
+#include "rs485_component.hpp"
 #include <Stream.h>
 
 namespace m5 {
@@ -19,18 +19,18 @@ namespace unit {
 
 /*!
   @class UnitSP485Stream
-  @brief Thin Arduino Stream/Print adapter for UnitSP485
+  @brief Thin Arduino Stream/Print adapter for any RS485Component (UnitSP485 / UnitSIT3088 / ...)
   @note Available only in Arduino builds.
   @details Provides Arduino-compatible Stream/Print APIs (e.g. print/println/readString)
-           while keeping UnitSP485 itself free from Arduino dependencies.
+           while keeping the underlying RS485 unit free from Arduino dependencies.
  */
 class UnitSP485Stream final : public Stream {
 public:
     /*!
-      @brief Constructs a Stream adapter for UnitSP485
-      @param unit UnitSP485 instance to wrap
+      @brief Constructs a Stream adapter for any RS485Component-derived unit
+      @param unit RS485Component-derived instance to wrap (UnitSP485, UnitSIT3088, aliases thereof)
      */
-    explicit UnitSP485Stream(UnitSP485& unit) : _unit(unit)
+    explicit UnitSP485Stream(RS485Component& unit) : _unit(unit)
     {
     }
 
@@ -97,7 +97,7 @@ public:
     using Print::write;
 
 private:
-    UnitSP485& _unit;
+    RS485Component& _unit;
 };
 
 }  // namespace unit
