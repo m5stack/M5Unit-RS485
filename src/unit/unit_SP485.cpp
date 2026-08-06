@@ -148,9 +148,6 @@ bool UnitSP485::begin()
 
 size_t UnitSP485::write(const uint8_t d, const bool flush)
 {
-    if (_serial->available() > 0) {
-        return 0;
-    }
     size_t n = _serial->write(d);
     if (flush && n > 0) {
         _serial->flush(true);
@@ -160,9 +157,6 @@ size_t UnitSP485::write(const uint8_t d, const bool flush)
 
 size_t UnitSP485::write(const uint8_t* buffer, const size_t size, const bool flush)
 {
-    if (_serial->available() > 0) {
-        return 0;
-    }
     size_t n = _serial->write(buffer, size);
     if (flush && n > 0) {
         _serial->flush(true);
@@ -172,18 +166,12 @@ size_t UnitSP485::write(const uint8_t* buffer, const size_t size, const bool flu
 
 size_t UnitSP485::write(const char* buffer, const size_t size, const bool flush)
 {
-    if (_serial->available() > 0) {
-        return 0;
-    }
     return write(reinterpret_cast<const uint8_t*>(buffer), size, flush);
 }
 
 size_t UnitSP485::write(const char* s, const bool flush)
 {
     if (!s) {
-        return 0;
-    }
-    if (_serial->available() > 0) {
         return 0;
     }
     return write(reinterpret_cast<const uint8_t*>(s), strlen(s), flush);

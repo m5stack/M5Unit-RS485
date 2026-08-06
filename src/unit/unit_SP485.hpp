@@ -186,8 +186,7 @@ public:
       @brief Writes one byte
       @param d Byte to write
       @param flush If true, flush TX before returning
-      @return Number of bytes written (0 if receive buffer is not empty due to half-duplex constraint)
-      @note Returns 0 without writing when available() > 0, as RS485 half-duplex cannot transmit while data is pending
+      @return Number of bytes written
      */
     size_t write(const uint8_t d, const bool flush = true);
     /*!
