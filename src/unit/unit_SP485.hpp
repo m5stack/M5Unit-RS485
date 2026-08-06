@@ -13,6 +13,7 @@
 #include <M5UnitComponent.hpp>
 #include <m5_utility/stl/byteswap.hpp>
 #include <m5_utility/stl/endianness.hpp>
+#include <cstring>
 #include <type_traits>
 
 class HardwareSerial;
