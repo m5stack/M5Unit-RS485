@@ -137,8 +137,8 @@ bool UnitSP485::begin()
     _serial.reset(new UUSerial(ad->impl()->getSerial()));
 
     if (_cfg.flushRX) {
-        const uint32_t drain_until = m5::utility::millis() + 100;
-        while (m5::utility::millis() < drain_until) {
+        const uint32_t start = m5::utility::millis();
+        while (m5::utility::millis() - start < 100) {
             ad->flushRX();
             m5::utility::delay(1);
         }
