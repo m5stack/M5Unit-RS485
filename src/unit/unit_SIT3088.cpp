@@ -108,11 +108,6 @@ UnitSIT3088::UnitSIT3088() : RS485Component(DEFAULT_ADDRESS)
 {
 }
 
-UnitSIT3088::UnitSIT3088(const int8_t dir_pin) : UnitSIT3088()
-{
-    _sit_cfg.dir_pin = dir_pin;
-}
-
 bool UnitSIT3088::begin()
 {
     if (_sit_cfg.dir_pin < 0) {

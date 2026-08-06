@@ -51,8 +51,11 @@ using AtomicRS485Base = m5::unit::UnitSP485;
  */
 class Tab5BuiltinRS485 : public m5::unit::UnitSIT3088 {
 public:
-    Tab5BuiltinRS485() : m5::unit::UnitSIT3088(34)
+    Tab5BuiltinRS485()
     {
+        auto cfg    = config();
+        cfg.dir_pin = 34;  // Tab5 built-in fixed pin
+        config(cfg);
     }
     virtual ~Tab5BuiltinRS485() = default;
 };

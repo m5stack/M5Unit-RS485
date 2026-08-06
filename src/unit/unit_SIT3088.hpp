@@ -42,14 +42,9 @@ public:
     };
 
     /*!
-      @brief Default constructor. dir_pin remains unset; set via config() before begin().
+      @brief Constructor. dir_pin remains unset; set via config() before begin().
      */
     UnitSIT3088();
-    /*!
-      @brief Constructor that bakes the DIR pin into config().
-      @param dir_pin DIR (DE/RE tied) GPIO number for this board.
-     */
-    explicit UnitSIT3088(const int8_t dir_pin);
     //! @brief Destructor
     virtual ~UnitSIT3088() = default;
 
