@@ -129,9 +129,9 @@ jobs:
             board: AtomS3R
             framework: Arduino
             espressif32: latest
-          # Tab5BuiltinRS485 (Tab5 built-in SIT3088)
+          # BuiltinRS485 (Tab5 built-in SIT3088)
           - example: Transceiver
-            unit: 'Tab5BuiltinRS485'
+            unit: 'BuiltinRS485'
             board: Tab5
             framework: Arduino
             espressif32: latest
