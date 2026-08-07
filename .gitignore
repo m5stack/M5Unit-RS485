@@ -66,6 +66,14 @@ docs/html/
 # Temporary files
 tmp/
 
+# ESP-IDF (idf.py) build artifacts
+dependencies.lock
+sdkconfig
+sdkconfig.old
+
+# IDE (clangd LSP)
+.clangd
+
 # Secrets
 .env*
 *.pem
