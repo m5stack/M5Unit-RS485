@@ -56,7 +56,7 @@ m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
  **** Caution ****
  Reflections are more likely when the RS485 cable is long and/or the baud rate is relatively high.
  Add 120Ω termination at both ends of the RS485 bus to suppress reflections.
- These products (SKU:034 / SKU:067 / SLU:A131) do not include built-in termination resistors, so add external
+ These products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors, so add external
  termination when needed.
  */
 constexpr uint32_t UART_BAUD{51200};
@@ -70,7 +70,7 @@ constexpr char message_0[] =
     " When your project devices require communication control over RS485, using Unit RS485 as an interface converter "
     "is a good choice.\n";
 constexpr char message_1[] =
-    "Hat RS485 is an RS485 converter compatible with M5SticKC.\n"
+    "Hat RS485 is an RS485 converter compatible with M5StickC.\n"
     "It integrates SP485EEN internally, mainly consisting of a 485 automatic transceiver circuit and a DC-DC buck "
     "circuit (which can step down the input voltage to 5V).\n"
     "RS485 is a standard used to define the electrical characteristics of drivers and receivers for serial "
@@ -328,9 +328,7 @@ void setup()
     if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
         lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");
