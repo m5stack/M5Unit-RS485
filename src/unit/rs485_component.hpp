@@ -298,9 +298,12 @@ protected:
     virtual std::unique_ptr<ISerial> make_serial(AdapterUART *ad);
 
     // 3-way byteswap dispatch tags: integral/enum, floating-point, other (aggregate).
-    struct byteswap_int_tag {};
-    struct byteswap_float_tag {};
-    struct byteswap_none_tag {};
+    struct byteswap_int_tag {
+    };
+    struct byteswap_float_tag {
+    };
+    struct byteswap_none_tag {
+    };
 
     template <typename T>
     struct byteswap_tag_of {
