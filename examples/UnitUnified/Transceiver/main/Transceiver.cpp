@@ -59,7 +59,7 @@ m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
  These products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors, so add external
  termination when needed.
  */
-constexpr uint32_t UART_BAUD{51200};
+constexpr uint32_t UART_BAUD{57600};
 
 //
 constexpr char message_0[] =
@@ -314,6 +314,10 @@ void setup()
         cfg.flushRX = true;
         unit.config(cfg);
     }
+
+    // Bump receiver RX buffer to accommodate this demo's ~640-byte message bursts.
+    // Must be set BEFORE Serial.begin() (called inside the wiring helper below).
+    m5::unit::wiring::defaultUartSerial().setRxBufferSize(2048);
 
 #if defined(USING_HAT_RS485)
     const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
