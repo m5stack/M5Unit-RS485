@@ -12,12 +12,12 @@
 #include <M5UnitUnified.hpp>
 #include <googletest/test_template.hpp>
 #include <unit/unit_SP485.hpp>
+#include <unit/unit_SP485_stream.hpp>               // UnitSP485Stream Arduino Stream adapter
 #include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <chrono>
 #include <cmath>
 #include <iostream>
-#include <type_traits>
 
 #if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
 // For UnitRS485
@@ -30,17 +30,6 @@
 
 using namespace m5::unit::googletest;
 using namespace m5::unit;
-
-namespace {
-struct SampleTrivial {
-    uint16_t a;
-    uint32_t b;
-};
-
-static_assert(std::is_trivially_copyable<SampleTrivial>::value && std::is_standard_layout<SampleTrivial>::value,
-              "SampleTrivial must be trivially copyable and standard-layout");
-
-}  // namespace
 
 class TestSP485 : public UARTComponentTestBase<UnitSP485> {
 protected:
@@ -104,4 +93,123 @@ TEST_F(TestSP485, WriteValueReturnsTrue)
     }
     EXPECT_TRUE((unit->writeValue<uint16_t, true>(0x1234)));
     EXPECT_TRUE((unit->writeValue<uint16_t, false>(0x1234)));
+}
+
+TEST_F(TestSP485, WriteNullReturnsZero)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    // write(char*) has an explicit null guard.
+    EXPECT_EQ(unit->write(static_cast<const char*>(nullptr)), 0u);
+}
+
+TEST_F(TestSP485, WriteValueFloat)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    EXPECT_TRUE((unit->writeValue<float, true>(3.14159265f)));
+    EXPECT_TRUE((unit->writeValue<float, false>(3.14159265f)));
+}
+
+TEST_F(TestSP485, WriteValueUInt32)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    EXPECT_TRUE((unit->writeValue<uint32_t, true>(0x12345678u)));
+    EXPECT_TRUE((unit->writeValue<uint32_t, false>(0x12345678u)));
+}
+
+TEST_F(TestSP485, WriteValueUInt64)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    EXPECT_TRUE((unit->writeValue<uint64_t, true>(0x0123456789ABCDEFULL)));
+    EXPECT_TRUE((unit->writeValue<uint64_t, false>(0x0123456789ABCDEFULL)));
+}
+
+TEST_F(TestSP485, WriteBufferSize)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    const uint8_t buf[3] = {0x01, 0x02, 0x03};
+    EXPECT_EQ(unit->write(buf, sizeof(buf), false), sizeof(buf));
+    EXPECT_EQ(unit->write(buf, sizeof(buf), true), sizeof(buf));
+    // Zero-size and null-buffer guards
+    EXPECT_EQ(unit->write(buf, 0u), 0u);
+    EXPECT_EQ(unit->write(static_cast<const uint8_t*>(nullptr), 5u), 0u);
+}
+
+TEST_F(TestSP485, WriteCharBufferSize)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    const char buf[] = "abc";
+    EXPECT_EQ(unit->write(buf, 3u), 3u);
+}
+
+TEST_F(TestSP485, WriteNonNullCString)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    while (unit->available()) {
+        unit->read();
+    }
+    EXPECT_EQ(unit->write("hello"), 5u);
+    EXPECT_EQ(unit->write(""), 0u);
+}
+
+// UnitSP485Stream (Arduino Stream adapter) smoke test: verifies the adapter forwards
+// write() calls to the underlying RS485Component.
+TEST_F(TestSP485, StreamAdapterForwardsWrite)
+{
+    SCOPED_TRACE(ustr);
+    EXPECT_NE(serial, nullptr);
+    if (!serial) {
+        return;
+    }
+    m5::unit::UnitSP485Stream stream(*unit);
+    while (unit->available()) {
+        unit->read();
+    }
+    EXPECT_GT(stream.write(static_cast<uint8_t>(0x5A)), 0u);
+    const uint8_t buf[3] = {0x01, 0x02, 0x03};
+    EXPECT_EQ(stream.write(buf, sizeof(buf)), sizeof(buf));
+    // Print API delegates to write().
+    EXPECT_EQ(stream.print("hi"), 2u);
 }
