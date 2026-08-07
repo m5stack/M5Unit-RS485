@@ -217,10 +217,10 @@ public:
     size_t write(const char *s, const bool flush = true);
     ///@}
 
-    ///@name Read/Write any value
+    ///@name Read/Write a trivially copyable value
     ///@{
     /*!
-      @brief Read the any number value
+      @brief Read a trivially copyable value
       @tparam T Type (must be trivially copyable and standard-layout)
       @tparam LittleEndian Incoming data is little-endian if true
       @param value Receive variable
@@ -250,7 +250,7 @@ public:
         return true;
     }
     /*!
-      @brief Write the any number value
+      @brief Write a trivially copyable value
       @tparam T Type (must be trivially copyable and standard-layout)
       @tparam LittleEndian Outgoing data is little-endian if true
       @param value Value to write
@@ -304,10 +304,10 @@ protected:
 
     template <typename T>
     struct byteswap_tag_of {
-        using type = typename std::conditional<
-            std::is_integral<T>::value || std::is_enum<T>::value, byteswap_int_tag,
-            typename std::conditional<std::is_floating_point<T>::value, byteswap_float_tag,
-                                      byteswap_none_tag>::type>::type;
+        using type =
+            typename std::conditional<std::is_integral<T>::value || std::is_enum<T>::value, byteswap_int_tag,
+                                      typename std::conditional<std::is_floating_point<T>::value, byteswap_float_tag,
+                                                                byteswap_none_tag>::type>::type;
     };
 
     template <typename T>

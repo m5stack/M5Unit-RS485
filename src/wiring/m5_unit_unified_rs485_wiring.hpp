@@ -39,8 +39,8 @@ namespace wiring {
   @brief UART pin assignments (rx, tx) for AtomicRS485Base on the Atom-family bottom base
 */
 struct AtomicBasePinPair {
-    int8_t rx;
-    int8_t tx;
+    int8_t rx;  //!< UART RX pin on the Atom-family bottom base
+    int8_t tx;  //!< UART TX pin on the Atom-family bottom base
 };
 
 /*!
@@ -91,7 +91,7 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
     serial.begin(baud, config, p.rx, p.tx);
     return units.add(unit, serial);
 }
-#else  // ESP-IDF native
+#else   // ESP-IDF native
 /*!
   @brief Add a UnitSP485 (aliased as AtomicRS485Base) on the Atom-family bottom base UART (ESP-IDF native)
   @param units UnitUnified manager
@@ -128,9 +128,9 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
   @brief Pin assignments (rx, tx, dir) for M5Stack Tab5 built-in SIT3088 RS-485
 */
 struct Tab5BuiltinRS485Pins {
-    int8_t rx;
-    int8_t tx;
-    int8_t dir;
+    int8_t rx;   //!< UART RX (Tab5 built-in: GPIO21)
+    int8_t tx;   //!< UART TX (Tab5 built-in: GPIO20)
+    int8_t dir;  //!< SIT3088 DIR (DE/RE tied, Tab5 built-in: GPIO34)
 };
 
 /*!
@@ -151,7 +151,7 @@ inline Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()
 /*!
   @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485.
   @param units UnitUnified manager
-  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dirPin() is set here)
+  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
   @param baud Baud rate (default 115200)
   @param config Serial config (default `SERIAL_8N1`)
   @return True if successful; false on unsupported board
@@ -162,8 +162,7 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
 {
     const auto p = tab5BuiltinRS485Pins();
     if (p.rx < 0 || p.tx < 0 || p.dir < 0) {
-        M5_LIB_LOGE("wiring: addTab5BuiltinRS485UART unsupported board=0x%02x",
-                    static_cast<int>(M5.getBoard()));
+        M5_LIB_LOGE("wiring: addTab5BuiltinRS485UART unsupported board=0x%02x", static_cast<int>(M5.getBoard()));
         return false;
     }
     M5_LIB_LOGI("wiring: addTab5BuiltinRS485UART board=0x%02x rx=%d tx=%d dir=%d baud=%lu",
@@ -179,7 +178,7 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
     serial.begin(baud, config, p.rx, p.tx);
     return units.add(unit, serial);
 }
-#else  // ESP-IDF native
+#else   // ESP-IDF native
 /*!
   @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485 (ESP-IDF native)
   @note ESP-IDF native support for UnitSIT3088 is not yet implemented; this helper returns false.

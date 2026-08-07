@@ -177,6 +177,9 @@ size_t RS485Component::write(const uint8_t d, const bool flush)
 
 size_t RS485Component::write(const uint8_t *buffer, const size_t size, const bool flush)
 {
+    if (!buffer || size == 0) {
+        return 0;
+    }
     size_t n = _serial->write(buffer, size);
     if (flush && n > 0) {
         _serial->flush(true);
