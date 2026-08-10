@@ -14,11 +14,15 @@ Hat RS485 is an RS485 converter compatible with M5StickC. It integrates SP485EEN
 ### SKU:A131
 Atomic RS485 Base is a TTL-RS485 converter based on the Atomic design, used for converting TTL level to RS485 level. RS485 is a widely used electrical standard in the industrial field, featuring stronger anti-interference capability and longer transmission distance. It has a built-in DC-DC step-down regulator chip, which can directly convert the 12V voltage of RS485 to 5V to power the ATOM, eliminating the trouble of separate power supply. When multiple devices require communication control, using the Atomic RS485 for interface type conversion will be a good choice.
 
+### Tab5 built-in RS-485 (SIT3088)
+M5Stack Tab5 (ESP32-P4) has a built-in RS-485 transceiver (SIT3088) on the bottom edge, with RX=GPIO21 / TX=GPIO20 and manual direction control via DIR=GPIO34. Unlike SP485EEN-based products (U034 / U067 / A131), the DIR pin must be driven by software; `UnitSIT3088` handles this automatically via an internal decorator on the underlying Serial. `Tab5BuiltinRS485` is a thin subclass that bakes the Tab5-specific DIR pin (GPIO34) into config for out-of-the-box use.
+
 
 ## Caution
 Reflections are more likely when the RS485 cable is long and/or the baud rate is relatively high.  
 Add **120Ω termination at both ends** of the RS485 bus to suppress reflections.  
-**These products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors**, so add external termination when needed.
+**External products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors**, so add external termination when needed.  
+**M5Stack Tab5 built-in RS-485 provides a switchable 120Ω terminator via a physical switch on the back of the device**; enable it when Tab5 sits at either end of the bus.
 
 See also https://docs.m5stack.com/en/arduino/projects/atomic/atomic_rs485_232_base
 
@@ -34,13 +38,16 @@ You must choose a define symbol for the unit you will use.
 // *************************************************************
 // Choose one define symbol to match the unit you are using
 // *************************************************************
-#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
+#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE) && \
+    !defined(USING_TAB5_BUILTIN_RS485)
 // For UnitRS485 (U034)
 // #define USING_UNIT_RS485
 // For HatRS485 (U067)
 // #define USING_HAT_RS485
 // For Atomic RS485 Base (A131)
 // #define USING_ATOMIC_RS485_BASE
+// For Tab5 built-in RS-485 (SIT3088)
+// #define USING_TAB5_BUILTIN_RS485
 #endif
 ```
 
@@ -49,6 +56,7 @@ You must choose a define symbol for the unit you will use.
 - [Unit RS485 & Datasheet](https://docs.m5stack.com/en/unit/rs485)
 - [HAT RS485 & Datasheet](https://docs.m5stack.com/en/hat/hat-rs485)
 - [Atomic RS485 Base & Datasheet](https://docs.m5stack.com/en/atom/Atomic%20RS485%20Base)
+- [M5Stack Tab5 & Datasheet](https://docs.m5stack.com/en/core/Tab5)
 
 ## Required Libraries:
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)

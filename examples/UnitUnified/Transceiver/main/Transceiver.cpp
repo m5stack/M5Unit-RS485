@@ -9,6 +9,8 @@
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedRS485.h>
+#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
+#include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
@@ -18,13 +20,16 @@
 // *************************************************************
 // Choose one define symbol to match the unit you are using
 // *************************************************************
-#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
+#if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE) && \
+    !defined(USING_TAB5_BUILTIN_RS485)
 // For UnitRS485 (U034)
 // #define USING_UNIT_RS485
 // For HatRS485 (U067)
 // #define USING_HAT_RS485
 // For Atomic RS485 Base (A131)
 // #define USING_ATOMIC_RS485_BASE
+// For Tab5 built-in RS-485 (SIT3088)
+// #define USING_TAB5_BUILTIN_RS485
 #endif
 
 namespace {
@@ -39,6 +44,9 @@ m5::unit::HatRS485 unit;
 #elif defined(USING_ATOMIC_RS485_BASE)
 #pragma message "Using AtomicRS485Base"
 m5::unit::AtomicRS485Base unit;
+#elif defined(USING_TAB5_BUILTIN_RS485)
+#pragma message "Using Tab5BuiltinRS485"
+m5::unit::Tab5BuiltinRS485 unit;
 #else
 #error Please choose unit!
 #endif
@@ -48,10 +56,10 @@ m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
  **** Caution ****
  Reflections are more likely when the RS485 cable is long and/or the baud rate is relatively high.
  Add 120Ω termination at both ends of the RS485 bus to suppress reflections.
- These products (SKU:034 / SKU:067 / SLU:A131) do not include built-in termination resistors, so add external
+ These products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors, so add external
  termination when needed.
  */
-constexpr uint32_t UART_BAUD{51200};
+constexpr uint32_t UART_BAUD{57600};
 
 //
 constexpr char message_0[] =
@@ -62,7 +70,7 @@ constexpr char message_0[] =
     " When your project devices require communication control over RS485, using Unit RS485 as an interface converter "
     "is a good choice.\n";
 constexpr char message_1[] =
-    "Hat RS485 is an RS485 converter compatible with M5SticKC.\n"
+    "Hat RS485 is an RS485 converter compatible with M5StickC.\n"
     "It integrates SP485EEN internally, mainly consisting of a 485 automatic transceiver circuit and a DC-DC buck "
     "circuit (which can step down the input voltage to 5V).\n"
     "RS485 is a standard used to define the electrical characteristics of drivers and receivers for serial "
@@ -289,52 +297,6 @@ void flush_received(LogView& view)
     receive_bytes.clear();
 }
 
-#if defined(USING_HAT_RS485) || defined(USING_ATOMIC_RS485_BASE)
-struct UartPins {
-    int rx;
-    int tx;
-};
-
-#if defined(USING_HAT_RS485)
-UartPins get_hat_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5StickS3:
-            return {0, 8};
-        case m5::board_t::board_M5StackCoreInk:
-            return {26, 25};
-        case m5::board_t::board_M5StickC:
-        case m5::board_t::board_M5StickCPlus:
-        case m5::board_t::board_M5StickCPlus2:
-            return {26, 0};
-        case m5::board_t::board_ArduinoNessoN1:
-            return {7, 6};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
-
-#if defined(USING_ATOMIC_RS485_BASE)
-UartPins get_atombase_uart_pins(const m5::board_t board)
-{
-    switch (board) {
-        case m5::board_t::board_M5AtomLite:
-        case m5::board_t::board_M5AtomMatrix:
-            return {22, 19};
-        case m5::board_t::board_M5AtomS3:
-        case m5::board_t::board_M5AtomS3Lite:
-        case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
-        case m5::board_t::board_M5AtomS3RCam:
-        case m5::board_t::board_M5AtomS3RExt:
-            return {5, 6};
-        default:
-            return {-1, -1};
-    }
-}
-#endif
-#endif
 }  // namespace
 
 void setup()
@@ -347,60 +309,30 @@ void setup()
         lcd.setRotation(1);
     }
 
-#if defined(USING_UNIT_RS485)
-    auto pin_num_in  = M5.getPin(m5::pin_name_t::port_c_rxd);
-    auto pin_num_out = M5.getPin(m5::pin_name_t::port_c_txd);
-    if (pin_num_in < 0 || pin_num_out < 0) {
-        M5_LOGW("PortC is not available");
-        Wire.end();
-        pin_num_in  = M5.getPin(m5::pin_name_t::port_a_pin1);
-        pin_num_out = M5.getPin(m5::pin_name_t::port_a_pin2);
-    }
-#elif defined(USING_HAT_RS485)
-    // HAT interface
-    const auto pins  = get_hat_uart_pins(M5.getBoard());
-    auto pin_num_in  = pins.rx;
-    auto pin_num_out = pins.tx;
-#elif defined(USING_ATOMIC_RS485_BASE)
-    // AtomBase interface
-    const auto pins  = get_atombase_uart_pins(M5.getBoard());
-    auto pin_num_in  = pins.rx;
-    auto pin_num_out = pins.tx;
-#endif
-
-    M5_LOGI("Pin Rx:%d,Tx:%d", pin_num_in, pin_num_out);
-    if (pin_num_in < 0 || pin_num_out < 0) {
-        M5_LOGE("Illegal Pin number");
-        lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
-    }
-
-    // clang-format off
-#if defined(CONFIG_IDF_TARGET_ESP32C6)
-    auto& s = Serial1;
-#elif SOC_UART_NUM > 2
-    auto& s = Serial2;
-#elif SOC_UART_NUM > 1
-    auto& s = Serial1;
-#else
-#error "Not enough Serial"
-#endif
-    // clang-format on
-
-    s.begin(UART_BAUD, SERIAL_8N1, pin_num_in, pin_num_out);
     {
         auto cfg    = unit.config();
         cfg.flushRX = true;
         unit.config(cfg);
     }
-    if (!Units.add(unit, s) || !Units.begin()) {
+
+    // Bump receiver RX buffer to accommodate this demo's ~640-byte message bursts.
+    // Must be set BEFORE Serial.begin() (called inside the wiring helper below).
+    m5::unit::wiring::defaultUartSerial().setRxBufferSize(2048);
+
+#if defined(USING_HAT_RS485)
+    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
+#elif defined(USING_ATOMIC_RS485_BASE)
+    const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+#elif defined(USING_TAB5_BUILTIN_RS485)
+    const bool wired = m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD);
+#else  // USING_UNIT_RS485
+    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
+#endif
+
+    if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
         lcd.fillScreen(TFT_RED);
-        while (true) {
-            m5::utility::delay(10000);
-        }
+        m5::unit::wiring::failStop();
     }
 
     M5_LOGI("M5UnitUnified initialized");

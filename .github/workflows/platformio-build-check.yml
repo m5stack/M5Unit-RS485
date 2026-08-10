@@ -18,7 +18,7 @@ on:
       - 'examples/UnitUnified/**.h'
       - 'examples/UnitUnified/**.c'
       - '.github/workflows/platformio-build-check.yml'
-      - '**platformio.ini'
+      - 'platformio.ini'
   pull_request:
     paths:
       - 'src/**.cpp'
@@ -31,7 +31,7 @@ on:
       - 'examples/UnitUnified/**.h'
       - 'examples/UnitUnified/**.c'
       - '.github/workflows/platformio-build-check.yml'
-      - '**platformio.ini'
+      - 'platformio.ini'
   workflow_dispatch:
 
 defaults:
@@ -70,6 +70,7 @@ jobs:
           - AtomS3
           - AtomS3R
           - NanoC6
+          - NanoH2
           - StickCPlus
           - StickCPlus2
           - StickS3
@@ -126,6 +127,12 @@ jobs:
           - example: Transceiver
             unit: 'AtomicRS485Base'
             board: AtomS3R
+            framework: Arduino
+            espressif32: latest
+          # BuiltinRS485 (Tab5 built-in SIT3088)
+          - example: Transceiver
+            unit: 'BuiltinRS485'
+            board: Tab5
             framework: Arduino
             espressif32: latest
 
