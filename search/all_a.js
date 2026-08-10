@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['unit_0',['unit',['../namespaceunit.html',1,'']]],
-  ['unit_5fsp485_2ecpp_1',['unit_SP485.cpp',['../unit___s_p485_8cpp.html',1,'']]],
-  ['unit_5fsp485_2ehpp_2',['unit_SP485.hpp',['../unit___s_p485_8hpp.html',1,'']]],
-  ['unit_5fsp485_5fstream_2ehpp_3',['unit_SP485_stream.hpp',['../unit___s_p485__stream_8hpp.html',1,'']]],
-  ['unitrs485_4',['UnitRS485',['../_m5_unit_unified_r_s485_8hpp.html#ab83299848e079698063b3e9195bf71dc',1,'m5::unit']]],
-  ['unitsp485_5',['UnitSP485',['../classm5_1_1unit_1_1_unit_s_p485.html',1,'m5::unit::UnitSP485'],['../classm5_1_1unit_1_1_unit_s_p485.html#aadd1431c208791a05ede06d0787c6d91',1,'m5::unit::UnitSP485::UnitSP485()']]],
-  ['uuserial_6',['UUSerial',['../structm5_1_1unit_1_1_u_u_serial.html',1,'m5::unit']]]
+  ['read_0',['read',['../classm5_1_1unit_1_1_r_s485_component.html#a6ddc65cc7211436e7ae031034ad6b745',1,'m5::unit::RS485Component::read()'],['../classm5_1_1unit_1_1_r_s485_component.html#a457c8cd544da397a1b1a76c41564502e',1,'m5::unit::RS485Component::read(uint8_t *buffer, const size_t size)'],['../classm5_1_1unit_1_1_r_s485_component.html#a7ace008caf2669fa2bc58e5eb2545991',1,'m5::unit::RS485Component::read(char *buffer, const size_t size)']]],
+  ['readbytes_1',['readBytes',['../classm5_1_1unit_1_1_r_s485_component.html#a105e1964761b7819ed70e25514e3a58d',1,'m5::unit::RS485Component::readBytes(uint8_t *buffer, const size_t length)'],['../classm5_1_1unit_1_1_r_s485_component.html#a66ff875644e01980034e50ae132a4751',1,'m5::unit::RS485Component::readBytes(char *buffer, const size_t length)']]],
+  ['readvalue_2',['readValue',['../classm5_1_1unit_1_1_r_s485_component.html#a48e367f5583fa07247ef6f91adc0bad0',1,'m5::unit::RS485Component']]],
+  ['rs485_3',['M5Unit-RS485',['../index.html',1,'']]],
+  ['rs485_5fcomponent_2ecpp_4',['rs485_component.cpp',['../rs485__component_8cpp.html',1,'']]],
+  ['rs485_5fcomponent_2ehpp_5',['rs485_component.hpp',['../rs485__component_8hpp.html',1,'']]],
+  ['rs485component_6',['RS485Component',['../classm5_1_1unit_1_1_r_s485_component.html',1,'m5::unit::RS485Component'],['../classm5_1_1unit_1_1_r_s485_component.html#a4228fca551b4f185714fec13ea2b11a6',1,'m5::unit::RS485Component::RS485Component()']]]
 ];

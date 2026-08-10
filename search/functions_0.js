@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['available_0',['available',['../classm5_1_1unit_1_1_unit_s_p485.html#ac0ad2f927800cdaee66dc4365e585361',1,'m5::unit::UnitSP485']]],
-  ['availableforwrite_1',['availableForWrite',['../classm5_1_1unit_1_1_unit_s_p485.html#a3f60e4870a0b8f2cbe3515ef80253eca',1,'m5::unit::UnitSP485']]]
+  ['available_0',['available',['../classm5_1_1unit_1_1_r_s485_component.html#a0f03b7056b0481a5d602ce95041d2687',1,'m5::unit::RS485Component']]],
+  ['availableforwrite_1',['availableForWrite',['../classm5_1_1unit_1_1_r_s485_component.html#aa809f689bf899160bb796ae39b4bd005',1,'m5::unit::RS485Component']]]
 ];

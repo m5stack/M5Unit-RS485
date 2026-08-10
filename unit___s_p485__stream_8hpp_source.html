@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.0.1 git rev:d5ba212</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
    </div>
   </td>
  </tr>
@@ -108,7 +108,7 @@ $(function(){initNavTree('unit___s_p485__stream_8hpp_source.html',''); initResiz
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define M5_UNIT_RS485_UNIT_SP485_STREAM_HPP</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#if defined(ARDUINO)</span></div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="unit___s_p485_8hpp.html">unit_SP485.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="rs485__component_8hpp.html">rs485_component.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;Stream.h&gt;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacem5.html">m5</a> {</div>
@@ -116,7 +116,7 @@ $(function(){initNavTree('unit___s_p485__stream_8hpp_source.html',''); initResiz
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">class </span>UnitSP485Stream final : <span class="keyword">public</span> Stream {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">explicit</span> UnitSP485Stream(UnitSP485&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>) : _unit(<a class="code hl_namespace" href="namespaceunit.html">unit</a>)</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">explicit</span> UnitSP485Stream(RS485Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>) : _unit(<a class="code hl_namespace" href="namespaceunit.html">unit</a>)</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    {</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    }</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
@@ -153,16 +153,16 @@ $(function(){initNavTree('unit___s_p485__stream_8hpp_source.html',''); initResiz
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keyword">using </span>Print::write;</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    UnitSP485&amp; _unit;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    RS485Component&amp; _unit;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>};</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>}  <span class="comment">// namespace unit</span></div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}  <span class="comment">// namespace m5</span></div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5stack.</div></div>
+<div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5Stack.</div></div>
 <div class="ttc" id="anamespaceunit_html"><div class="ttname"><a href="namespaceunit.html">unit</a></div><div class="ttdoc">Unit-related namespace.</div></div>
-<div class="ttc" id="aunit___s_p485_8hpp_html"><div class="ttname"><a href="unit___s_p485_8hpp.html">unit_SP485.hpp</a></div><div class="ttdoc">SP485 unit for M5UnitUnified.</div></div>
+<div class="ttc" id="ars485__component_8hpp_html"><div class="ttname"><a href="rs485__component_8hpp.html">rs485_component.hpp</a></div><div class="ttdoc">Common base for RS-485 transceiver units in M5UnitUnified.</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

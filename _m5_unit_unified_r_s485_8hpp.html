@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.0.1 git rev:d5ba212</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
    </div>
   </td>
  </tr>
@@ -97,6 +97,7 @@ $(function(){initNavTree('_m5_unit_unified_r_s485_8hpp.html',''); initResizable(
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">M5UnitUnifiedRS485.hpp File Reference</div></div>
@@ -106,14 +107,21 @@ $(function(){initNavTree('_m5_unit_unified_r_s485_8hpp.html',''); initResizable(
 <p>Main header of M5Unit-RS485 using M5UnitUnified.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="unit___s_p485_8hpp_source.html">unit/unit_SP485.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="unit___s_i_t3088_8hpp_source.html">unit/unit_SIT3088.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="unit___s_p485__stream_8hpp_source.html">unit/unit_SP485_stream.hpp</a>&quot;</code><br />
 </div>
 <p><a href="_m5_unit_unified_r_s485_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">m5::unit::Tab5BuiltinRS485</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)  <a href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacem5.html">m5</a></td></tr>
-<tr class="memdesc:namespacem5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Top level namespace of M5stack. <br /></td></tr>
+<tr class="memdesc:namespacem5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Top level namespace of M5Stack. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceunit.html">unit</a></td></tr>
 <tr class="memdesc:namespaceunit"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unit-related namespace. <br /></td></tr>
@@ -123,15 +131,15 @@ Namespaces</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:ab83299848e079698063b3e9195bf71dc" id="r_ab83299848e079698063b3e9195bf71dc"><td class="memItemLeft" align="right" valign="top"><a id="ab83299848e079698063b3e9195bf71dc" name="ab83299848e079698063b3e9195bf71dc"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>m5::unit::UnitRS485</b> = <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a></td></tr>
-<tr class="memdesc:ab83299848e079698063b3e9195bf71dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">UnitRS485 alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using SP485 transceiver.">UnitSP485</a>. <br /></td></tr>
+<tr class="memdesc:ab83299848e079698063b3e9195bf71dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">UnitRS485 alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using the SP485EEN transceiver (auto direction control)">UnitSP485</a> (U034; SP485EEN auto-direction) <br /></td></tr>
 <tr class="separator:ab83299848e079698063b3e9195bf71dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac17ce8f81018a8c79a992a2c9feb12a4" id="r_ac17ce8f81018a8c79a992a2c9feb12a4"><td class="memItemLeft" align="right" valign="top"><a id="ac17ce8f81018a8c79a992a2c9feb12a4" name="ac17ce8f81018a8c79a992a2c9feb12a4"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>m5::unit::HatRS485</b> = <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a></td></tr>
-<tr class="memdesc:ac17ce8f81018a8c79a992a2c9feb12a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">HatRS485 alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using SP485 transceiver.">UnitSP485</a>. <br /></td></tr>
+<tr class="memdesc:ac17ce8f81018a8c79a992a2c9feb12a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">HatRS485 alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using the SP485EEN transceiver (auto direction control)">UnitSP485</a> (U067; SP485EEN auto-direction) <br /></td></tr>
 <tr class="separator:ac17ce8f81018a8c79a992a2c9feb12a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c86dc11133cab2f39d84adf47af5c96" id="r_a3c86dc11133cab2f39d84adf47af5c96"><td class="memItemLeft" align="right" valign="top"><a id="a3c86dc11133cab2f39d84adf47af5c96" name="a3c86dc11133cab2f39d84adf47af5c96"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><b>m5::unit::AtomicRS485Base</b> = <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a></td></tr>
-<tr class="memdesc:a3c86dc11133cab2f39d84adf47af5c96"><td class="mdescLeft">&#160;</td><td class="mdescRight">AtomicRS485Base alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using SP485 transceiver.">UnitSP485</a>. <br /></td></tr>
+<tr class="memdesc:a3c86dc11133cab2f39d84adf47af5c96"><td class="mdescLeft">&#160;</td><td class="mdescRight">AtomicRS485Base alias of <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using the SP485EEN transceiver (auto direction control)">UnitSP485</a> (A131; SP485EEN auto-direction) <br /></td></tr>
 <tr class="separator:a3c86dc11133cab2f39d84adf47af5c96"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.0.1 git rev:d5ba212</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
    </div>
   </td>
  </tr>
@@ -108,22 +108,39 @@ $(function(){initNavTree('_m5_unit_unified_r_s485_8hpp_source.html',''); initRes
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#define M5_UNIT_UNIFIED_RS485_HPP</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span> </div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">#include &quot;<a class="code" href="unit___s_p485_8hpp.html">unit/unit_SP485.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="unit___s_p485__stream_8hpp.html">unit/unit_SP485_stream.hpp</a>&quot;</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span> </div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacem5.html">m5</a> {</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span> </div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceunit.html">unit</a> {</div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#ab83299848e079698063b3e9195bf71dc">   34</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">UnitRS485</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
-<div class="line"><a id="l00038" name="l00038"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#ac17ce8f81018a8c79a992a2c9feb12a4">   38</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">HatRS485</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#a3c86dc11133cab2f39d84adf47af5c96">   42</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">AtomicRS485Base</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>}  <span class="comment">// namespace unit</span></div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>}  <span class="comment">// namespace m5</span></div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a></div><div class="ttdoc">RS-485 unit using SP485 transceiver.</div><div class="ttdef"><b>Definition</b> unit_SP485.hpp:27</div></div>
-<div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5stack.</div></div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">#include &quot;<a class="code" href="unit___s_i_t3088_8hpp.html">unit/unit_SIT3088.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">#include &quot;<a class="code" href="unit___s_p485__stream_8hpp.html">unit/unit_SP485_stream.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacem5.html">m5</a> {</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceunit.html">unit</a> {</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#ab83299848e079698063b3e9195bf71dc">   35</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">UnitRS485</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#ac17ce8f81018a8c79a992a2c9feb12a4">   39</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">HatRS485</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="_m5_unit_unified_r_s485_8hpp.html#a3c86dc11133cab2f39d84adf47af5c96">   43</a></span><span class="keyword">using </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">AtomicRS485Base</a> = <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a>;</div>
+<div class="foldopen" id="foldopen00052" data-start="{" data-end="};">
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">   52</a></span><span class="keyword">class </span><a class="code hl_class" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">Tab5BuiltinRS485</a> : <span class="keyword">public</span> <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">m5::unit::UnitSIT3088</a> {</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="keyword">public</span>:</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    <a class="code hl_class" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">Tab5BuiltinRS485</a>()</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    {</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keyword">auto</span> cfg    = <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_i_t3088.html#a806fb3487379da51ceacdbda1e0b3852">config</a>();</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        cfg.dir_pin = 34;  <span class="comment">// Tab5 built-in fixed pin</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_i_t3088.html#a806fb3487379da51ceacdbda1e0b3852">config</a>(cfg);</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>    }</div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">virtual</span> <a class="code hl_class" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">~Tab5BuiltinRS485</a>() = <span class="keywordflow">default</span>;</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>};</div>
+</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span> </div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>}  <span class="comment">// namespace unit</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>}  <span class="comment">// namespace m5</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_tab5_builtin_r_s485_html"><div class="ttname"><a href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html">m5::unit::Tab5BuiltinRS485</a></div><div class="ttdoc">M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)</div><div class="ttdef"><b>Definition</b> M5UnitUnifiedRS485.hpp:52</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_i_t3088_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_i_t3088.html">m5::unit::UnitSIT3088</a></div><div class="ttdoc">RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)</div><div class="ttdef"><b>Definition</b> unit_SIT3088.hpp:30</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_i_t3088_html_a806fb3487379da51ceacdbda1e0b3852"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_i_t3088.html#a806fb3487379da51ceacdbda1e0b3852">m5::unit::UnitSIT3088::config</a></div><div class="ttdeci">config_t config()</div><div class="ttdoc">Gets the configuration.</div><div class="ttdef"><b>Definition</b> unit_SIT3088.hpp:64</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485.html">m5::unit::UnitSP485</a></div><div class="ttdoc">RS-485 unit using the SP485EEN transceiver (auto direction control)</div><div class="ttdef"><b>Definition</b> unit_SP485.hpp:22</div></div>
+<div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5Stack.</div></div>
 <div class="ttc" id="anamespaceunit_html"><div class="ttname"><a href="namespaceunit.html">unit</a></div><div class="ttdoc">Unit-related namespace.</div></div>
+<div class="ttc" id="aunit___s_i_t3088_8hpp_html"><div class="ttname"><a href="unit___s_i_t3088_8hpp.html">unit_SIT3088.hpp</a></div><div class="ttdoc">SIT3088 unit for M5UnitUnified (manual direction-controlled RS-485 transceiver)</div></div>
 <div class="ttc" id="aunit___s_p485_8hpp_html"><div class="ttname"><a href="unit___s_p485_8hpp.html">unit_SP485.hpp</a></div><div class="ttdoc">SP485 unit for M5UnitUnified.</div></div>
 <div class="ttc" id="aunit___s_p485__stream_8hpp_html"><div class="ttname"><a href="unit___s_p485__stream_8hpp.html">unit_SP485_stream.hpp</a></div><div class="ttdoc">Arduino Stream adapter for UnitSP485.</div></div>
 </div><!-- fragment --></div><!-- contents -->
