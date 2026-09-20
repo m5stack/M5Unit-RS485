@@ -56,6 +56,11 @@ public:
     //! @brief Destructor
     virtual ~RS485Component() = default;
 
+    RS485Component(const RS485Component&)                = delete;
+    RS485Component& operator=(const RS485Component&)     = delete;
+    RS485Component(RS485Component&&) noexcept            = default;
+    RS485Component& operator=(RS485Component&&) noexcept = default;
+
     /*!
       @brief Begin using the registered UART adapter
       @return True if the adapter is valid and ready
