@@ -36,16 +36,16 @@ namespace {
 auto& lcd = M5.Display;
 m5::unit::UnitUnified Units;
 #if defined(USING_UNIT_RS485)
-#pragma message "Using UnitRS485"
+#pragma message("Using UnitRS485")
 m5::unit::UnitRS485 unit;
 #elif defined(USING_HAT_RS485)
-#pragma message "Using HatRS485"
+#pragma message("Using HatRS485")
 m5::unit::HatRS485 unit;
 #elif defined(USING_ATOMIC_RS485_BASE)
-#pragma message "Using AtomicRS485Base"
+#pragma message("Using AtomicRS485Base")
 m5::unit::AtomicRS485Base unit;
 #elif defined(USING_TAB5_BUILTIN_RS485)
-#pragma message "Using Tab5BuiltinRS485"
+#pragma message("Using Tab5BuiltinRS485")
 m5::unit::Tab5BuiltinRS485 unit;
 #else
 #error Please choose unit!
