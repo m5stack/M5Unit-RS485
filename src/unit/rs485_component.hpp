@@ -302,20 +302,17 @@ protected:
      */
     virtual std::unique_ptr<ISerial> make_serial(AdapterUART *ad);
 
-    // 3-way byteswap dispatch tags: integral/enum, floating-point, other (aggregate).
-    struct byteswap_int_tag {
-    };
-    struct byteswap_float_tag {
+    // 2-way byteswap dispatch tags: types m5::stl::byteswap_value accepts, and other (aggregate).
+    struct byteswap_value_tag {
     };
     struct byteswap_none_tag {
     };
 
     template <typename T>
     struct byteswap_tag_of {
-        using type =
-            typename std::conditional<std::is_integral<T>::value || std::is_enum<T>::value, byteswap_int_tag,
-                                      typename std::conditional<std::is_floating_point<T>::value, byteswap_float_tag,
-                                                                byteswap_none_tag>::type>::type;
+        using type = typename std::conditional<std::is_integral<T>::value || std::is_enum<T>::value ||
+                                                   std::is_floating_point<T>::value,
+                                               byteswap_value_tag, byteswap_none_tag>::type;
     };
 
     template <typename T>
@@ -324,28 +321,15 @@ protected:
         return byteswap_if_needed_impl(v, typename byteswap_tag_of<T>::type{});
     }
 
-    // Integral / enum: delegated to m5::stl::byteswap.
+    // Integral / enum / floating-point: delegated to m5::stl::byteswap_value.
     template <typename T>
-    static T byteswap_if_needed_impl(T v, byteswap_int_tag)
+    static T byteswap_if_needed_impl(T v, byteswap_value_tag)
     {
-        return m5::stl::byteswap(v);
-    }
-
-    // Floating-point: bit-cast to same-size unsigned integer, byteswap, bit-cast back.
-    template <typename T>
-    static T byteswap_if_needed_impl(T v, byteswap_float_tag)
-    {
-        static_assert(sizeof(T) == 4 || sizeof(T) == 8,
-                      "byteswap_if_needed: only 32-bit / 64-bit floating-point supported");
-        typename std::conditional<sizeof(T) == 4, uint32_t, uint64_t>::type u{};
-        std::memcpy(&u, &v, sizeof(T));
-        u = m5::stl::byteswap(u);
-        T out{};
-        std::memcpy(&out, &u, sizeof(T));
-        return out;
+        return m5::stl::byteswap_value(v);
     }
 
     // Aggregate / struct: byte-reverse of the whole object is not meaningful; return as-is.
+    // m5::stl::byteswap_value deletes these, so the dispatch must keep them out of it.
     template <typename T>
     static T byteswap_if_needed_impl(T v, byteswap_none_tag)
     {

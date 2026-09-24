@@ -153,8 +153,8 @@ bool RS485Component::begin()
     }
 
     if (_cfg.flushRX) {
-        const uint32_t start = m5::utility::millis();
-        while (m5::utility::millis() - start < 100) {
+        const auto start = m5::utility::millis();
+        while (!m5::utility::hasElapsed(start, 100)) {
             ad->flushRX();
             m5::utility::delay(1);
         }
