@@ -8,6 +8,7 @@
   @brief SIT3088 unit for M5UnitUnified
  */
 #include "unit_SIT3088.hpp"
+#include "rs485_idf_serial.hpp"
 #include <M5Utility.hpp>
 
 #if defined(ESP_PLATFORM)
@@ -62,6 +63,14 @@ struct DirControlledSerial final : public RS485Component::ISerial {
     {
         return _hs->readBytes(b, n);
     }
+    size_t readBytes(uint8_t *b, const size_t n, const uint32_t timeout_ms) override
+    {
+        const auto previous = _hs->getTimeout();
+        _hs->setTimeout(timeout_ms);
+        const size_t got = _hs->readBytes(b, n);
+        _hs->setTimeout(previous);
+        return got;
+    }
     inline void flush() override
     {
         _hs->flush();
@@ -98,6 +107,37 @@ struct DirControlledSerial final : public RS485Component::ISerial {
     UnitSIT3088 *_unit{};
 };
 #endif  // ARDUINO
+
+#if !defined(ARDUINO) && defined(ESP_PLATFORM)
+//
+// ESP-IDF counterpart of DirControlledSerial: IDFSerial plus the DIR pin handling. Only write()
+// differs, so the read side is inherited as-is.
+//
+struct DirControlledIDFSerial final : public IDFSerial {
+    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : IDFSerial(port), _unit(unit)
+    {
+    }
+
+    size_t write(const uint8_t *b, const size_t n) override
+    {
+        if (b == nullptr || n == 0) {
+            return 0;
+        }
+        _unit->set_transmit(true);
+        const size_t written = IDFSerial::write(b, n);
+        IDFSerial::flush();  // block until TX complete before releasing DIR
+        _unit->set_transmit(false);
+        return written;
+    }
+    size_t write(uint8_t b) override
+    {
+        return write(&b, 1);
+    }
+
+protected:
+    UnitSIT3088 *_unit{};
+};
+#endif  // !ARDUINO && ESP_PLATFORM
 
 // class UnitSIT3088
 const char UnitSIT3088::name[] = "UnitSIT3088";
@@ -155,9 +195,11 @@ std::unique_ptr<UnitSIT3088::ISerial> UnitSIT3088::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)
     return std::unique_ptr<ISerial>(new DirControlledSerial(ad->impl()->getSerial(), this));
+#elif defined(ESP_PLATFORM)
+    return std::unique_ptr<ISerial>(new DirControlledIDFSerial(uart_port_of(ad), this));
 #else
     (void)ad;
-    M5_LIB_LOGE("UnitSIT3088::make_serial(): non-Arduino frameworks are not yet supported");
+    M5_LIB_LOGE("UnitSIT3088::make_serial(): this framework is not supported");
     return std::unique_ptr<ISerial>();
 #endif
 }

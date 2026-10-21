@@ -45,6 +45,12 @@ public:
         virtual int read()                                         = 0;
         virtual size_t read(uint8_t *buf, const size_t len)        = 0;
         virtual size_t readBytes(uint8_t *buf, const size_t len)   = 0;
+        /*
+          Read with an explicit timeout instead of the backend's sticky timeout state. Required by
+          the ESP-IDF backend, where uart_read_bytes() takes ticks_to_wait as an argument and there
+          is no HardwareSerial object holding a timeout to inherit.
+        */
+        virtual size_t readBytes(uint8_t *buf, const size_t len, const uint32_t timeout_ms) = 0;
         virtual void flush()                                       = 0;
         virtual void flush(const bool txOnly)                      = 0;
         virtual size_t write(const uint8_t *buf, const size_t len) = 0;
@@ -174,6 +180,30 @@ public:
     inline size_t readBytes(char *buffer, const size_t length)
     {
         return readBytes(reinterpret_cast<uint8_t *>(buffer), length);
+    }
+    /*!
+      @brief Reads bytes with an explicit timeout
+      @param buffer Destination buffer
+      @param length Number of bytes to read
+      @param timeout_ms Maximum time to wait for the requested bytes
+      @return Number of bytes actually read
+      @note Prefer this over the two-argument form: it does not depend on the backend's timeout
+      state, which is only reachable through framework-specific API.
+     */
+    inline size_t readBytes(uint8_t *buffer, const size_t length, const uint32_t timeout_ms)
+    {
+        return _serial->readBytes(buffer, length, timeout_ms);
+    }
+    /*!
+      @brief Reads bytes with an explicit timeout
+      @param buffer Destination buffer
+      @param length Number of bytes to read
+      @param timeout_ms Maximum time to wait for the requested bytes
+      @return Number of bytes actually read
+     */
+    inline size_t readBytes(char *buffer, const size_t length, const uint32_t timeout_ms)
+    {
+        return readBytes(reinterpret_cast<uint8_t *>(buffer), length, timeout_ms);
     }
     /*!
       @brief Flushes the serial port

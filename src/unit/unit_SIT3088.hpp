@@ -105,9 +105,10 @@ private:
     config_t _sit_cfg{};
     int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
 
-#if defined(ARDUINO)
-    friend struct DirControlledSerial;  // internal decorator needs set_transmit() access
-#endif
+    // Internal ISerial decorators need set_transmit() access. Declared unconditionally: a friend
+    // declaration of a type that is never defined on this framework is harmless.
+    friend struct DirControlledSerial;     // Arduino
+    friend struct DirControlledIDFSerial;  // ESP-IDF native
 };
 
 }  // namespace unit

@@ -10,6 +10,7 @@
 #include "rs485_component.hpp"
 #include <cstring>
 #include <M5Utility.hpp>
+#include "rs485_idf_serial.hpp"
 
 using namespace m5::utility::mmh3;
 using namespace m5::unit::types;
@@ -43,6 +44,10 @@ struct NullSerial final : public RS485Component::ISerial {
         return 0;
     }
     inline size_t readBytes(uint8_t *, const size_t) override
+    {
+        return 0;
+    }
+    inline size_t readBytes(uint8_t *, const size_t, const uint32_t) override
     {
         return 0;
     }
@@ -98,6 +103,16 @@ struct UUSerial final : public RS485Component::ISerial {
     {
         return _hs->readBytes(b, n);
     }
+    size_t readBytes(uint8_t *b, const size_t n, const uint32_t timeout_ms) override
+    {
+        // HardwareSerial keeps the timeout as object state, so restore it to leave the caller's
+        // setTimeout() untouched.
+        const auto previous = _hs->getTimeout();
+        _hs->setTimeout(timeout_ms);
+        const size_t got = _hs->readBytes(b, n);
+        _hs->setTimeout(previous);
+        return got;
+    }
     inline void flush() override
     {
         _hs->flush();
@@ -122,6 +137,7 @@ struct UUSerial final : public RS485Component::ISerial {
 };
 #endif  // ARDUINO
 
+
 // class RS485Component
 RS485Component::RS485Component(const uint8_t addr) : Component(addr)
 {
@@ -132,21 +148,28 @@ std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART
 {
 #if defined(ARDUINO)
     return std::unique_ptr<ISerial>(new UUSerial(ad->impl()->getSerial()));
+#elif defined(ESP_PLATFORM)
+    return std::unique_ptr<ISerial>(new IDFSerial(uart_port_of(ad)));
 #else
     (void)ad;
-    // ESP-IDF native support is planned; see #11.
     return std::unique_ptr<ISerial>(new NullSerial);
 #endif
 }
 
 bool RS485Component::begin()
 {
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(ESP_PLATFORM)
     auto ad = asAdapter<AdapterUART>(Adapter::Type::UART);
-    if (!ad || !ad->impl()->getSerial()) {
+    if (!ad) {
         M5_LIB_LOGE("Illegal adapter");
         return false;
     }
+#if defined(ARDUINO)
+    if (!ad->impl()->getSerial()) {
+        M5_LIB_LOGE("Illegal adapter");
+        return false;
+    }
+#endif
     _serial = make_serial(ad);
     if (!_serial) {
         return false;
@@ -161,7 +184,7 @@ bool RS485Component::begin()
     }
     return true;
 #else
-    M5_LIB_LOGE("RS485Component::begin(): non-Arduino frameworks are not yet supported");
+    M5_LIB_LOGE("RS485Component::begin(): this framework is not supported");
     return false;
 #endif
 }
