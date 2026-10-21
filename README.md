@@ -51,6 +51,30 @@ You must choose a define symbol for the unit you will use.
 #endif
 ```
 
+### For ESP-IDF settings
+The examples also build with `idf.py`. The unit is selected from menuconfig instead of a define symbol.
+
+```sh
+cd examples/UnitUnified/Transceiver
+idf.py set-target <esp32|esp32s3|esp32c3|esp32c5|esp32c6|esp32h2|esp32p4>
+idf.py menuconfig    # M5Unit-RS485 Transceiver example -> Target unit / board
+idf.py build
+idf.py -p <PORT> flash monitor
+```
+
+Which choices appear in menuconfig depends on the target, because each variant needs a board that
+physically has that connector:
+
+| Choice | Targets where it appears |
+|---|---|
+| UnitRS485 (U034, GROVE) | all targets |
+| HatRS485 (U067, Hat header) | esp32 / esp32s3 / esp32c6 |
+| Atomic RS485 Base (A131) | esp32 / esp32s3 |
+| Tab5 built-in RS-485 (SIT3088) | esp32p4 |
+
+Changing a setting has no effect while a generated `sdkconfig` exists; remove it and re-run
+`idf.py set-target <target>` to pick up `sdkconfig.defaults` again.
+
 
 ## Related Link
 - [Unit RS485 & Datasheet](https://docs.m5stack.com/en/unit/rs485)
