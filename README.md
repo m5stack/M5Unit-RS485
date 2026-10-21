@@ -29,6 +29,14 @@ See also https://docs.m5stack.com/en/arduino/projects/atomic/atomic_rs485_232_ba
 ## Examples
 See also [examples/UnitUnified](examples/UnitUnified)
 
+| Example | Description | Frameworks |
+|---|---|---|
+| Transceiver | Sends and receives RS-485 messages using the unit's own API | Arduino / ESP-IDF |
+| StreamAdapter | Wraps the unit in `UnitSP485Stream` to get Arduino `Stream` / `Print` (`print` / `printf` / `readStringUntil`), and to hand the link to any library taking a `Stream&` | Arduino only |
+
+`UnitSP485Stream` derives from Arduino's `Stream`, which does not exist in ESP-IDF native builds.
+Code that must build on both frameworks should call the unit directly, as Transceiver does.
+
 ### For Arduino IDE settings
 You must choose a define symbol for the unit you will use.
 (Rewrite source or specify with compile options)

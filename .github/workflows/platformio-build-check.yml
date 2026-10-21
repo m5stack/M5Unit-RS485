@@ -135,6 +135,14 @@ jobs:
             board: Tab5
             framework: Arduino
             espressif32: latest
+          # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
+          # Representative board only -- the Stream usage is variant-independent and the wiring
+          # paths are already covered by Transceiver above.
+          - example: StreamAdapter
+            unit: 'UnitRS485'
+            board: Core
+            framework: Arduino
+            espressif32: latest
 
     steps:
       - name: Checkout
