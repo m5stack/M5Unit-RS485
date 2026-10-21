@@ -1,0 +1,29 @@
+# "Target unit / board" selection for the Transceiver example (ESP-IDF).
+# rsource'd from Transceiver/main/Kconfig.projbuild. The chosen CONFIG_EXAMPLE_USING_* is mapped
+# to the source-level USING_* macro in common/variant.cmake (shared with the Arduino build).
+menu "M5Unit-RS485 Transceiver example"
+
+choice EXAMPLE_RS485_VARIANT
+    prompt "Target unit / board"
+    default EXAMPLE_USING_UNIT_RS485
+    help
+        Which RS-485 transceiver this example drives.
+
+    config EXAMPLE_USING_UNIT_RS485
+        bool "UnitRS485 (U034, SP485EEN / GROVE)"
+    config EXAMPLE_USING_HAT_RS485
+        bool "HatRS485 (U067, SP485EEN / Hat header)"
+        # Boards with a Hat header: StickC / StickCPlus / StickCPlus2 / CoreInk (esp32),
+        # StickS3 (esp32s3), NessoN1 (esp32c6)
+        depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3 || IDF_TARGET_ESP32C6
+    config EXAMPLE_USING_ATOMIC_RS485_BASE
+        bool "Atomic RS485 Base (A131, SP485EEN / Atom base)"
+        # Atom (esp32), AtomS3 / AtomS3R (esp32s3)
+        depends on IDF_TARGET_ESP32 || IDF_TARGET_ESP32S3
+    config EXAMPLE_USING_TAB5_BUILTIN_RS485
+        bool "Tab5 built-in RS-485 (SIT3088)"
+        # Built into M5Tab5 only
+        depends on IDF_TARGET_ESP32P4
+endchoice
+
+endmenu

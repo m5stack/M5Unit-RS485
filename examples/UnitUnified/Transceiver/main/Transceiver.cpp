@@ -50,7 +50,6 @@ m5::unit::Tab5BuiltinRS485 unit;
 #else
 #error Please choose unit!
 #endif
-m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
 
 /*
  **** Caution ****
@@ -112,16 +111,17 @@ size_t write_float_bytes(const float v, const bool little_endian)
     return unit.write(tmp, sizeof(tmp));
 }
 
-size_t write_chunked(Stream& s, const uint8_t* data, const size_t len, const uint32_t timeout_ms = 200)
+size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const size_t len,
+                     const uint32_t timeout_ms = 200)
 {
     if (data == nullptr || len == 0) {
         return 0;
     }
 
-    const auto timeout_at = m5::utility::millis() + timeout_ms;
+    const auto start = m5::utility::millis();
     size_t total{};
 
-    while (total < len && m5::utility::millis() <= timeout_at) {
+    while (total < len && !m5::utility::hasElapsed(start, timeout_ms)) {
         const int available = s.availableForWrite();
         if (available <= 0) {
             m5::utility::delay(1);
@@ -317,7 +317,13 @@ void setup()
 
     // Bump receiver RX buffer to accommodate this demo's ~640-byte message bursts.
     // Must be set BEFORE Serial.begin() (called inside the wiring helper below).
+    //
+    // ESP-IDF native has no equivalent: the UART port is installed by the wiring helper with a
+    // fixed 256-byte RX ring, and addUART() takes no buffer-size argument. Long bursts can be
+    // truncated there until that argument exists upstream.
+#if defined(ARDUINO)
     m5::unit::wiring::defaultUartSerial().setRxBufferSize(2048);
+#endif
 
 #if defined(USING_HAT_RS485)
     const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
@@ -360,7 +366,7 @@ void loop()
             const char* msg = message_table[step];
             M5.Log.printf("%s\n", msg);
             const size_t len = std::strlen(msg);
-            sent             = write_chunked(stream, reinterpret_cast<const uint8_t*>(msg), len);
+            sent             = write_chunked(unit, reinterpret_cast<const uint8_t*>(msg), len);
             if (sent != len) {
                 M5_LOGW("TX timeout: %u/%u bytes", static_cast<uint32_t>(sent), static_cast<uint32_t>(len));
             }
@@ -380,11 +386,15 @@ void loop()
     }
 
     // Receive
-    if (stream.available()) {
+    if (unit.available()) {
         receive_bytes.clear();
-        receive_bytes.reserve(static_cast<size_t>(stream.available()));
-        while (stream.available()) {
-            receive_bytes.push_back(static_cast<uint8_t>(stream.read()));
+        receive_bytes.reserve(static_cast<size_t>(unit.available()));
+        while (unit.available() > 0) {
+            const int value = unit.read();
+            if (value < 0) {
+                break;
+            }
+            receive_bytes.push_back(static_cast<uint8_t>(value));
         }
 
         receive_batch_total = receive_bytes.size();
@@ -392,3 +402,37 @@ void loop()
     }
     log_view.render();
 }
+
+#if !defined(ARDUINO)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <esp_timer.h>
+
+#if CONFIG_FREERTOS_UNICORE
+// Single-core SoCs run loop() on the only CPU, so the IDLE task never gets scheduled while loop()
+// busy-waits. Yielding every iteration would break the RS-485 turnaround timing, so hand the CPU
+// over briefly at a long interval instead: just often enough for IDLE to feed the task watchdog.
+static inline void feedIdleTaskPeriodically(void)
+{
+    constexpr uint32_t FEED_INTERVAL_MS{2000};
+    constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
+    static uint32_t s_last_feed_ms{};
+    const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
+    if (now_ms - s_last_feed_ms >= FEED_INTERVAL_MS) {
+        s_last_feed_ms = now_ms;
+        vTaskDelay(FEED_SLEEP_TICKS);
+    }
+}
+#endif
+
+extern "C" void app_main(void)
+{
+    setup();
+    for (;;) {
+#if CONFIG_FREERTOS_UNICORE
+        feedIdleTaskPeriodically();
+#endif
+        loop();
+    }
+}
+#endif
