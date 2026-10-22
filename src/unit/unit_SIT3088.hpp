@@ -12,8 +12,8 @@
            Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34).
   @note The public API is framework-agnostic. Framework-specific bits are confined to the
         translation unit. Direction-pin control requires ESP_PLATFORM (uses driver/gpio.h) —
-        this covers Arduino-ESP32 today and will cover ESP-IDF native support (planned)
-        equally. Non-ESP targets get a no-op set_transmit() and skip the DIR toggle.
+        this covers Arduino-ESP32 and ESP-IDF native equally. Non-ESP targets get a no-op
+        set_transmit() and skip the DIR toggle.
  */
 #ifndef M5_UNIT_RS485_UNIT_SIT3088_HPP
 #define M5_UNIT_RS485_UNIT_SIT3088_HPP

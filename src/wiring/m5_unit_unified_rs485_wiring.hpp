@@ -181,17 +181,35 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
 #else   // ESP-IDF native
 /*!
   @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485 (ESP-IDF native)
-  @note ESP-IDF native support for UnitSIT3088 is not yet implemented; this helper returns false.
+  @param units UnitUnified manager
+  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
+  @param baud Baud rate (default 115200)
+  @param config UartConfig (default `UartConfig::Default` = 8N1)
+  @return True if successful; false on unsupported board / UART install failure
+  @note The UART port is installed via the M5UnitUnified native helper, mirroring m5::unit::wiring::addUART.
 */
 inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud = 115200,
                                     const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default)
 {
-    (void)units;
-    (void)unit;
-    (void)baud;
-    (void)config;
-    M5_LIB_LOGE("wiring(ESP-IDF): addTab5BuiltinRS485UART is not yet supported");
-    return false;
+    const auto p = tab5BuiltinRS485Pins();
+    if (p.rx < 0 || p.tx < 0 || p.dir < 0) {
+        M5_LIB_LOGE("wiring: addTab5BuiltinRS485UART unsupported board=0x%02x", static_cast<int>(M5.getBoard()));
+        return false;
+    }
+    M5_LIB_LOGI("wiring(ESP-IDF): addTab5BuiltinRS485UART board=0x%02x rx=%d tx=%d dir=%d baud=%u",
+                static_cast<int>(M5.getBoard()), static_cast<int>(p.rx), static_cast<int>(p.tx),
+                static_cast<int>(p.dir), static_cast<unsigned>(baud));
+
+    auto cfg    = unit.config();
+    cfg.dir_pin = p.dir;
+    unit.config(cfg);
+
+    auto port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), static_cast<gpio_num_t>(p.rx),
+                                                 static_cast<gpio_num_t>(p.tx), baud, config);
+    if (port == UART_NUM_MAX) {
+        return false;
+    }
+    return units.add(unit, port);
 }
 #endif  // ARDUINO
 ///@}
