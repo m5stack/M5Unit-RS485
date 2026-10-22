@@ -116,13 +116,19 @@ struct IDFSerial : public RS485Component::ISerial {
     }
 
 protected:
-    // pdMS_TO_TICKS() truncates towards zero, so with the ESP-IDF default CONFIG_FREERTOS_HZ=100
-    // every timeout below 10 ms would become 0 ticks, i.e. a non-blocking read. Keep at least one
-    // tick so a caller asking for any wait at all gets one.
+    // Milliseconds to ticks, avoiding both ends pdMS_TO_TICKS() gets wrong for a caller-supplied
+    // timeout. It truncates towards zero, so with the ESP-IDF default CONFIG_FREERTOS_HZ=100 any
+    // timeout below 10 ms would become a non-blocking read; and it multiplies in 32 bits, so a
+    // timeout above 2^32 / CONFIG_FREERTOS_HZ milliseconds would wrap to an unrelated, usually much
+    // shorter, wait. Saturate just below portMAX_DELAY, which means "block forever" and must not be
+    // reachable from a timeout argument.
     static TickType_t ticks_of(const uint32_t timeout_ms)
     {
-        const TickType_t ticks = pdMS_TO_TICKS(timeout_ms);
-        return (ticks == 0 && timeout_ms > 0) ? 1 : ticks;
+        const uint64_t ticks = (static_cast<uint64_t>(timeout_ms) * configTICK_RATE_HZ) / 1000U;
+        if (ticks == 0) {
+            return (timeout_ms > 0) ? 1 : 0;
+        }
+        return (ticks >= portMAX_DELAY) ? (portMAX_DELAY - 1) : static_cast<TickType_t>(ticks);
     }
 
     size_t read_with_wait(uint8_t *b, const size_t n, const TickType_t ticks)
