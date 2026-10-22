@@ -79,11 +79,11 @@ struct IDFSerial : public RS485Component::ISerial {
     }
     size_t readBytes(uint8_t *b, const size_t n) override
     {
-        return read_with_wait(b, n, pdMS_TO_TICKS(_timeout_ms));
+        return read_with_wait(b, n, ticks_of(_timeout_ms));
     }
     size_t readBytes(uint8_t *b, const size_t n, const uint32_t timeout_ms) override
     {
-        return read_with_wait(b, n, pdMS_TO_TICKS(timeout_ms));
+        return read_with_wait(b, n, ticks_of(timeout_ms));
     }
     void flush() override
     {
@@ -116,6 +116,15 @@ struct IDFSerial : public RS485Component::ISerial {
     }
 
 protected:
+    // pdMS_TO_TICKS() truncates towards zero, so with the ESP-IDF default CONFIG_FREERTOS_HZ=100
+    // every timeout below 10 ms would become 0 ticks, i.e. a non-blocking read. Keep at least one
+    // tick so a caller asking for any wait at all gets one.
+    static TickType_t ticks_of(const uint32_t timeout_ms)
+    {
+        const TickType_t ticks = pdMS_TO_TICKS(timeout_ms);
+        return (ticks == 0 && timeout_ms > 0) ? 1 : ticks;
+    }
+
     size_t read_with_wait(uint8_t *b, const size_t n, const TickType_t ticks)
     {
         if (b == nullptr || n == 0) {
@@ -136,6 +145,9 @@ protected:
 
     uart_port_t _port{UART_NUM_1};
     int _peeked{-1};
+    // Timeout of the two-argument readBytes() (and therefore of readValue<T>()). Fixed at the
+    // Arduino Stream default: this backend has no HardwareSerial object whose setTimeout() could
+    // be inherited. Pass an explicit timeout to the three-argument readBytes() to override it.
     uint32_t _timeout_ms{1000};
 };
 
