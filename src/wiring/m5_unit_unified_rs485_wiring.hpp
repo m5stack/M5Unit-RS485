@@ -56,7 +56,7 @@ inline AtomicBasePinPair atomicBaseUartPins()
         case m5::board_t::board_M5AtomS3:
         case m5::board_t::board_M5AtomS3Lite:
         case m5::board_t::board_M5AtomS3R:
-        case m5::board_t::board_M5AtomEchoS3R:
+        case m5::board_t::board_M5AtomVoiceS3R:
         case m5::board_t::board_M5AtomS3RCam:
         case m5::board_t::board_M5AtomS3RExt:
             return {5, 6};
