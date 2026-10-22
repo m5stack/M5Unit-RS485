@@ -148,7 +148,14 @@ std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART
 #if defined(ARDUINO)
     return std::unique_ptr<ISerial>(new UUSerial(ad->impl()->getSerial()));
 #elif defined(ESP_PLATFORM)
-    return std::unique_ptr<ISerial>(new IDFSerial(uart_port_of(ad)));
+    // AdapterUART::uartPort() reports UART_NUM_MAX for an adapter that was not built from a port
+    // (i.e. one holding a HardwareSerial), which this backend cannot drive.
+    const auto port = ad->uartPort();
+    if (port == UART_NUM_MAX) {
+        M5_LIB_LOGE("Illegal adapter: not an ESP-IDF UART port");
+        return std::unique_ptr<ISerial>();
+    }
+    return std::unique_ptr<ISerial>(new IDFSerial(port));
 #else
     (void)ad;
     return std::unique_ptr<ISerial>(new NullSerial);

@@ -151,18 +151,6 @@ protected:
     uint32_t _timeout_ms{1000};
 };
 
-//
-// Recover the uart_port_t the adapter was built on.
-//
-// AdapterUART exposes the port only through AdapterUART::ESPIDFImpl::uartPort(), and ESP-IDF builds
-// with -fno-rtti so dynamic_cast is unavailable. On this platform ESPIDFImpl is the only UARTImpl
-// AdapterUART ever installs (SerialImpl exists under ARDUINO only), so the downcast is sound.
-//
-inline uart_port_t uart_port_of(AdapterUART *ad)
-{
-    return static_cast<AdapterUART::ESPIDFImpl *>(ad->impl())->uartPort();
-}
-
 }  // namespace unit
 }  // namespace m5
 
