@@ -137,7 +137,6 @@ struct UUSerial final : public RS485Component::ISerial {
 };
 #endif  // ARDUINO
 
-
 // class RS485Component
 RS485Component::RS485Component(const uint8_t addr) : Component(addr)
 {

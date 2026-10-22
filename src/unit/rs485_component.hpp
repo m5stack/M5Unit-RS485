@@ -38,34 +38,34 @@ class RS485Component : public Component {
 public:
     ///@cond
     struct ISerial {
-        virtual ~ISerial()                                         = default;
-        virtual int available()                                    = 0;
-        virtual int availableForWrite()                            = 0;
-        virtual int peek()                                         = 0;
-        virtual int read()                                         = 0;
-        virtual size_t read(uint8_t *buf, const size_t len)        = 0;
-        virtual size_t readBytes(uint8_t *buf, const size_t len)   = 0;
+        virtual ~ISerial()                                       = default;
+        virtual int available()                                  = 0;
+        virtual int availableForWrite()                          = 0;
+        virtual int peek()                                       = 0;
+        virtual int read()                                       = 0;
+        virtual size_t read(uint8_t *buf, const size_t len)      = 0;
+        virtual size_t readBytes(uint8_t *buf, const size_t len) = 0;
         /*
           Read with an explicit timeout instead of the backend's sticky timeout state. Required by
           the ESP-IDF backend, where uart_read_bytes() takes ticks_to_wait as an argument and there
           is no HardwareSerial object holding a timeout to inherit.
         */
         virtual size_t readBytes(uint8_t *buf, const size_t len, const uint32_t timeout_ms) = 0;
-        virtual void flush()                                       = 0;
-        virtual void flush(const bool txOnly)                      = 0;
-        virtual size_t write(const uint8_t *buf, const size_t len) = 0;
-        virtual size_t write(uint8_t b)                            = 0;
-        virtual uint32_t baudRate() const                          = 0;
+        virtual void flush()                                                                = 0;
+        virtual void flush(const bool txOnly)                                               = 0;
+        virtual size_t write(const uint8_t *buf, const size_t len)                          = 0;
+        virtual size_t write(uint8_t b)                                                     = 0;
+        virtual uint32_t baudRate() const                                                   = 0;
     };
     ///@endcond
 
     //! @brief Destructor
     virtual ~RS485Component() = default;
 
-    RS485Component(const RS485Component&)                = delete;
-    RS485Component& operator=(const RS485Component&)     = delete;
-    RS485Component(RS485Component&&) noexcept            = default;
-    RS485Component& operator=(RS485Component&&) noexcept = default;
+    RS485Component(const RS485Component &) = delete;
+    RS485Component &operator=(const RS485Component &) = delete;
+    RS485Component(RS485Component &&) noexcept        = default;
+    RS485Component &operator=(RS485Component &&) noexcept = default;
 
     /*!
       @brief Begin using the registered UART adapter
