@@ -10,6 +10,7 @@
 #include "rs485_component.hpp"
 #include <cstring>
 #include <M5Utility.hpp>
+#include "rs485_hs_serial.hpp"
 #include "rs485_idf_serial.hpp"
 
 namespace m5 {
@@ -69,72 +70,6 @@ struct NullSerial final : public RS485Component::ISerial {
     }
 };
 
-#if defined(ARDUINO)
-//
-// Arduino HardwareSerial-backed ISerial. Direct pass-through.
-//
-struct UUSerial final : public RS485Component::ISerial {
-    explicit UUSerial(HardwareSerial *hs) : _hs(hs)
-    {
-    }
-    inline int available() override
-    {
-        return _hs->available();
-    }
-    inline int availableForWrite() override
-    {
-        return _hs->availableForWrite();
-    }
-    inline int peek() override
-    {
-        return _hs->peek();
-    }
-    inline int read() override
-    {
-        return _hs->read();
-    }
-    inline size_t read(uint8_t *b, const size_t n) override
-    {
-        return _hs->read(b, n);
-    }
-    inline size_t readBytes(uint8_t *b, const size_t n) override
-    {
-        return _hs->readBytes(b, n);
-    }
-    size_t readBytes(uint8_t *b, const size_t n, const uint32_t timeout_ms) override
-    {
-        // HardwareSerial keeps the timeout as object state, so restore it to leave the caller's
-        // setTimeout() untouched.
-        const auto previous = _hs->getTimeout();
-        _hs->setTimeout(timeout_ms);
-        const size_t got = _hs->readBytes(b, n);
-        _hs->setTimeout(previous);
-        return got;
-    }
-    inline void flush() override
-    {
-        _hs->flush();
-    }
-    inline void flush(const bool txOnly) override
-    {
-        _hs->flush(txOnly);
-    }
-    inline size_t write(const uint8_t *b, const size_t n) override
-    {
-        return _hs->write(b, n);
-    }
-    inline size_t write(uint8_t b) override
-    {
-        return _hs->write(b);
-    }
-    inline uint32_t baudRate() const override
-    {
-        return _hs->baudRate();
-    }
-    HardwareSerial *_hs{};
-};
-#endif  // ARDUINO
-
 }  // namespace
 
 // class RS485Component
@@ -146,7 +81,7 @@ RS485Component::RS485Component(const uint8_t addr) : Component(addr)
 std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)
-    return std::unique_ptr<ISerial>(new UUSerial(ad->impl()->getSerial()));
+    return std::unique_ptr<ISerial>(new rs485::detail::HSSerial(ad->impl()->getSerial()));
 #elif defined(ESP_PLATFORM)
     // AdapterUART::uartPort() reports UART_NUM_MAX for an adapter that was not built from a port
     // (i.e. one holding a HardwareSerial), which this backend cannot drive.
@@ -155,7 +90,7 @@ std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART
         M5_LIB_LOGE("Illegal adapter: no installed ESP-IDF UART port");
         return std::unique_ptr<ISerial>();
     }
-    return std::unique_ptr<ISerial>(new IDFSerial(port));
+    return std::unique_ptr<ISerial>(new rs485::detail::IDFSerial(port));
 #else
     (void)ad;
     return std::unique_ptr<ISerial>(new NullSerial);

@@ -8,15 +8,12 @@
   @brief SIT3088 unit for M5UnitUnified
  */
 #include "unit_SIT3088.hpp"
+#include "rs485_hs_serial.hpp"
 #include "rs485_idf_serial.hpp"
 #include <M5Utility.hpp>
 
 #if defined(ESP_PLATFORM)
 #include <driver/gpio.h>  // gpio_config / gpio_set_level / gpio_num_t
-#endif
-
-#if defined(ARDUINO)
-#include <HardwareSerial.h>  // decorator wraps HardwareSerial; no Arduino.h dependency needed
 #endif
 
 using namespace m5::utility::mmh3;
@@ -27,84 +24,35 @@ namespace unit {
 
 #if defined(ARDUINO)
 //
-// DIR-pin-controlled ISerial decorator for SIT3088.
-// Read side passes through to HardwareSerial. Write side calls the unit's protected
-// set_transmit() before the transfer, blocks on flush() to guarantee the last stop bit
-// is on the wire, then calls set_transmit(false) to re-enable the receiver.
+// DIR-pin-controlled ISerial decorator for SIT3088. Only the write side differs from the plain
+// HardwareSerial backend, so the read side is inherited as-is: set_transmit() is called before the
+// transfer, flush() blocks until the last stop bit is on the wire, then the receiver is re-enabled.
 // Timing per SIT3088E datasheet: driver disable tPHZ / tPLZ <= 85 ns and receiver enable
 // tRPZH / tRPZL <= 40 ns. DE and /RE are tied, so the 500 ns shutdown-exit path (tRPSH / tRPSL)
 // cannot be entered. The extra pin toggle therefore stays within the RS-485 turn-around budget.
 //
-struct DirControlledSerial final : public RS485Component::ISerial {
-    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : _hs(hs), _unit(unit)
+struct DirControlledSerial final : public rs485::detail::HSSerial {
+    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : rs485::detail::HSSerial(hs), _unit(unit)
     {
     }
 
-    inline int available() override
-    {
-        return _hs->available();
-    }
-    inline int availableForWrite() override
-    {
-        return _hs->availableForWrite();
-    }
-    inline int peek() override
-    {
-        return _hs->peek();
-    }
-    inline int read() override
-    {
-        return _hs->read();
-    }
-    inline size_t read(uint8_t *b, const size_t n) override
-    {
-        return _hs->read(b, n);
-    }
-    inline size_t readBytes(uint8_t *b, const size_t n) override
-    {
-        return _hs->readBytes(b, n);
-    }
-    size_t readBytes(uint8_t *b, const size_t n, const uint32_t timeout_ms) override
-    {
-        const auto previous = _hs->getTimeout();
-        _hs->setTimeout(timeout_ms);
-        const size_t got = _hs->readBytes(b, n);
-        _hs->setTimeout(previous);
-        return got;
-    }
-    inline void flush() override
-    {
-        _hs->flush();
-    }
-    inline void flush(const bool txOnly) override
-    {
-        _hs->flush(txOnly);
-    }
     size_t write(const uint8_t *b, const size_t n) override
     {
-        if (n == 0) {
+        if (b == nullptr || n == 0) {
             return 0;
         }
         _unit->set_transmit(true);
-        const size_t written = _hs->write(b, n);
-        _hs->flush();  // block until TX complete before releasing DIR
+        const size_t written = HSSerial::write(b, n);
+        HSSerial::flush();  // block until TX complete before releasing DIR
         _unit->set_transmit(false);
         return written;
     }
     size_t write(uint8_t b) override
     {
-        _unit->set_transmit(true);
-        const size_t written = _hs->write(b);
-        _hs->flush();
-        _unit->set_transmit(false);
-        return written;
-    }
-    inline uint32_t baudRate() const override
-    {
-        return _hs->baudRate();
+        return write(&b, 1);
     }
 
-    HardwareSerial *_hs{};
+protected:
     UnitSIT3088 *_unit{};
 };
 #endif  // ARDUINO
@@ -114,8 +62,8 @@ struct DirControlledSerial final : public RS485Component::ISerial {
 // ESP-IDF counterpart of DirControlledSerial: IDFSerial plus the DIR pin handling. Only write()
 // differs, so the read side is inherited as-is.
 //
-struct DirControlledIDFSerial final : public IDFSerial {
-    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : IDFSerial(port), _unit(unit)
+struct DirControlledIDFSerial final : public rs485::detail::IDFSerial {
+    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : rs485::detail::IDFSerial(port), _unit(unit)
     {
     }
 

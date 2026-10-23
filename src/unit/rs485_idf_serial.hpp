@@ -8,6 +8,7 @@
   @brief ESP-IDF UART-driver-backed RS485Component::ISerial (library-internal)
   @note Not part of the public API: this header is included by the library's translation units
         only, so that driver/uart.h never leaks into the framework-agnostic public headers.
+        The Arduino counterpart is rs485_hs_serial.hpp.
  */
 #ifndef M5_UNIT_RS485_RS485_IDF_SERIAL_HPP
 #define M5_UNIT_RS485_RS485_IDF_SERIAL_HPP
@@ -22,6 +23,8 @@
 
 namespace m5 {
 namespace unit {
+namespace rs485 {
+namespace detail {
 
 //
 // ESP-IDF UART-driver-backed ISerial.
@@ -157,6 +160,8 @@ protected:
     uint32_t _timeout_ms{1000};
 };
 
+}  // namespace detail
+}  // namespace rs485
 }  // namespace unit
 }  // namespace m5
 
