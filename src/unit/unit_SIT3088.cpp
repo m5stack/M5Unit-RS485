@@ -197,8 +197,8 @@ std::unique_ptr<UnitSIT3088::ISerial> UnitSIT3088::make_serial(AdapterUART *ad)
     return std::unique_ptr<ISerial>(new DirControlledSerial(ad->impl()->getSerial(), this));
 #elif defined(ESP_PLATFORM)
     const auto port = ad->uartPort();
-    if (port == UART_NUM_MAX) {
-        M5_LIB_LOGE("Illegal adapter: not an ESP-IDF UART port");
+    if (port == UART_NUM_MAX || !uart_is_driver_installed(port)) {
+        M5_LIB_LOGE("Illegal adapter: no installed ESP-IDF UART port");
         return std::unique_ptr<ISerial>();
     }
     return std::unique_ptr<ISerial>(new DirControlledIDFSerial(port, this));

@@ -12,11 +12,9 @@
 #include <M5Utility.hpp>
 #include "rs485_idf_serial.hpp"
 
-using namespace m5::utility::mmh3;
-using namespace m5::unit::types;
-
 namespace m5 {
 namespace unit {
+namespace {
 
 //
 // Null ISerial: used before begin() and on unsupported frameworks so that all Serial-compat
@@ -137,6 +135,8 @@ struct UUSerial final : public RS485Component::ISerial {
 };
 #endif  // ARDUINO
 
+}  // namespace
+
 // class RS485Component
 RS485Component::RS485Component(const uint8_t addr) : Component(addr)
 {
@@ -151,8 +151,8 @@ std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART
     // AdapterUART::uartPort() reports UART_NUM_MAX for an adapter that was not built from a port
     // (i.e. one holding a HardwareSerial), which this backend cannot drive.
     const auto port = ad->uartPort();
-    if (port == UART_NUM_MAX) {
-        M5_LIB_LOGE("Illegal adapter: not an ESP-IDF UART port");
+    if (port == UART_NUM_MAX || !uart_is_driver_installed(port)) {
+        M5_LIB_LOGE("Illegal adapter: no installed ESP-IDF UART port");
         return std::unique_ptr<ISerial>();
     }
     return std::unique_ptr<ISerial>(new IDFSerial(port));
