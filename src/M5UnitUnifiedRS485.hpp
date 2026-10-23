@@ -38,7 +38,7 @@ using UnitRS485 = m5::unit::UnitSP485;
  */
 using HatRS485 = m5::unit::UnitSP485;
 /*!
-  @brief AtomicRS485Base alias of UnitSP485 (A131; SP485EEN auto-direction)
+  @brief AtomicRS485Base alias of UnitSP485 (A131; SP3485EN, same auto-direction circuit)
  */
 using AtomicRS485Base = m5::unit::UnitSP485;
 /*!

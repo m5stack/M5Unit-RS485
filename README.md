@@ -24,9 +24,11 @@ Add **120Ω termination at both ends** of the RS485 bus to suppress reflections.
 **External products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors**, so add external termination when needed.  
 **M5Stack Tab5 built-in RS-485 provides a switchable 120Ω terminator via a physical switch on the back of the device**; enable it when Tab5 sits at either end of the bus.
 
-**Leaving the unit's TX pin unconnected blocks the whole bus.** On the SP485EEN products the driver
-is always enabled, so a floating TX reads as 0 and the unit keeps driving the line to mark. A unit
-plugged in with nothing on its GROVE side therefore stops every other node from transmitting.
+**Leaving the unit's TX pin unconnected blocks the whole bus.** On U034 / U067 / A131 the
+transceiver's DI is tied to GND and its DE / /RE are driven from TX through a transistor (see the
+Schematics on each SKU page), so the driver is enabled exactly while TX is low. A floating TX
+leaves the driver enabled and holds the line at that level, and a unit plugged in with nothing on
+its GROVE side then stops every other node from transmitting.
 
 See also https://docs.m5stack.com/en/arduino/projects/atomic/atomic_rs485_232_base
 
