@@ -24,6 +24,10 @@ Add **120Ω termination at both ends** of the RS485 bus to suppress reflections.
 **External products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors**, so add external termination when needed.  
 **M5Stack Tab5 built-in RS-485 provides a switchable 120Ω terminator via a physical switch on the back of the device**; enable it when Tab5 sits at either end of the bus.
 
+**Leaving the unit's TX pin unconnected blocks the whole bus.** On the SP485EEN products the driver
+is always enabled, so a floating TX reads as 0 and the unit keeps driving the line to mark. A unit
+plugged in with nothing on its GROVE side therefore stops every other node from transmitting.
+
 See also https://docs.m5stack.com/en/arduino/projects/atomic/atomic_rs485_232_base
 
 ## Examples
@@ -41,7 +45,7 @@ Code that must build on both frameworks should call the unit directly, as Transc
 You must choose a define symbol for the unit you will use.
 (Rewrite source or specify with compile options)
 
-- Transceiver
+- Transceiver / StreamAdapter (both carry the same block)
 ```cpp
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -60,6 +64,9 @@ You must choose a define symbol for the unit you will use.
 ```
 
 ### For ESP-IDF settings
+
+> **NOTE:** The ESP-IDF native build (`idf.py`) targets ESP-IDF **5.1 or later** (5.x and 6.x).
+
 The examples also build with `idf.py`. The unit is selected from menuconfig instead of a define symbol.
 
 ```sh
@@ -80,8 +87,14 @@ physically has that connector:
 | Atomic RS485 Base (A131) | esp32 / esp32s3 |
 | Tab5 built-in RS-485 (SIT3088) | esp32p4 |
 
-Changing a setting has no effect while a generated `sdkconfig` exists; remove it and re-run
-`idf.py set-target <target>` to pick up `sdkconfig.defaults` again.
+menuconfig writes to the generated `sdkconfig`, so a choice made there takes effect on the next
+build. Edits to `examples/UnitUnified/common/sdkconfig.defaults` do not: that file is only read
+when no `sdkconfig` exists yet, so delete `sdkconfig` and re-run `idf.py set-target <target>` to
+pick them up.
+
+The chosen `CONFIG_EXAMPLE_USING_*` is mapped to the source-level `USING_*` macro by
+`examples/UnitUnified/common/variant.cmake`, so no `#define` has to be edited for the ESP-IDF
+build.
 
 
 ## Related Link
@@ -90,7 +103,7 @@ Changing a setting has no effect while a generated `sdkconfig` exists; remove it
 - [Atomic RS485 Base & Datasheet](https://docs.m5stack.com/en/atom/Atomic%20RS485%20Base)
 - [M5Stack Tab5 & Datasheet](https://docs.m5stack.com/en/core/Tab5)
 
-## Required Libraries:
+## Required Libraries
 - [M5UnitUnified](https://github.com/m5stack/M5UnitUnified)
 - [M5Utility](https://github.com/m5stack/M5Utility)
 - [M5HAL](https://github.com/m5stack/M5HAL)
