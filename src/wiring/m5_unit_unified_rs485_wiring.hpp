@@ -72,11 +72,12 @@ inline AtomicBasePinPair atomicBaseUartPins()
   @param unit UnitSP485 / AtomicRS485Base instance
   @param baud Baud rate (default 115200)
   @param config Serial config (default `SERIAL_8N1`)
-  @return True if successful; false on unsupported board
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
   @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
 */
 inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_t baud = 115200,
-                              const uint32_t config = SERIAL_8N1)
+                              const uint32_t config = SERIAL_8N1, const size_t rx_buffer_size = 0)
 {
     const auto p = atomicBaseUartPins();
     if (p.rx < 0 || p.tx < 0) {
@@ -87,9 +88,8 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
                 static_cast<int>(p.rx), static_cast<int>(p.tx), static_cast<unsigned long>(baud));
 
     HardwareSerial& serial = m5::unit::wiring::defaultUartSerial();
-    serial.end();
-    serial.begin(baud, config, p.rx, p.tx);
-    return units.add(unit, serial);
+    return m5::unit::wiring::beginUartSerial(serial, baud, config, p.rx, p.tx, rx_buffer_size) &&
+           units.add(unit, serial);
 }
 #else   // ESP-IDF native
 /*!
@@ -98,11 +98,13 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
   @param unit UnitSP485 / AtomicRS485Base instance
   @param baud Baud rate (default 115200)
   @param config UartConfig (default `UartConfig::Default` = 8N1)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) is the native helper's 256 bytes
   @return True if successful; false on unsupported board / UART install failure
   @note The UART port is installed via the M5UnitUnified native helper, mirroring m5::unit::wiring::addUART.
 */
 inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_t baud = 115200,
-                              const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default)
+                              const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,
+                              const size_t rx_buffer_size               = 0)
 {
     const auto p = atomicBaseUartPins();
     if (p.rx < 0 || p.tx < 0) {
@@ -113,7 +115,7 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
                 static_cast<int>(p.rx), static_cast<int>(p.tx), static_cast<unsigned>(baud));
 
     auto port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), static_cast<gpio_num_t>(p.rx),
-                                                 static_cast<gpio_num_t>(p.tx), baud, config);
+                                                 static_cast<gpio_num_t>(p.tx), baud, config, rx_buffer_size);
     if (port == UART_NUM_MAX) {
         return false;
     }
@@ -154,11 +156,12 @@ inline Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()
   @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
   @param baud Baud rate (default 115200)
   @param config Serial config (default `SERIAL_8N1`)
-  @return True if successful; false on unsupported board
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
   @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
 */
 inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud = 115200,
-                                    const uint32_t config = SERIAL_8N1)
+                                    const uint32_t config = SERIAL_8N1, const size_t rx_buffer_size = 0)
 {
     const auto p = tab5BuiltinRS485Pins();
     if (p.rx < 0 || p.tx < 0 || p.dir < 0) {
@@ -174,9 +177,8 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
     unit.config(cfg);
 
     HardwareSerial& serial = m5::unit::wiring::defaultUartSerial();
-    serial.end();
-    serial.begin(baud, config, p.rx, p.tx);
-    return units.add(unit, serial);
+    return m5::unit::wiring::beginUartSerial(serial, baud, config, p.rx, p.tx, rx_buffer_size) &&
+           units.add(unit, serial);
 }
 #else   // ESP-IDF native
 /*!
@@ -185,11 +187,13 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
   @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
   @param baud Baud rate (default 115200)
   @param config UartConfig (default `UartConfig::Default` = 8N1)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) is the native helper's 256 bytes
   @return True if successful; false on unsupported board / UART install failure
   @note The UART port is installed via the M5UnitUnified native helper, mirroring m5::unit::wiring::addUART.
 */
 inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud = 115200,
-                                    const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default)
+                                    const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,
+                                    const size_t rx_buffer_size               = 0)
 {
     const auto p = tab5BuiltinRS485Pins();
     if (p.rx < 0 || p.tx < 0 || p.dir < 0) {
@@ -205,7 +209,7 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
     unit.config(cfg);
 
     auto port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), static_cast<gpio_num_t>(p.rx),
-                                                 static_cast<gpio_num_t>(p.tx), baud, config);
+                                                 static_cast<gpio_num_t>(p.tx), baud, config, rx_buffer_size);
     if (port == UART_NUM_MAX) {
         return false;
     }
