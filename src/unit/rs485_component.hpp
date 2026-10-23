@@ -62,10 +62,23 @@ public:
     //! @brief Destructor
     virtual ~RS485Component() = default;
 
+    ///@warning COPY PROHIBITED
+    ///@name Constructor
+    ///@{
     RS485Component(const RS485Component &) = delete;
+
+    //! @brief Move constructor
+    RS485Component(RS485Component &&) noexcept = default;
+    ///@}
+
+    ///@warning COPY PROHIBITED
+    ///@name Assignment
+    ///@{
     RS485Component &operator=(const RS485Component &) = delete;
-    RS485Component(RS485Component &&) noexcept        = default;
+
+    //! @brief Move assignment
     RS485Component &operator=(RS485Component &&) noexcept = default;
+    ///@}
 
     /*!
       @brief Begin using the registered UART adapter
