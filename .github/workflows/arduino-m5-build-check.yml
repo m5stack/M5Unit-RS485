@@ -96,13 +96,13 @@ jobs:
           - m5stack_dial
           - m5stack_dinmeter
           - m5stack_nano_c6
-#          - m5stack_nano_h2
+          - m5stack_nano_h2
 #          - m5stack_powerhub
 #          - m5stack_chain_dualkey
           - arduino_nesso_n1
 
         platform-version:
-          - 3.2.5
+          - 3.3.10
 
         platform:
           - m5stack
@@ -112,37 +112,37 @@ jobs:
 
         include:
           # HAT
-          - sketch: Transceiver  
+          - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus2
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_coreink
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_sticks3
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: arduino_nesso_n1
@@ -150,21 +150,21 @@ jobs:
           # AtomicBase
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atom
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atoms3
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atoms3r
@@ -175,7 +175,7 @@ jobs:
           # paths are already covered by Transceiver.
           - sketch: StreamAdapter
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_core
