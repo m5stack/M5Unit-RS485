@@ -16,6 +16,7 @@
 #include <cstring>
 #include <m5_utility/stl/byteswap.hpp>
 #include <string>
+#include <vector>
 
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -59,6 +60,10 @@ m5::unit::Tab5BuiltinRS485 unit;
  termination when needed.
  */
 constexpr uint32_t UART_BAUD{57600};
+// Receiver RX buffer, sized for this demo's ~640-byte message bursts (the default is 256 bytes on
+// the native backend and the HardwareSerial default on Arduino).
+constexpr size_t UART_RX_BUFFER_SIZE{2048};
+constexpr auto UART_CONFIG{m5::unit::wiring::UartConfig::Default};
 
 //
 constexpr char message_0[] =
@@ -98,18 +103,6 @@ struct Sample0 {
     uint16_t a{0xE1D2};
     float b{-12.75f};
 };
-
-size_t write_float_bytes(const float v, const bool little_endian)
-{
-    uint8_t tmp[sizeof(float)]{};
-    std::memcpy(tmp, &v, sizeof(tmp));
-    if (!little_endian) {
-        for (size_t i = 0; i < sizeof(tmp) / 2; ++i) {
-            std::swap(tmp[i], tmp[sizeof(tmp) - 1 - i]);
-        }
-    }
-    return unit.write(tmp, sizeof(tmp));
-}
 
 size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const size_t len,
                      const uint32_t timeout_ms = 200)
@@ -238,11 +231,6 @@ private:
 
 LogView log_view{lcd};
 
-bool is_ascii_ok(const uint8_t c)
-{
-    return (c == '\r' || c == '\n' || c == '\t' || (c >= 0x20 && c <= 0x7E));
-}
-
 void flush_received(LogView& view)
 {
     if (receive_bytes.empty()) {
@@ -276,7 +264,7 @@ void flush_received(LogView& view)
             lcd_hex.push_back(' ');
 
             const uint8_t c = receive_bytes[i];
-            if (is_ascii_ok(c) && c >= 0x20 && c <= 0x7E) {
+            if (c >= 0x20 && c <= 0x7E) {
                 ascii_line.push_back(static_cast<char>(c));
             } else {
                 ascii_line.push_back('.');
@@ -315,24 +303,17 @@ void setup()
         unit.config(cfg);
     }
 
-    // Bump receiver RX buffer to accommodate this demo's ~640-byte message bursts.
-    // Must be set BEFORE Serial.begin() (called inside the wiring helper below).
-    //
-    // ESP-IDF native has no equivalent: the UART port is installed by the wiring helper with a
-    // fixed 256-byte RX ring, and addUART() takes no buffer-size argument. Long bursts can be
-    // truncated there until that argument exists upstream.
-#if defined(ARDUINO)
-    m5::unit::wiring::defaultUartSerial().setRxBufferSize(2048);
-#endif
-
+    // The wiring helpers size the RX buffer themselves, before the port is opened.
 #if defined(USING_HAT_RS485)
-    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_ATOMIC_RS485_BASE)
-    const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_TAB5_BUILTIN_RS485)
-    const bool wired = m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #else  // USING_UNIT_RS485
-    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #endif
 
     if (!wired || !Units.begin()) {
@@ -348,7 +329,8 @@ void setup()
     log_view.render();
 
     M5.Log.printf("READY\n");
-    lcd.drawString("READY", 0, 0);
+    log_view.appendLine("READY");
+    log_view.render();
 }
 
 void loop()
@@ -372,13 +354,13 @@ void loop()
         } else if (step == m5::stl::size(message_table)) {
             Sample0 s0{};
             M5.Log.printf("Sample0 (LE): a=0x%04X b=%f\n", s0.a, s0.b);
-            unit.writeValue<uint16_t, true>(s0.a);
-            sent = write_float_bytes(s0.b, true);
+            sent = unit.writeValue<uint16_t, true>(s0.a) ? sizeof(s0.a) : 0;
+            sent += unit.writeValue<float, true>(s0.b) ? sizeof(s0.b) : 0;
         } else {
             Sample0 s0{};
             M5.Log.printf("Sample0 (BE): a=0x%04X b=%f\n", s0.a, s0.b);
-            unit.writeValue<uint16_t, false>(s0.a);
-            sent = write_float_bytes(s0.b, false);
+            sent = unit.writeValue<uint16_t, false>(s0.a) ? sizeof(s0.a) : 0;
+            sent += unit.writeValue<float, false>(s0.b) ? sizeof(s0.b) : 0;
         }
         M5.Log.printf("<<<< %zu sent\n", sent);
         step = (step + 1) % (m5::stl::size(message_table) + 2);
@@ -411,14 +393,14 @@ void loop()
 // Single-core SoCs run loop() on the only CPU, so the IDLE task never gets scheduled while loop()
 // busy-waits. Yielding every iteration would break the RS-485 turnaround timing, so hand the CPU
 // over briefly at a long interval instead: just often enough for IDLE to feed the task watchdog.
-static inline void feedIdleTaskPeriodically(void)
+static inline void feed_idle_task_periodically()
 {
     constexpr uint32_t FEED_INTERVAL_MS{2000};
     constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
-    static uint32_t s_last_feed_ms{};
+    static uint32_t last_feed_ms{};
     const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
-    if (now_ms - s_last_feed_ms >= FEED_INTERVAL_MS) {
-        s_last_feed_ms = now_ms;
+    if (now_ms - last_feed_ms >= FEED_INTERVAL_MS) {
+        last_feed_ms = now_ms;
         vTaskDelay(FEED_SLEEP_TICKS);
     }
 }
@@ -429,7 +411,7 @@ extern "C" void app_main(void)
     setup();
     for (;;) {
 #if CONFIG_FREERTOS_UNICORE
-        feedIdleTaskPeriodically();
+        feed_idle_task_periodically();
 #endif
         loop();
     }
