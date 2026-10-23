@@ -89,7 +89,7 @@ public:
       @brief Returns available buffer space for write
       @return Number of bytes that can be written without blocking
      */
-    int availableForWrite()
+    int availableForWrite() override
     {
         return _unit.availableForWrite();
     }
