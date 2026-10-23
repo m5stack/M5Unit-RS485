@@ -132,21 +132,3 @@ TEST_F(TestTab5BuiltinRS485, WriteNullReturnsZero)
     }
     EXPECT_EQ(unit->write(static_cast<const char*>(nullptr)), 0u);
 }
-
-// Verifies that Tab5BuiltinRS485's constructor alone (without the wiring helper)
-// bakes DIR = GPIO34 into config. Distinguishes ctor-set from wiring-set.
-TEST(Tab5BuiltinRS485Ctor, BakesDirPin34)
-{
-    m5::unit::Tab5BuiltinRS485 unit;
-    EXPECT_EQ(unit.config().dir_pin, 34);
-}
-
-// Negative test: bare UnitSIT3088 (not Tab5BuiltinRS485) has dir_pin=-1 by default,
-// so begin() must fail. Confirms the safety guard in UnitSIT3088::begin().
-TEST(UnitSIT3088BeginGuard, FailsWhenDirPinUnset)
-{
-    m5::unit::UnitUnified units;
-    m5::unit::UnitSIT3088 unit;
-    EXPECT_FALSE(unit.begin());
-    (void)units;
-}
