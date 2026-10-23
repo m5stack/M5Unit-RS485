@@ -14,7 +14,6 @@
 #include <unit/unit_SIT3088.hpp>
 #include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: defaultUartSerial
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addTab5BuiltinRS485UART
-#include <type_traits>
 
 using namespace m5::unit::googletest;
 using namespace m5::unit;

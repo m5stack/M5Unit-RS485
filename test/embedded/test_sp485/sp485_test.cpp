@@ -15,16 +15,13 @@
 #include <unit/unit_SP485_stream.hpp>               // UnitSP485Stream Arduino Stream adapter
 #include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
-#include <chrono>
-#include <cmath>
-#include <iostream>
 
 #if !defined(USING_UNIT_RS485) && !defined(USING_HAT_RS485) && !defined(USING_ATOMIC_RS485_BASE)
 // For UnitRS485
 // #define USING_UNIT_RS485
 // For HatRS485
 // #define USING_HAT_RS485
-// For AtomRS485
+// For Atomic RS485 Base
 // #define USING_ATOMIC_RS485_BASE
 #endif
 
