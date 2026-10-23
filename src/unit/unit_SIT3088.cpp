@@ -31,8 +31,9 @@ namespace unit {
 // Read side passes through to HardwareSerial. Write side calls the unit's protected
 // set_transmit() before the transfer, blocks on flush() to guarantee the last stop bit
 // is on the wire, then calls set_transmit(false) to re-enable the receiver.
-// Timing per SIT3088E datasheet: driver tPHZ / tPLZ <= 85 ns, receiver enable from
-// shutdown <= 500 ns, so the small extra pin toggle stays within RS-485 turn-around.
+// Timing per SIT3088E datasheet: driver disable tPHZ / tPLZ <= 85 ns and receiver enable
+// tRPZH / tRPZL <= 40 ns. DE and /RE are tied, so the 500 ns shutdown-exit path (tRPSH / tRPSL)
+// cannot be entered. The extra pin toggle therefore stays within the RS-485 turn-around budget.
 //
 struct DirControlledSerial final : public RS485Component::ISerial {
     DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : _hs(hs), _unit(unit)
