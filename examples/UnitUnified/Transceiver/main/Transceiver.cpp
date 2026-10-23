@@ -337,8 +337,7 @@ void setup()
 
     if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        m5::unit::wiring::failStop();
+        m5::unit::wiring::failStop();  // fills the screen red itself
     }
 
     M5_LOGI("M5UnitUnified initialized");

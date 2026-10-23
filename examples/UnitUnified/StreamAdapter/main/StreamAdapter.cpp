@@ -88,6 +88,7 @@ uint32_t last_send_at{};
 void setup()
 {
     M5.begin();
+    M5.setTouchButtonHeightByRatio(100);
 
     if (lcd.height() > lcd.width()) {
         lcd.setRotation(1);
@@ -111,16 +112,15 @@ void setup()
 
     if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        m5::unit::wiring::failStop();
+        m5::unit::wiring::failStop();  // fills the screen red itself
     }
 
     M5_LOGI("M5UnitUnified initialized");
 
-    // Stream inherits Print, so setTimeout() governs readStringUntil() below.
+    // setTimeout() is a Stream member (not Print) and governs readStringUntil() below.
     stream.setTimeout(LINE_TIMEOUT_MS);
 
-    lcd.clear(TFT_DARKGREEN);
+    lcd.fillScreen(TFT_DARKGREEN);
     lcd.setTextColor(TFT_WHITE, TFT_DARKGREEN);
     lcd.setCursor(0, 0);
     lcd.println("UnitSP485Stream");
@@ -139,8 +139,8 @@ void loop()
         // ... and the same link handed to a Stream&-taking function.
         sendReport(stream, sequence);
 
-        ++sequence;
         M5.Log.printf(">>>> sent seq=%u\n", static_cast<unsigned int>(sequence));
+        ++sequence;
     }
 
     // Line-oriented receive: readStringUntil() belongs to Stream, not to the unit.
