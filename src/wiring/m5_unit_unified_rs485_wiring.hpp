@@ -66,18 +66,11 @@ inline AtomicBasePinPair atomicBaseUartPins()
 }
 
 #if defined(ARDUINO)
-/*!
-  @brief Add a UnitSP485 (aliased as AtomicRS485Base) on the Atom-family bottom base UART
-  @param units UnitUnified manager
-  @param unit UnitSP485 / AtomicRS485Base instance
-  @param baud Baud rate (default 115200)
-  @param config Serial config (default `SERIAL_8N1`)
-  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
-  @return True if successful; false on unsupported board / RX buffer rejected
-  @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
-*/
-inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_t baud = 115200,
-                              const uint32_t config = SERIAL_8N1, const size_t rx_buffer_size = 0)
+///@cond
+namespace detail {
+// Shared body of the two addAtomicBaseUART overloads; cfg is an Arduino SERIAL_* value.
+inline bool add_atomic_base_uart(UnitUnified& units, Component& unit, const uint32_t baud, const uint32_t cfg,
+                                 const size_t rx_buffer_size)
 {
     const auto p = atomicBaseUartPins();
     if (p.rx < 0 || p.tx < 0) {
@@ -88,8 +81,42 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
                 static_cast<int>(p.rx), static_cast<int>(p.tx), static_cast<unsigned long>(baud));
 
     HardwareSerial& serial = m5::unit::wiring::defaultUartSerial();
-    return m5::unit::wiring::beginUartSerial(serial, baud, config, p.rx, p.tx, rx_buffer_size) &&
-           units.add(unit, serial);
+    return m5::unit::wiring::beginUartSerial(serial, baud, cfg, p.rx, p.tx, rx_buffer_size) && units.add(unit, serial);
+}
+}  // namespace detail
+///@endcond
+
+/*!
+  @brief Add a UnitSP485 (aliased as AtomicRS485Base) on the Atom-family bottom base UART
+  @param units UnitUnified manager
+  @param unit UnitSP485 / AtomicRS485Base instance
+  @param baud Baud rate (default 115200)
+  @param config UartConfig (default `UartConfig::Default` = 8N1)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
+  @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
+*/
+inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_t baud = 115200,
+                              const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,
+                              const size_t rx_buffer_size               = 0)
+{
+    return detail::add_atomic_base_uart(units, unit, baud, m5::unit::wiring::toArduinoSerialConfig(config),
+                                        rx_buffer_size);
+}
+/*!
+  @brief Add a UnitSP485 (aliased as AtomicRS485Base) with a raw Arduino serial config
+  @param units UnitUnified manager
+  @param unit UnitSP485 / AtomicRS485Base instance
+  @param baud Baud rate
+  @param config Raw Arduino serial config (`SERIAL_8N1`, ...)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
+  @warning Deprecated. Pass a UartConfig so the call is the same on both frameworks.
+*/
+[[deprecated("Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value")]] inline bool addAtomicBaseUART(
+    UnitUnified& units, Component& unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size = 0)
+{
+    return detail::add_atomic_base_uart(units, unit, baud, config, rx_buffer_size);
 }
 #else   // ESP-IDF native
 /*!
@@ -150,18 +177,11 @@ inline Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()
 }
 
 #if defined(ARDUINO)
-/*!
-  @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485.
-  @param units UnitUnified manager
-  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
-  @param baud Baud rate (default 115200)
-  @param config Serial config (default `SERIAL_8N1`)
-  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
-  @return True if successful; false on unsupported board / RX buffer rejected
-  @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
-*/
-inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud = 115200,
-                                    const uint32_t config = SERIAL_8N1, const size_t rx_buffer_size = 0)
+///@cond
+namespace detail {
+// Shared body of the two addTab5BuiltinRS485UART overloads; cfg is an Arduino SERIAL_* value.
+inline bool add_tab5_builtin_rs485_uart(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud, const uint32_t cfg,
+                                        const size_t rx_buffer_size)
 {
     const auto p = tab5BuiltinRS485Pins();
     if (p.rx < 0 || p.tx < 0 || p.dir < 0) {
@@ -172,13 +192,47 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
                 static_cast<int>(M5.getBoard()), static_cast<int>(p.rx), static_cast<int>(p.tx),
                 static_cast<int>(p.dir), static_cast<unsigned long>(baud));
 
-    auto cfg    = unit.config();
-    cfg.dir_pin = p.dir;
-    unit.config(cfg);
+    auto unit_cfg    = unit.config();
+    unit_cfg.dir_pin = p.dir;
+    unit.config(unit_cfg);
 
     HardwareSerial& serial = m5::unit::wiring::defaultUartSerial();
-    return m5::unit::wiring::beginUartSerial(serial, baud, config, p.rx, p.tx, rx_buffer_size) &&
-           units.add(unit, serial);
+    return m5::unit::wiring::beginUartSerial(serial, baud, cfg, p.rx, p.tx, rx_buffer_size) && units.add(unit, serial);
+}
+}  // namespace detail
+///@endcond
+
+/*!
+  @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485.
+  @param units UnitUnified manager
+  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
+  @param baud Baud rate (default 115200)
+  @param config UartConfig (default `UartConfig::Default` = 8N1)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
+  @note The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART).
+*/
+inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const uint32_t baud = 115200,
+                                    const m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,
+                                    const size_t rx_buffer_size               = 0)
+{
+    return detail::add_tab5_builtin_rs485_uart(units, unit, baud, m5::unit::wiring::toArduinoSerialConfig(config),
+                                               rx_buffer_size);
+}
+/*!
+  @brief Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) with a raw Arduino serial config
+  @param units UnitUnified manager
+  @param unit UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config())
+  @param baud Baud rate
+  @param config Raw Arduino serial config (`SERIAL_8N1`, ...)
+  @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
+  @return True if successful; false on unsupported board / RX buffer rejected
+  @warning Deprecated. Pass a UartConfig so the call is the same on both frameworks.
+*/
+[[deprecated("Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value")]] inline bool addTab5BuiltinRS485UART(
+    UnitUnified& units, UnitSIT3088& unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size = 0)
+{
+    return detail::add_tab5_builtin_rs485_uart(units, unit, baud, config, rx_buffer_size);
 }
 #else   // ESP-IDF native
 /*!
