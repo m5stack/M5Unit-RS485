@@ -42,7 +42,7 @@ protected:
     }
 };
 
-TEST_F(TestTab5BuiltinRS485, WriteFlushFlag)
+TEST_F(TestTab5BuiltinRS485, WriteQueuesThenFlush)
 {
     SCOPED_TRACE(ustr);
     EXPECT_NE(serial, nullptr);
@@ -55,8 +55,10 @@ TEST_F(TestTab5BuiltinRS485, WriteFlushFlag)
     }
 
     const uint8_t b = 0x5A;
-    EXPECT_GT(unit->write(b, false), 0u);
-    EXPECT_GT(unit->write(b, true), 0u);
+    EXPECT_GT(unit->write(b), 0u);
+    // write() queues; flush() is what waits for the transmission to complete
+    unit->flush();
+    EXPECT_GT(unit->write(b), 0u);
 }
 
 TEST_F(TestTab5BuiltinRS485, DirPinConfigured)

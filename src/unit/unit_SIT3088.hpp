@@ -10,6 +10,9 @@
            the host must drive a DIR pin (typically DE and /RE tied) high before
            transmitting and low after transmission completes.
            Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34).
+  @note Because DIR has to stay asserted until the last stop bit is on the wire, every write()
+        on this unit waits for the transmission to complete -- unlike RS485Component::write(),
+        which only queues. flush() is therefore redundant here, not wrong.
   @note The public API is framework-agnostic. Framework-specific bits are confined to the
         translation unit. Direction-pin control requires ESP_PLATFORM (uses driver/gpio.h) —
         this covers Arduino-ESP32 and ESP-IDF native equally. Non-ESP targets get a no-op

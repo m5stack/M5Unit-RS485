@@ -115,6 +115,9 @@ public:
     ///@}
 
     ///@note See also Arduino documents
+    ///@note write() only queues the bytes; flush() is what waits for the transmission to
+    /// complete. A subclass that drives a direction pin (UnitSIT3088) has to drain inside its own
+    /// ISerial before releasing the line, so its write() blocks even though this one does not.
     ///@name Arduino Serial Compatibility API
     ///@{
     //! @brief Returns true if the unit is registered
@@ -236,33 +239,117 @@ public:
     /*!
       @brief Writes one byte
       @param d Byte to write
-      @param flush If true, flush TX before returning
       @return Number of bytes written
+      @note Queues the byte, as Arduino's Print::write() does. Call flush() when the caller has
+      to know the byte has left the wire.
      */
-    size_t write(const uint8_t d, const bool flush = true);
+    size_t write(const uint8_t d);
     /*!
       @brief Writes bytes from buffer
       @param buffer Source buffer
       @param size Number of bytes to write
-      @param flush If true, flush TX before returning
       @return Number of bytes written
+      @note Queues the bytes; call flush() to wait for the transmission to complete.
      */
-    size_t write(const uint8_t *buffer, const size_t size, const bool flush = true);
+    size_t write(const uint8_t *buffer, const size_t size);
     /*!
       @brief Writes bytes from buffer
       @param buffer Source buffer
       @param size Number of bytes to write
-      @param flush If true, flush TX before returning
       @return Number of bytes written
+      @note Queues the bytes; call flush() to wait for the transmission to complete.
      */
-    size_t write(const char *buffer, const size_t size, const bool flush = true);
+    size_t write(const char *buffer, const size_t size);
     /*!
       @brief Writes a null-terminated string
       @param s Null-terminated string
-      @param flush If true, flush TX before returning
       @return Number of bytes written
+      @note Queues the bytes; call flush() to wait for the transmission to complete.
      */
-    size_t write(const char *s, const bool flush = true);
+    size_t write(const char *s);
+
+    /*!
+      @brief Deleted: the second argument of write() is a byte count
+      @details Rejects what cannot be a count -- a character type (write(buffer, 'a') would
+      otherwise mean 97 bytes) and any non-integral type, including the bool-convertible proxies of
+      std::vector<bool> / std::bitset<N>, which used to be accepted as the removed flush flag.
+      Integer lengths are filtered out by SFINAE and keep resolving to the overloads above.
+      @note bool is deliberately still accepted, because the deprecated write(buffer, flush)
+      overloads below have to keep binding it. Add std::is_same<Size, bool> to the rejected set
+      when those are removed, or write(s, true) would silently become a one-byte write.
+     */
+    template <typename Size,
+              typename std::enable_if<!std::is_integral<Size>::value || std::is_same<Size, char>::value ||
+                                          std::is_same<Size, signed char>::value,
+                                      int>::type = 0>
+    size_t write(const uint8_t *buffer, const Size size) = delete;
+    template <typename Size,
+              typename std::enable_if<!std::is_integral<Size>::value || std::is_same<Size, char>::value ||
+                                          std::is_same<Size, signed char>::value,
+                                      int>::type = 0>
+    size_t write(const char *buffer, const Size size) = delete;
+    ///@}
+
+    ///@name Deprecated Arduino Serial Compatibility API
+    ///@{
+    /*!
+      @brief Writes one byte, optionally waiting for the transmission to complete
+      @param d Byte to write
+      @param wait If true, wait for TX to drain before returning
+      @return Number of bytes written
+      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+     */
+    template <typename Wait, typename std::enable_if<std::is_same<Wait, bool>::value, int>::type = 0>
+    [[deprecated("write() no longer waits for TX; call flush() after writing")]] size_t write(const uint8_t d,
+                                                                                              const Wait wait)
+    {
+        return wait ? write_waiting(&d, 1) : write(d);
+    }
+    /*!
+      @brief Writes bytes from buffer, optionally waiting for the transmission to complete
+      @param buffer Source buffer
+      @param size Number of bytes to write
+      @param wait If true, wait for TX to drain before returning
+      @return Number of bytes written
+      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+     */
+    [[deprecated("write() no longer waits for TX; call flush() after writing")]] inline size_t write(
+        const uint8_t *buffer, const size_t size, const bool wait)
+    {
+        return wait ? write_waiting(buffer, size) : write(buffer, size);
+    }
+    /*!
+      @brief Writes bytes from buffer, optionally waiting for the transmission to complete
+      @param buffer Source buffer
+      @param size Number of bytes to write
+      @param wait If true, wait for TX to drain before returning
+      @return Number of bytes written
+      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+     */
+    [[deprecated("write() no longer waits for TX; call flush() after writing")]] inline size_t write(const char *buffer,
+                                                                                                     const size_t size,
+                                                                                                     const bool wait)
+    {
+        return wait ? write_waiting(reinterpret_cast<const uint8_t *>(buffer), size) : write(buffer, size);
+    }
+    /*!
+      @brief Writes a null-terminated string, optionally waiting for the transmission to complete
+      @param s Null-terminated string
+      @param wait If true, wait for TX to drain before returning
+      @return Number of bytes written
+      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+      @note Only an exact bool binds here, so write(buffer, length) with a plain integer length
+      is never mistaken for this overload.
+     */
+    template <typename Wait, typename std::enable_if<std::is_same<Wait, bool>::value, int>::type = 0>
+    [[deprecated("write() no longer waits for TX; call flush() after writing")]] size_t write(const char *s,
+                                                                                              const Wait wait)
+    {
+        if (!wait) {
+            return write(s);
+        }
+        return write_waiting(reinterpret_cast<const uint8_t *>(s), s ? std::strlen(s) : 0);
+    }
     ///@}
 
     ///@name Read/Write a trivially copyable value
@@ -279,6 +366,9 @@ public:
       @note LittleEndian only declares the wire byte order; the peer must agree on the same
       convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw
       bit patterns without special-casing.
+      @note Waits for sizeof(T) bytes with the backend's own timeout, as the two-argument
+      readBytes() does: the one set by HardwareSerial::setTimeout() on Arduino, and a fixed
+      1000 ms on ESP-IDF native. Use readBytes() with an explicit timeout to control it.
      */
     template <typename T, bool LittleEndian = true>
     bool readValue(T &value)
@@ -309,6 +399,8 @@ public:
       @note LittleEndian only declares the wire byte order; the peer must agree on the same
       convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw
       bit patterns without special-casing.
+      @note Unlike write(), this waits for the transmission to complete before returning, so a
+      value is always fully on the wire when it reports success.
      */
     template <typename T, bool LittleEndian = true>
     bool writeValue(const T value)
@@ -321,13 +413,16 @@ public:
         }
         uint8_t buf[sizeof(T)]{};
         std::memcpy(buf, &tmp, sizeof(T));
-        return write(buf, sizeof(T), true) == sizeof(T);
+        return write_waiting(buf, sizeof(T)) == sizeof(T);
     }
     ///@}
 
 protected:
     //! @brief Base constructor (concrete subclasses pass their DEFAULT_ADDRESS)
     explicit RS485Component(const uint8_t addr);
+
+    //! @brief Writes bytes and waits for the transmission to complete
+    size_t write_waiting(const uint8_t *buffer, const size_t size);
 
     inline ISerial *iserial()
     {

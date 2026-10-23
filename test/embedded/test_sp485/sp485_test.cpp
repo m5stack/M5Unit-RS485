@@ -63,7 +63,7 @@ protected:
     }
 };
 
-TEST_F(TestSP485, WriteFlushFlag)
+TEST_F(TestSP485, WriteQueuesThenFlush)
 {
     SCOPED_TRACE(ustr);
     EXPECT_NE(serial, nullptr);
@@ -76,8 +76,10 @@ TEST_F(TestSP485, WriteFlushFlag)
     }
 
     const uint8_t b = 0x5A;
-    EXPECT_GT(unit->write(b, false), 0u);
-    EXPECT_GT(unit->write(b, true), 0u);
+    EXPECT_GT(unit->write(b), 0u);
+    // write() queues; flush() is what waits for the transmission to complete
+    unit->flush();
+    EXPECT_GT(unit->write(b), 0u);
 }
 
 TEST_F(TestSP485, WriteValueReturnsTrue)
@@ -159,8 +161,12 @@ TEST_F(TestSP485, WriteBufferSize)
         unit->read();
     }
     const uint8_t buf[3] = {0x01, 0x02, 0x03};
-    EXPECT_EQ(unit->write(buf, sizeof(buf), false), sizeof(buf));
-    EXPECT_EQ(unit->write(buf, sizeof(buf), true), sizeof(buf));
+    EXPECT_EQ(unit->write(buf, sizeof(buf)), sizeof(buf));
+    unit->flush();
+    EXPECT_EQ(unit->write(buf, sizeof(buf)), sizeof(buf));
+    // A signed length must resolve to the overload taking a size
+    const int len = 3;
+    EXPECT_EQ(unit->write(buf, len), sizeof(buf));
     // Zero-size and null-buffer guards
     EXPECT_EQ(unit->write(buf, 0u), 0u);
     EXPECT_EQ(unit->write(static_cast<const uint8_t*>(nullptr), 5u), 0u);
@@ -178,6 +184,9 @@ TEST_F(TestSP485, WriteCharBufferSize)
     }
     const char buf[] = "abc";
     EXPECT_EQ(unit->write(buf, 3u), 3u);
+    // A signed length must resolve to the overload taking a size
+    const int len = 3;
+    EXPECT_EQ(unit->write(buf, len), 3u);
 }
 
 TEST_F(TestSP485, WriteNonNullCString)

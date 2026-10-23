@@ -195,38 +195,39 @@ bool RS485Component::begin()
 #endif
 }
 
-size_t RS485Component::write(const uint8_t d, const bool flush)
+size_t RS485Component::write(const uint8_t d)
 {
-    size_t n = _serial->write(d);
-    if (flush && n > 0) {
-        _serial->flush(true);
-    }
-    return n;
+    return _serial->write(d);
 }
 
-size_t RS485Component::write(const uint8_t *buffer, const size_t size, const bool flush)
+size_t RS485Component::write(const uint8_t *buffer, const size_t size)
 {
     if (!buffer || size == 0) {
         return 0;
     }
-    size_t n = _serial->write(buffer, size);
-    if (flush && n > 0) {
-        _serial->flush(true);
-    }
-    return n;
+    return _serial->write(buffer, size);
 }
 
-size_t RS485Component::write(const char *buffer, const size_t size, const bool flush)
+size_t RS485Component::write(const char *buffer, const size_t size)
 {
-    return write(reinterpret_cast<const uint8_t *>(buffer), size, flush);
+    return write(reinterpret_cast<const uint8_t *>(buffer), size);
 }
 
-size_t RS485Component::write(const char *s, const bool flush)
+size_t RS485Component::write(const char *s)
 {
     if (!s) {
         return 0;
     }
-    return write(reinterpret_cast<const uint8_t *>(s), strlen(s), flush);
+    return write(reinterpret_cast<const uint8_t *>(s), std::strlen(s));
+}
+
+size_t RS485Component::write_waiting(const uint8_t *buffer, const size_t size)
+{
+    const size_t n = write(buffer, size);
+    if (n > 0) {
+        _serial->flush(true);
+    }
+    return n;
 }
 
 }  // namespace unit
