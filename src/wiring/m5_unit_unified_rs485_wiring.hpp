@@ -111,7 +111,7 @@ inline bool addAtomicBaseUART(UnitUnified& units, Component& unit, const uint32_
   @param config Raw Arduino serial config (`SERIAL_8N1`, ...)
   @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
   @return True if successful; false on unsupported board / RX buffer rejected
-  @warning Deprecated. Pass a UartConfig so the call is the same on both frameworks.
+  @deprecated Pass a UartConfig so the call is the same on both frameworks.
 */
 [[deprecated("Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value")]] inline bool addAtomicBaseUART(
     UnitUnified& units, Component& unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size = 0)
@@ -227,7 +227,7 @@ inline bool addTab5BuiltinRS485UART(UnitUnified& units, UnitSIT3088& unit, const
   @param config Raw Arduino serial config (`SERIAL_8N1`, ...)
   @param rx_buffer_size RX buffer size in bytes; 0 (default) keeps the HardwareSerial default
   @return True if successful; false on unsupported board / RX buffer rejected
-  @warning Deprecated. Pass a UartConfig so the call is the same on both frameworks.
+  @deprecated Pass a UartConfig so the call is the same on both frameworks.
 */
 [[deprecated("Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value")]] inline bool addTab5BuiltinRS485UART(
     UnitUnified& units, UnitSIT3088& unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size = 0)

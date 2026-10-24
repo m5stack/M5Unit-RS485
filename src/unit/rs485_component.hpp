@@ -270,19 +270,26 @@ public:
 
     /*!
       @brief Deleted: the second argument of write() is a byte count
-      @details Rejects what cannot be a count -- a character type (write(buffer, 'a') would
-      otherwise mean 97 bytes) and any non-integral type, including the bool-convertible proxies of
-      std::vector<bool> / std::bitset<N>, which used to be accepted as the removed flush flag.
-      Integer lengths are filtered out by SFINAE and keep resolving to the overloads above.
-      @note bool is deliberately still accepted, because the deprecated write(buffer, flush)
-      overloads below have to keep binding it. Add std::is_same<Size, bool> to the rejected set
-      when those are removed, or write(s, true) would silently become a one-byte write.
+      @details Rejects what cannot be a count -- char and signed char (write(buffer, 'a') would
+      otherwise mean 97 bytes), bool, and any non-integral type, including the bool-convertible
+      proxies of std::vector<bool> / std::bitset<N>, which used to slip through as a length. An
+      integer length is filtered out by SFINAE and keeps resolving to write(const uint8_t *, size_t).
      */
     template <typename Size,
               typename std::enable_if<!std::is_integral<Size>::value || std::is_same<Size, char>::value ||
-                                          std::is_same<Size, signed char>::value,
+                                          std::is_same<Size, signed char>::value || std::is_same<Size, bool>::value,
                                       int>::type = 0>
     size_t write(const uint8_t *buffer, const Size size) = delete;
+    /*!
+      @brief Deleted: the second argument of write() is a byte count
+      @details The same rule as write(const uint8_t *, const Size), except that bool is still
+      accepted here: write(s, wait) is a released signature, so the deprecated overload below has to
+      keep binding it. For a uint8_t buffer the wait form was always write(buffer, size, wait), so
+      there bool is rejected.
+     */
+    // When the deprecated write(s, wait) overload is removed, add std::is_same<Size, bool> here too,
+    // or write(s, true) would silently become a one-byte write. The static_assert on
+    // deprecated_wait_form in test/write_overload_resolution_test.cpp fails on that day.
     template <typename Size,
               typename std::enable_if<!std::is_integral<Size>::value || std::is_same<Size, char>::value ||
                                           std::is_same<Size, signed char>::value,
@@ -297,7 +304,7 @@ public:
       @param d Byte to write
       @param wait If true, wait for TX to drain before returning
       @return Number of bytes written
-      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+      @deprecated write() no longer waits; write the bytes and call flush() yourself.
      */
     template <typename Wait, typename std::enable_if<std::is_same<Wait, bool>::value, int>::type = 0>
     [[deprecated("write() no longer waits for TX; call flush() after writing")]] size_t write(const uint8_t d,
@@ -311,7 +318,7 @@ public:
       @param size Number of bytes to write
       @param wait If true, wait for TX to drain before returning
       @return Number of bytes written
-      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+      @deprecated write() no longer waits; write the bytes and call flush() yourself.
      */
     [[deprecated("write() no longer waits for TX; call flush() after writing")]] inline size_t write(
         const uint8_t *buffer, const size_t size, const bool wait)
@@ -324,7 +331,7 @@ public:
       @param size Number of bytes to write
       @param wait If true, wait for TX to drain before returning
       @return Number of bytes written
-      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+      @deprecated write() no longer waits; write the bytes and call flush() yourself.
      */
     [[deprecated("write() no longer waits for TX; call flush() after writing")]] inline size_t write(const char *buffer,
                                                                                                      const size_t size,
@@ -337,7 +344,7 @@ public:
       @param s Null-terminated string
       @param wait If true, wait for TX to drain before returning
       @return Number of bytes written
-      @warning Deprecated. write() no longer waits; write the bytes and call flush() yourself.
+      @deprecated write() no longer waits; write the bytes and call flush() yourself.
       @note Only an exact bool binds here, so write(buffer, length) with a plain integer length
       is never mistaken for this overload.
      */

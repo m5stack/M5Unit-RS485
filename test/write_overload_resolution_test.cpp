@@ -56,12 +56,34 @@ static_assert(!writable_bytes<signed char>::value, "a signed char must not be ta
 static_assert(!writable_chars<char>::value, "a char must not be taken as a byte count");
 static_assert(!writable_chars<signed char>::value, "a signed char must not be taken as a byte count");
 
-// Non-integral types: rejected. The bool-convertible proxies are what the removed flush flag used
+// Non-integral types: rejected. The bool-convertible proxies are what the former flush flag used
 // to accept, and would otherwise silently mean a one-byte write.
 static_assert(!writable_bytes<double>::value, "a non-integral length must be rejected");
 static_assert(!writable_chars<double>::value, "a non-integral length must be rejected");
 static_assert(!writable_chars<std::vector<bool>::reference>::value, "a vector<bool> proxy must be rejected");
 static_assert(!writable_chars<std::bitset<8>::reference>::value, "a bitset proxy must be rejected");
+
+// bool is split between the two buffer types. For a uint8_t buffer it is rejected: the wait form
+// for byte buffers was always the three-argument write(buffer, size, wait), so write(buffer, true)
+// can only be a mistake.
+static_assert(!writable_bytes<bool>::value, "write(buffer, true) must not be taken as a byte count");
+
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+// For a const char * buffer bool is accepted, because write(s, wait) is a released signature that
+// the deprecated overload keeps binding. Asserting mere callability would not pin that down: with
+// the deprecated overload gone, bool would convert to size_t and write(s, true) would quietly write
+// one byte while a callability assertion still held. Naming the exact signature is what detects the
+// removal -- the cast stops compiling, which is the reminder to reject bool in the const char *
+// guard as well.
+using deprecated_wait_form = size_t (m5::unit::RS485Component::*)(const char *, bool);
+static_assert(sizeof(static_cast<deprecated_wait_form>(&m5::unit::RS485Component::write)) > 0,
+              "write(s, true) must keep binding the deprecated wait overload, not write(s, size)");
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
 
 }  // namespace
 
@@ -72,4 +94,5 @@ TEST(WriteOverloadResolution, SecondArgumentIsAByteCount)
     EXPECT_TRUE(writable_chars<size_t>::value);
     EXPECT_FALSE(writable_chars<char>::value);
     EXPECT_FALSE(writable_chars<std::vector<bool>::reference>::value);
+    EXPECT_FALSE(writable_bytes<bool>::value);
 }
