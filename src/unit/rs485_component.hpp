@@ -62,22 +62,27 @@ public:
     //! @brief Destructor
     virtual ~RS485Component() = default;
 
-    ///@warning COPY PROHIBITED
+    ///@warning COPY AND MOVE PROHIBITED
     ///@name Constructor
     ///@{
     RS485Component(const RS485Component &) = delete;
 
-    //! @brief Move constructor
-    RS485Component(RS485Component &&) noexcept = default;
+    /*!
+      @brief Deleted: a serial backend may point back at the component that owns it
+      @details UnitSIT3088 installs a backend that drives the DIR pin through the unit, so a
+      moved-to unit would keep using the moved-from one. Nothing needs to move a unit -- UnitUnified
+      takes it by reference.
+     */
+    RS485Component(RS485Component &&) = delete;
     ///@}
 
-    ///@warning COPY PROHIBITED
+    ///@warning COPY AND MOVE PROHIBITED
     ///@name Assignment
     ///@{
     RS485Component &operator=(const RS485Component &) = delete;
 
-    //! @brief Move assignment
-    RS485Component &operator=(RS485Component &&) noexcept = default;
+    //! @brief Deleted for the same reason as the move constructor
+    RS485Component &operator=(RS485Component &&) = delete;
     ///@}
 
     /*!

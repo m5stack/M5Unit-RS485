@@ -13,6 +13,7 @@
   the embedded suites.
  */
 #include <gtest/gtest.h>
+#include <type_traits>
 #include <M5UnitUnifiedRS485.hpp>  // Tab5BuiltinRS485 subclass
 #include <unit/unit_SIT3088.hpp>
 #include <unit/unit_SP485.hpp>
@@ -87,6 +88,22 @@ TEST(Tab5BuiltinRS485Config, BakesDirPin34)
     m5::unit::Tab5BuiltinRS485 unit;
 
     EXPECT_EQ(unit.config().dir_pin, 34);
+}
+
+// A unit must not be movable: UnitSIT3088 installs a serial backend that drives the DIR pin through
+// the unit itself, so a moved-to unit would keep using the moved-from one, and a moved-from unit
+// would be left without a backend at all. M5_UNIT_COMPONENT_HPP_BUILDER defaults the move members,
+// so these assertions catch a base class that stops deleting them.
+static_assert(!std::is_move_constructible<m5::unit::UnitSP485>::value, "a unit must not be movable");
+static_assert(!std::is_move_constructible<m5::unit::UnitSIT3088>::value, "a unit must not be movable");
+static_assert(!std::is_move_assignable<m5::unit::UnitSP485>::value, "a unit must not be move-assignable");
+static_assert(!std::is_move_assignable<m5::unit::UnitSIT3088>::value, "a unit must not be move-assignable");
+
+TEST(RS485ComponentConfig, UnitsAreNotMovable)
+{
+    EXPECT_FALSE(std::is_move_constructible<m5::unit::UnitSP485>::value);
+    EXPECT_FALSE(std::is_move_constructible<m5::unit::UnitSIT3088>::value);
+    EXPECT_FALSE(std::is_move_assignable<m5::unit::UnitSP485>::value);
 }
 
 TEST(SIT3088BeginGuard, FailsWhenDirPinUnset)
