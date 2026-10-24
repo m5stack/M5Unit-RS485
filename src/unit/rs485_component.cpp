@@ -9,6 +9,7 @@
  */
 #include "rs485_component.hpp"
 #include <cstring>
+#include <utility>
 #include <M5Utility.hpp>
 #include "rs485_hs_serial.hpp"
 #include "rs485_idf_serial.hpp"
@@ -111,10 +112,11 @@ bool RS485Component::begin()
         return false;
     }
 #endif
-    _serial = make_serial(ad);
-    if (!_serial) {
+    auto serial = make_serial(ad);
+    if (!serial) {
         return false;
     }
+    _serial = std::move(serial);
 
     if (_cfg.flushRX) {
         const auto start = m5::utility::millis();
