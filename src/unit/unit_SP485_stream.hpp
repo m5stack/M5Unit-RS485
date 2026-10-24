@@ -10,7 +10,7 @@
 #ifndef M5_UNIT_RS485_UNIT_SP485_STREAM_HPP
 #define M5_UNIT_RS485_UNIT_SP485_STREAM_HPP
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)
 #include "rs485_component.hpp"
 #include <Stream.h>
 

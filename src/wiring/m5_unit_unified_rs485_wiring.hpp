@@ -23,7 +23,7 @@
 #include <M5UnitUnified.hpp>
 #include <wiring/m5_unit_unified_wiring.hpp>  // core wiring: defaultUartSerial / uartPortHandle / defaultUartPort
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)
 #include <HardwareSerial.h>
 #endif
 
@@ -32,7 +32,7 @@ namespace unit {
 namespace rs485 {
 namespace wiring {
 
-#if defined(__M5UNIFIED_HPP__)
+#if defined(__M5UNIFIED_HPP__) || defined(DOXYGEN_PROCESS)
 
 /*!
   @struct AtomicBasePinPair
@@ -65,7 +65,7 @@ inline AtomicBasePinPair atomicBaseUartPins()
     }
 }
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)
 ///@cond
 namespace detail {
 // Shared body of the two addAtomicBaseUART overloads; cfg is an Arduino SERIAL_* value.
@@ -176,7 +176,7 @@ inline Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()
     }
 }
 
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)
 ///@cond
 namespace detail {
 // Shared body of the two addTab5BuiltinRS485UART overloads; cfg is an Arduino SERIAL_* value.
