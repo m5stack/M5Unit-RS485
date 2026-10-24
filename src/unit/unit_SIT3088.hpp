@@ -105,13 +105,15 @@ protected:
     }
 
 private:
+    // ISerial decorators that drive the DIR pin around each write, one per framework, defined in
+    // the translation unit. Nesting them here is what gives them access to set_transmit(), and it
+    // keeps their names out of the enclosing namespace. Declared unconditionally: a nested class
+    // that is never defined on this framework is harmless.
+    struct DirControlledSerial;     // Arduino
+    struct DirControlledIDFSerial;  // ESP-IDF native
+
     config_t _sit_cfg{};
     int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
-
-    // Internal ISerial decorators need set_transmit() access. Declared unconditionally: a friend
-    // declaration of a type that is never defined on this framework is harmless.
-    friend struct DirControlledSerial;     // Arduino
-    friend struct DirControlledIDFSerial;  // ESP-IDF native
 };
 
 }  // namespace unit

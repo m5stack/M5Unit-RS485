@@ -31,7 +31,7 @@ namespace unit {
 // tRPZH / tRPZL <= 40 ns. DE and /RE are tied, so the 500 ns shutdown-exit path (tRPSH / tRPSL)
 // cannot be entered. The extra pin toggle therefore stays within the RS-485 turn-around budget.
 //
-struct DirControlledSerial final : public rs485::detail::HSSerial {
+struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
     DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : rs485::detail::HSSerial(hs), _unit(unit)
     {
     }
@@ -62,7 +62,7 @@ protected:
 // ESP-IDF counterpart of DirControlledSerial: IDFSerial plus the DIR pin handling. Only write()
 // differs, so the read side is inherited as-is.
 //
-struct DirControlledIDFSerial final : public rs485::detail::IDFSerial {
+struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSerial {
     DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : rs485::detail::IDFSerial(port), _unit(unit)
     {
     }
