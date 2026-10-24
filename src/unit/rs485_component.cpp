@@ -71,12 +71,28 @@ struct NullSerial final : public RS485Component::ISerial {
     }
 };
 
+// NullSerial holds no state, so one shared instance serves every component. A function-local
+// static keeps it independent of the initialization order between translation units, which a
+// component defined as a global object in user code would otherwise depend on.
+RS485Component::ISerial *null_serial()
+{
+    static NullSerial instance;
+    return &instance;
+}
+
 }  // namespace
 
 // class RS485Component
-RS485Component::RS485Component(const uint8_t addr) : Component(addr)
+RS485Component::RS485Component(const uint8_t addr) : Component(addr), _serial(null_serial(), SerialDeleter{false})
 {
-    _serial.reset(new NullSerial);
+}
+
+void RS485Component::install_serial(std::unique_ptr<ISerial> serial)
+{
+    if (!serial) {
+        return;
+    }
+    _serial = SerialPtr(serial.release(), SerialDeleter{true});
 }
 
 std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART *ad)
@@ -116,7 +132,7 @@ bool RS485Component::begin()
     if (!serial) {
         return false;
     }
-    _serial = std::move(serial);
+    install_serial(std::move(serial));
 
     if (_cfg.flushRX) {
         const auto start = m5::utility::millis();

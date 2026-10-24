@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 #include <cstdint>
 #include <cstring>
+#include <memory>
 #include <vector>
 #include <unit/unit_SP485.hpp>
 
@@ -110,12 +111,20 @@ public:
     FakeSerial* install()
     {
         FakeSerial* fake = new FakeSerial;
-        _serial.reset(fake);
+        install_serial(std::unique_ptr<ISerial>(fake));
         return fake;
     }
     uint32_t serialBaudRate()
     {
         return iserial()->baudRate();
+    }
+    ISerial* current()
+    {
+        return iserial();
+    }
+    void installNothing()
+    {
+        install_serial(std::unique_ptr<ISerial>());
     }
 };
 
@@ -285,4 +294,18 @@ TEST_F(TestReadPath, WriteValueWaitsForTheTransmission)
     EXPECT_EQ(fake->tx[0], 0x34);
     // Unlike write(), writeValue() drains TX before reporting success
     EXPECT_EQ(fake->flush_tx_only_count, 1u);
+}
+
+// Every Serial-compatible method dereferences the backend unconditionally, so a component must
+// never be left without one: the fallback is shared, and installing nothing keeps it in place.
+TEST(ReadPathSerialSeam, FallbackIsSharedAndSurvivesAnEmptyInstall)
+{
+    SerialAccess one{}, another{};
+    auto* fallback = one.current();
+    EXPECT_NE(fallback, nullptr);
+    EXPECT_EQ(another.current(), fallback);
+
+    one.installNothing();
+    EXPECT_EQ(one.current(), fallback);
+    EXPECT_EQ(one.available(), 0);
 }

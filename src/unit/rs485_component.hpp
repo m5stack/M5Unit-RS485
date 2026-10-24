@@ -442,6 +442,14 @@ protected:
     }
 
     /*!
+      @brief Installs a serial backend, taking over ownership and replacing the current one
+      @param serial Backend to install, typically the result of make_serial()
+      @note A null argument is ignored: every Serial-compatible method dereferences the backend
+            unconditionally, so the component must never be left without one.
+     */
+    void install_serial(std::unique_ptr<ISerial> serial);
+
+    /*!
       @brief Factory hook: build the concrete ISerial to be used by begin().
       @param ad AdapterUART obtained via asAdapter<AdapterUART>() (never null at call site)
       @return Owning pointer to the ISerial implementation, or a null-behavior implementation on
@@ -486,8 +494,24 @@ protected:
         return v;
     }
 
-    std::unique_ptr<ISerial> _serial{};
     config_t _cfg{};
+
+private:
+    // The fallback backend lives in static storage and must outlive every component, while a
+    // backend handed over by install_serial() is owned. One pointer carries both, so that no
+    // Serial-compatible method has to test for null and moving a component needs no allocation.
+    struct SerialDeleter {
+        bool owned;
+        inline void operator()(ISerial *serial) const
+        {
+            if (owned) {
+                delete serial;
+            }
+        }
+    };
+    using SerialPtr = std::unique_ptr<ISerial, SerialDeleter>;
+
+    SerialPtr _serial{};
 };
 
 }  // namespace unit
