@@ -101,9 +101,12 @@ static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSP485>::value, "a un
 static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSIT3088>::value, "a unit must be move-assignable");
 static_assert(std::is_nothrow_move_assignable<m5::unit::Tab5BuiltinRS485>::value, "a unit must be move-assignable");
 
-// Copying is prohibited: two components cannot own one serial backend.
+// Copying is prohibited: two components cannot own one serial backend. UnitSIT3088 and
+// Tab5BuiltinRS485 get it from declaring move members, which is easy to undo by accident.
 static_assert(!std::is_copy_constructible<m5::unit::UnitSP485>::value, "a unit must not be copyable");
 static_assert(!std::is_copy_assignable<m5::unit::UnitSP485>::value, "a unit must not be copy-assignable");
+static_assert(!std::is_copy_constructible<m5::unit::UnitSIT3088>::value, "a unit must not be copyable");
+static_assert(!std::is_copy_constructible<m5::unit::Tab5BuiltinRS485>::value, "a unit must not be copyable");
 
 TEST(RS485ComponentConfig, UnitsAreMovableButNotCopyable)
 {
@@ -116,6 +119,38 @@ TEST(RS485ComponentConfig, UnitsAreMovableButNotCopyable)
     m5::unit::Tab5BuiltinRS485 unit;
     m5::unit::Tab5BuiltinRS485 moved{std::move(unit)};
     EXPECT_EQ(moved.config().dir_pin, 34);
+}
+
+// Move assignment carries the configuration as well. The two halves need separate units to be
+// observed: RS485Component::operator= copies the base config_t by hand, which only a unit that
+// does not shadow config() exposes, while the derived config_t rides on the unit's own defaulted
+// operator.
+TEST(RS485ComponentConfig, MoveAssignmentCarriesTheBaseConfiguration)
+{
+    m5::unit::UnitSP485 source;
+    auto source_cfg    = source.config();
+    source_cfg.flushRX = false;
+    source.config(source_cfg);
+
+    m5::unit::UnitSP485 target;
+    EXPECT_TRUE(target.config().flushRX);
+
+    target = std::move(source);
+    EXPECT_FALSE(target.config().flushRX);
+}
+
+TEST(RS485ComponentConfig, MoveAssignmentCarriesTheDerivedConfiguration)
+{
+    m5::unit::Tab5BuiltinRS485 source;
+    auto source_cfg    = source.config();
+    source_cfg.dir_pin = 21;
+    source.config(source_cfg);
+
+    m5::unit::Tab5BuiltinRS485 target;
+    EXPECT_EQ(target.config().dir_pin, 34);
+
+    target = std::move(source);
+    EXPECT_EQ(target.config().dir_pin, 21);
 }
 
 TEST(SIT3088BeginGuard, FailsWhenDirPinUnset)

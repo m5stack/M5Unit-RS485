@@ -23,6 +23,7 @@ namespace {
 
 // ISerial backed by two byte queues: rx is what the peer sent, tx is what the unit wrote.
 struct FakeSerial : public m5::unit::RS485Component::ISerial {
+    static int destructed;  // how many instances have been destroyed so far
     std::vector<uint8_t> rx{}, tx{};
     size_t pos{};
     m5::unit::RS485Component* owner{};  // last component this backend was rebound to
@@ -94,9 +95,13 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
     {
         return baud;
     }
-    void rebind(m5::unit::RS485Component* o) noexcept override
+    ~FakeSerial() override
     {
-        owner = o;
+        ++destructed;
+    }
+    void rebind(m5::unit::RS485Component* new_owner) noexcept override
+    {
+        owner = new_owner;
     }
 
 protected:
@@ -109,6 +114,8 @@ protected:
         return got;
     }
 };
+
+int FakeSerial::destructed{};
 
 // Exposes the protected ISerial seam, like ByteswapAccess in endian_byteswap_test.cpp does for
 // the byteswap dispatch.
@@ -316,6 +323,15 @@ TEST(ReadPathSerialSeam, FallbackIsSharedAndSurvivesAnEmptyInstall)
     EXPECT_EQ(one.available(), 0);
 }
 
+// "A null argument is ignored" has to hold over a real backend too, not just over the fallback.
+TEST(ReadPathSerialSeam, EmptyInstallKeepsAnOwnedBackend)
+{
+    SerialAccess unit{};
+    FakeSerial* fake = unit.install();
+    unit.installNothing();
+    EXPECT_EQ(unit.current(), fake);
+}
+
 // Moving a component hands the backend over and tells it who owns it now, which is what lets
 // UnitSIT3088 keep driving the DIR pin through the unit. The moved-from component falls back to
 // the shared null backend instead of being left with none.
@@ -325,14 +341,58 @@ TEST(ReadPathSerialSeam, MovingAComponentRebindsTheBackend)
     FakeSerial* fake = source.install();
     EXPECT_EQ(fake->owner, nullptr);
 
+    SerialAccess untouched{};
+    const auto* fallback = untouched.current();
+
     SerialAccess moved{std::move(source)};
     EXPECT_EQ(moved.current(), fake);
     EXPECT_EQ(fake->owner, &moved);
-    EXPECT_EQ(source.current(), SerialAccess{}.current());  // the shared fallback
+    EXPECT_EQ(source.current(), fallback);
 
     SerialAccess target{};
     target = std::move(moved);
     EXPECT_EQ(target.current(), fake);
     EXPECT_EQ(fake->owner, &target);
-    EXPECT_EQ(moved.current(), SerialAccess{}.current());
+    EXPECT_EQ(moved.current(), fallback);
+}
+
+// The deleter carries the ownership flag with the pointer, so an owned backend has to be released
+// exactly once however it leaves the component: replaced by a move, replaced by a new install, or
+// carried to the end of the owner's life. The shared fallback must never be released at all.
+TEST(ReadPathSerialSeam, OwnedBackendsAreFreedExactlyOnce)
+{
+    FakeSerial::destructed = 0;
+    {
+        SerialAccess target{}, source{};
+        target.install();  // the backend that move assignment will replace
+        FakeSerial* handed_over = source.install();
+
+        target = std::move(source);
+        EXPECT_EQ(FakeSerial::destructed, 1);
+        EXPECT_EQ(target.current(), handed_over);
+
+        target.install();  // installing over an owned backend releases it
+        EXPECT_EQ(FakeSerial::destructed, 2);
+    }
+    // Leaving the scope destroys the last owned backend; source holds the fallback, which is shared
+    // and must survive.
+    EXPECT_EQ(FakeSerial::destructed, 3);
+}
+
+// Self-move assignment must leave the component alone: the guard in operator= is the only thing
+// standing between it and a component that drops its own backend.
+TEST(ReadPathSerialSeam, SelfMoveAssignmentKeepsTheBackend)
+{
+    FakeSerial::destructed = 0;
+    SerialAccess unit{};
+    FakeSerial* fake = unit.install();
+    fake->rx.push_back(0x5a);
+
+    SerialAccess& alias = unit;  // through a reference, so that -Wself-move does not fire
+    unit                = std::move(alias);
+
+    EXPECT_EQ(unit.current(), fake);
+    EXPECT_EQ(FakeSerial::destructed, 0);
+    EXPECT_EQ(unit.available(), 1);
+    EXPECT_EQ(unit.read(), 0x5a);
 }
