@@ -94,7 +94,7 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
     {
         return baud;
     }
-    void rebind(m5::unit::RS485Component* o) override
+    void rebind(m5::unit::RS485Component* o) noexcept override
     {
         owner = o;
     }

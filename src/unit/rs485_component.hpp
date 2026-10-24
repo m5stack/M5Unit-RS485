@@ -58,8 +58,10 @@ public:
         virtual uint32_t baudRate() const                                                   = 0;
         // Called on the backend when its owning component has been moved. A backend that holds a
         // pointer back to its owner (see UnitSIT3088) overrides this to follow the move; one that
-        // does not needs no implementation, which is why this is not pure.
-        virtual void rebind(RS485Component *owner)
+        // does not needs no implementation, which is why this is not pure. It runs inside the
+        // component's noexcept move, hence noexcept: an override may only store the pointer, not
+        // act on the owner, which is not fully constructed yet when a move constructor calls this.
+        virtual void rebind(RS485Component *owner) noexcept
         {
             (void)owner;
         }
@@ -72,28 +74,15 @@ public:
     ///@warning COPY PROHIBITED
     ///@name Constructor
     ///@{
+    //! @brief Deleted: a component owns its serial backend, so it cannot be copied
     RS485Component(const RS485Component &) = delete;
-
-    /*!
-      @brief Move constructor
-      @param other Component to move from
-      @details The serial backend is taken over and told about its new owner, so a backend that
-      points back at the component it serves (UnitSIT3088 drives the DIR pin through the unit)
-      follows the move. The moved-from component is left with the null-behavior backend, so its
-      Serial-compatible methods keep answering.
-      @note Do not move a unit once UnitUnified::add() has registered it: UnitUnified keeps the
-            address it was given.
-     */
-    RS485Component(RS485Component &&other) noexcept;
     ///@}
 
     ///@warning COPY PROHIBITED
     ///@name Assignment
     ///@{
+    //! @brief Deleted: a component owns its serial backend, so it cannot be copied
     RS485Component &operator=(const RS485Component &) = delete;
-
-    //! @brief Move assignment. Hands over the serial backend as the move constructor does.
-    RS485Component &operator=(RS485Component &&other) noexcept;
     ///@}
 
     /*!
@@ -444,6 +433,34 @@ protected:
     //! @brief Base constructor (concrete subclasses pass their DEFAULT_ADDRESS)
     explicit RS485Component(const uint8_t addr);
 
+    /*!
+      @brief Move constructor
+      @param other Component to move from
+      @details The serial backend is taken over and told about its new owner, so a backend that
+      points back at the component it serves (UnitSIT3088 drives the DIR pin through the unit)
+      follows the move. The moved-from component is left with the null-behavior backend, so its
+      Serial-compatible methods keep answering.
+      @note Protected on purpose: moving through a reference to this base would hand a backend
+            built for one unit to a component of another type. The concrete units declare their
+            own move members, so a unit is movable as a unit.
+      @note Do not move a unit once UnitUnified::add() has registered it: UnitUnified keeps the
+            address it was given, and the links to a parent or child component are copied rather
+            than redirected.
+      @note Recreate any UnitSP485Stream that wraps the unit: it holds a reference to the
+            component it was built from, which after a move answers through the null backend.
+     */
+    RS485Component(RS485Component &&other) noexcept;
+
+    /*!
+      @brief Move assignment
+      @param other Component to move from
+      @return Reference to this component
+      @details Hands over the serial backend as the move constructor does, and releases the
+      backend this component held.
+      @note The same three cautions as for the move constructor apply.
+     */
+    RS485Component &operator=(RS485Component &&other) noexcept;
+
     //! @brief Writes bytes and waits for the transmission to complete
     size_t write_waiting(const uint8_t *buffer, const size_t size);
 
@@ -512,6 +529,9 @@ private:
     // backend handed over by install_serial() is owned. One pointer carries both, so that no
     // Serial-compatible method has to test for null and moving a component needs no allocation.
     struct SerialDeleter {
+        // No default member initializer: that would stop SerialDeleter being an aggregate in
+        // C++11, and with it the SerialDeleter{true} / SerialDeleter{false} initializations.
+        // Value-initializing the pointer (SerialPtr _serial{}) already zeroes this.
         bool owned;
         inline void operator()(ISerial *serial) const
         {
@@ -521,6 +541,9 @@ private:
         }
     };
     using SerialPtr = std::unique_ptr<ISerial, SerialDeleter>;
+
+    // Tells an owned backend which component it belongs to now.
+    void rebind_serial() noexcept;
 
     SerialPtr _serial{};
 };

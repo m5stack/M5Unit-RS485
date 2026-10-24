@@ -58,9 +58,9 @@ public:
         config(cfg);
     }
     virtual ~Tab5BuiltinRS485() = default;
-    // Declared because the destructor above suppresses the implicit move members, which the
-    // M5_UNIT_COMPONENT_HPP_BUILDER of the base class would otherwise have provided.
+    //! @brief Move constructor. Declared because the destructor above suppresses the implicit one.
     Tab5BuiltinRS485(Tab5BuiltinRS485 &&) noexcept = default;
+    //! @brief Move assignment. Declared for the same reason as the move constructor.
     Tab5BuiltinRS485 &operator=(Tab5BuiltinRS485 &&) noexcept = default;
 };
 

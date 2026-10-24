@@ -32,7 +32,7 @@ namespace unit {
 // cannot be entered. The extra pin toggle therefore stays within the RS-485 turn-around budget.
 //
 struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
-    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : rs485::detail::HSSerial(hs), _unit(unit)
+    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : rs485::detail::HSSerial(hs), _owner(unit)
     {
     }
 
@@ -41,10 +41,14 @@ struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
         if (b == nullptr || n == 0) {
             return 0;
         }
-        _unit->set_transmit(true);
+        // The owner is always a UnitSIT3088: this decorator is created nowhere but
+        // UnitSIT3088::make_serial(). The cast happens here rather than in rebind(), because a
+        // move constructor calls rebind() while the derived object is still being built.
+        UnitSIT3088 *unit = static_cast<UnitSIT3088 *>(_owner);
+        unit->set_transmit(true);
         const size_t written = HSSerial::write(b, n);
         HSSerial::flush();  // block until TX complete before releasing DIR
-        _unit->set_transmit(false);
+        unit->set_transmit(false);
         return written;
     }
     size_t write(uint8_t b) override
@@ -52,15 +56,14 @@ struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
         return write(&b, 1);
     }
 
-    // The owning unit has been moved; follow it. The decorator is only ever created by
-    // UnitSIT3088::make_serial(), so the owner is always a UnitSIT3088.
-    void rebind(RS485Component *owner) override
+    // The owning unit has been moved; follow it.
+    void rebind(RS485Component *owner) noexcept override
     {
-        _unit = static_cast<UnitSIT3088 *>(owner);
+        _owner = owner;
     }
 
 protected:
-    UnitSIT3088 *_unit{};
+    RS485Component *_owner{};
 };
 #endif  // ARDUINO
 
@@ -70,7 +73,7 @@ protected:
 // differs, so the read side is inherited as-is.
 //
 struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSerial {
-    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : rs485::detail::IDFSerial(port), _unit(unit)
+    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : rs485::detail::IDFSerial(port), _owner(unit)
     {
     }
 
@@ -79,10 +82,12 @@ struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSeri
         if (b == nullptr || n == 0) {
             return 0;
         }
-        _unit->set_transmit(true);
+        // See DirControlledSerial::write() for why the cast is sound and why it is done here.
+        UnitSIT3088 *unit = static_cast<UnitSIT3088 *>(_owner);
+        unit->set_transmit(true);
         const size_t written = IDFSerial::write(b, n);
         IDFSerial::flush();  // block until TX complete before releasing DIR
-        _unit->set_transmit(false);
+        unit->set_transmit(false);
         return written;
     }
     size_t write(uint8_t b) override
@@ -90,15 +95,14 @@ struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSeri
         return write(&b, 1);
     }
 
-    // The owning unit has been moved; follow it. The decorator is only ever created by
-    // UnitSIT3088::make_serial(), so the owner is always a UnitSIT3088.
-    void rebind(RS485Component *owner) override
+    // The owning unit has been moved; follow it.
+    void rebind(RS485Component *owner) noexcept override
     {
-        _unit = static_cast<UnitSIT3088 *>(owner);
+        _owner = owner;
     }
 
 protected:
-    UnitSIT3088 *_unit{};
+    RS485Component *_owner{};
 };
 #endif  // !ARDUINO && ESP_PLATFORM
 

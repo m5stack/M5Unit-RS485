@@ -95,11 +95,20 @@ void RS485Component::install_serial(std::unique_ptr<ISerial> serial)
     _serial = SerialPtr(serial.release(), SerialDeleter{true});
 }
 
+// Only an owned backend is bound to a single component. The fallback is shared by every component,
+// so handing it an owner pointer would be meaningless at best.
+void RS485Component::rebind_serial() noexcept
+{
+    if (_serial.get_deleter().owned) {
+        _serial->rebind(this);
+    }
+}
+
 RS485Component::RS485Component(RS485Component &&other) noexcept
     : Component(std::move(other)), _cfg(other._cfg), _serial(std::move(other._serial))
 {
     other._serial = SerialPtr(null_serial(), SerialDeleter{false});
-    _serial->rebind(this);
+    rebind_serial();
 }
 
 RS485Component &RS485Component::operator=(RS485Component &&other) noexcept
@@ -109,7 +118,7 @@ RS485Component &RS485Component::operator=(RS485Component &&other) noexcept
         _cfg               = other._cfg;
         _serial            = std::move(other._serial);
         other._serial      = SerialPtr(null_serial(), SerialDeleter{false});
-        _serial->rebind(this);
+        rebind_serial();
     }
     return *this;
 }

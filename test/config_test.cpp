@@ -91,9 +91,9 @@ TEST(Tab5BuiltinRS485Config, BakesDirPin34)
     EXPECT_EQ(unit.config().dir_pin, 34);
 }
 
-// A unit stays movable, and the move must not throw: M5_UNIT_COMPONENT_HPP_BUILDER defaults the
-// move members with noexcept, which a base class whose own move can throw would turn into deleted
-// ones. Tab5BuiltinRS485 declares a destructor, so it has to declare the move members as well.
+// A unit must be movable, and the move must not throw: the base class defaults the move members
+// with noexcept, which a base whose own move can throw would turn into deleted ones.
+// Tab5BuiltinRS485 declares a destructor, so it has to declare the move members as well.
 static_assert(std::is_nothrow_move_constructible<m5::unit::UnitSP485>::value, "a unit must be movable");
 static_assert(std::is_nothrow_move_constructible<m5::unit::UnitSIT3088>::value, "a unit must be movable");
 static_assert(std::is_nothrow_move_constructible<m5::unit::Tab5BuiltinRS485>::value, "a unit must be movable");
@@ -101,7 +101,7 @@ static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSP485>::value, "a un
 static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSIT3088>::value, "a unit must be move-assignable");
 static_assert(std::is_nothrow_move_assignable<m5::unit::Tab5BuiltinRS485>::value, "a unit must be move-assignable");
 
-// Copying stays prohibited: two components cannot own one serial backend.
+// Copying is prohibited: two components cannot own one serial backend.
 static_assert(!std::is_copy_constructible<m5::unit::UnitSP485>::value, "a unit must not be copyable");
 static_assert(!std::is_copy_assignable<m5::unit::UnitSP485>::value, "a unit must not be copy-assignable");
 
