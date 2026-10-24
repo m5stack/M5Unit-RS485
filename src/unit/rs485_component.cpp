@@ -95,6 +95,25 @@ void RS485Component::install_serial(std::unique_ptr<ISerial> serial)
     _serial = SerialPtr(serial.release(), SerialDeleter{true});
 }
 
+RS485Component::RS485Component(RS485Component &&other) noexcept
+    : Component(std::move(other)), _cfg(other._cfg), _serial(std::move(other._serial))
+{
+    other._serial = SerialPtr(null_serial(), SerialDeleter{false});
+    _serial->rebind(this);
+}
+
+RS485Component &RS485Component::operator=(RS485Component &&other) noexcept
+{
+    if (this != &other) {
+        Component::operator=(std::move(other));
+        _cfg               = other._cfg;
+        _serial            = std::move(other._serial);
+        other._serial      = SerialPtr(null_serial(), SerialDeleter{false});
+        _serial->rebind(this);
+    }
+    return *this;
+}
+
 std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)

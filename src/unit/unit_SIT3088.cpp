@@ -52,6 +52,13 @@ struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
         return write(&b, 1);
     }
 
+    // The owning unit has been moved; follow it. The decorator is only ever created by
+    // UnitSIT3088::make_serial(), so the owner is always a UnitSIT3088.
+    void rebind(RS485Component *owner) override
+    {
+        _unit = static_cast<UnitSIT3088 *>(owner);
+    }
+
 protected:
     UnitSIT3088 *_unit{};
 };
@@ -81,6 +88,13 @@ struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSeri
     size_t write(uint8_t b) override
     {
         return write(&b, 1);
+    }
+
+    // The owning unit has been moved; follow it. The decorator is only ever created by
+    // UnitSIT3088::make_serial(), so the owner is always a UnitSIT3088.
+    void rebind(RS485Component *owner) override
+    {
+        _unit = static_cast<UnitSIT3088 *>(owner);
     }
 
 protected:

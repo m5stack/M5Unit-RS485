@@ -15,6 +15,7 @@
 #include <cstdint>
 #include <cstring>
 #include <memory>
+#include <utility>
 #include <vector>
 #include <unit/unit_SP485.hpp>
 
@@ -24,6 +25,7 @@ namespace {
 struct FakeSerial : public m5::unit::RS485Component::ISerial {
     std::vector<uint8_t> rx{}, tx{};
     size_t pos{};
+    m5::unit::RS485Component* owner{};  // last component this backend was rebound to
     uint32_t last_timeout_ms{};
     uint32_t baud{19200};
     size_t flush_count{}, flush_tx_only_count{};
@@ -91,6 +93,10 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
     uint32_t baudRate() const override
     {
         return baud;
+    }
+    void rebind(m5::unit::RS485Component* o) override
+    {
+        owner = o;
     }
 
 protected:
@@ -308,4 +314,25 @@ TEST(ReadPathSerialSeam, FallbackIsSharedAndSurvivesAnEmptyInstall)
     one.installNothing();
     EXPECT_EQ(one.current(), fallback);
     EXPECT_EQ(one.available(), 0);
+}
+
+// Moving a component hands the backend over and tells it who owns it now, which is what lets
+// UnitSIT3088 keep driving the DIR pin through the unit. The moved-from component falls back to
+// the shared null backend instead of being left with none.
+TEST(ReadPathSerialSeam, MovingAComponentRebindsTheBackend)
+{
+    SerialAccess source{};
+    FakeSerial* fake = source.install();
+    EXPECT_EQ(fake->owner, nullptr);
+
+    SerialAccess moved{std::move(source)};
+    EXPECT_EQ(moved.current(), fake);
+    EXPECT_EQ(fake->owner, &moved);
+    EXPECT_EQ(source.current(), SerialAccess{}.current());  // the shared fallback
+
+    SerialAccess target{};
+    target = std::move(moved);
+    EXPECT_EQ(target.current(), fake);
+    EXPECT_EQ(fake->owner, &target);
+    EXPECT_EQ(moved.current(), SerialAccess{}.current());
 }

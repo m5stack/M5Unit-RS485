@@ -56,33 +56,44 @@ public:
         virtual size_t write(const uint8_t *buf, const size_t len)                          = 0;
         virtual size_t write(uint8_t b)                                                     = 0;
         virtual uint32_t baudRate() const                                                   = 0;
+        // Called on the backend when its owning component has been moved. A backend that holds a
+        // pointer back to its owner (see UnitSIT3088) overrides this to follow the move; one that
+        // does not needs no implementation, which is why this is not pure.
+        virtual void rebind(RS485Component *owner)
+        {
+            (void)owner;
+        }
     };
     ///@endcond
 
     //! @brief Destructor
     virtual ~RS485Component() = default;
 
-    ///@warning COPY AND MOVE PROHIBITED
+    ///@warning COPY PROHIBITED
     ///@name Constructor
     ///@{
     RS485Component(const RS485Component &) = delete;
 
     /*!
-      @brief Deleted: a serial backend may point back at the component that owns it
-      @details UnitSIT3088 installs a backend that drives the DIR pin through the unit, so a
-      moved-to unit would keep using the moved-from one. Nothing needs to move a unit -- UnitUnified
-      takes it by reference.
+      @brief Move constructor
+      @param other Component to move from
+      @details The serial backend is taken over and told about its new owner, so a backend that
+      points back at the component it serves (UnitSIT3088 drives the DIR pin through the unit)
+      follows the move. The moved-from component is left with the null-behavior backend, so its
+      Serial-compatible methods keep answering.
+      @note Do not move a unit once UnitUnified::add() has registered it: UnitUnified keeps the
+            address it was given.
      */
-    RS485Component(RS485Component &&) = delete;
+    RS485Component(RS485Component &&other) noexcept;
     ///@}
 
-    ///@warning COPY AND MOVE PROHIBITED
+    ///@warning COPY PROHIBITED
     ///@name Assignment
     ///@{
     RS485Component &operator=(const RS485Component &) = delete;
 
-    //! @brief Deleted for the same reason as the move constructor
-    RS485Component &operator=(RS485Component &&) = delete;
+    //! @brief Move assignment. Hands over the serial backend as the move constructor does.
+    RS485Component &operator=(RS485Component &&other) noexcept;
     ///@}
 
     /*!
