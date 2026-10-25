@@ -83,6 +83,24 @@ jobs:
           - esp32
 
         include:
+          # The Transceiver variants: the example's #if branches are mutually exclusive, so each
+          # needs its own job to be compiled at all, and core 2.0.17 is the only place they would
+          # otherwise go unbuilt (the 3.x workflows cover them). The board follows the variant's
+          # form factor. Tab5 is absent on purpose: it is an ESP32-P4, which this core predates.
+          - sketch: Transceiver
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 2.0.17
+            platform: esp32
+            archi: esp32
+            board: m5stack-coreink
+            build-properties: "-DUSING_HAT_RS485"
+          - sketch: Transceiver
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 2.0.17
+            platform: esp32
+            archi: esp32
+            board: m5stack-atom
+            build-properties: "-DUSING_ATOMIC_RS485_BASE"
           # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
           # Representative board only -- the Stream usage is variant-independent and the wiring
           # paths are already covered by Transceiver.
