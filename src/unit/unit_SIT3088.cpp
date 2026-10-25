@@ -118,18 +118,18 @@ UnitSIT3088::UnitSIT3088() : RS485Component(DEFAULT_ADDRESS)
 bool UnitSIT3088::begin()
 {
 #if defined(ESP_PLATFORM)
-    if (_sit_cfg.dir_pin < 0 || static_cast<int>(_sit_cfg.dir_pin) >= GPIO_NUM_MAX) {
-        M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin out of range (%d)", _sit_cfg.dir_pin);
+    if (_dir_pin < 0 || static_cast<int>(_dir_pin) >= GPIO_NUM_MAX) {
+        M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin out of range (%d)", _dir_pin);
         return false;
     }
 #else
-    if (_sit_cfg.dir_pin < 0) {
+    if (_dir_pin < 0) {
         M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin must be set via config()");
         return false;
     }
 #endif
-    configure_dir_pin(_sit_cfg.dir_pin);
-    _configured_dir_pin = _sit_cfg.dir_pin;
+    configure_dir_pin(_dir_pin);
+    _configured_dir_pin = _dir_pin;
     set_transmit(false);  // start in RX mode
     if (!RS485Component::begin()) {
         // The pin stays an output held low on purpose: that is the transceiver's receive state,

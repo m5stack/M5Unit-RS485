@@ -66,7 +66,13 @@ public:
      */
     inline config_t config() const
     {
-        return _sit_cfg;
+        // Only dir_pin lives here; the inherited fields are kept by the base alone, so that a write
+        // through an RS485Component & reference cannot leave two copies disagreeing. Assigning the
+        // base slice rather than each field keeps this correct when the base gains one.
+        config_t cfg{};
+        static_cast<RS485Component::config_t &>(cfg) = RS485Component::config();
+        cfg.dir_pin                                  = _dir_pin;
+        return cfg;
     }
     /*!
       @brief Sets the configuration
@@ -75,8 +81,7 @@ public:
      */
     inline void config(const config_t &cfg)
     {
-        _sit_cfg = cfg;
-        // Sync inherited fields (flushRX) to the parent's storage so RS485Component::begin() sees them.
+        _dir_pin = cfg.dir_pin;
         RS485Component::config(cfg);
     }
     ///@}
@@ -112,7 +117,7 @@ private:
     struct DirControlledSerial;     // Arduino
     struct DirControlledIDFSerial;  // ESP-IDF native
 
-    config_t _sit_cfg{};
+    int8_t _dir_pin{-1};             // the only field this class owns; see config()
     int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
 };
 

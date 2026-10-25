@@ -72,6 +72,22 @@ TEST(SIT3088Config, DirPinRoundTrips)
     EXPECT_EQ(unit.config().dir_pin, 7);
 }
 
+// The inherited fields have a single home in the base, so a write through an RS485Component &
+// reference is visible through this class's config() as well. With a second copy in the derived
+// class, the two disagreed and whichever one the caller read decided what they believed.
+TEST(SIT3088Config, InheritedFieldsHaveASingleHome)
+{
+    m5::unit::UnitSIT3088 unit;
+    EXPECT_TRUE(unit.config().flushRX);
+
+    auto base_cfg    = static_cast<m5::unit::RS485Component&>(unit).config();
+    base_cfg.flushRX = false;
+    static_cast<m5::unit::RS485Component&>(unit).config(base_cfg);
+
+    EXPECT_FALSE(unit.config().flushRX);
+    EXPECT_EQ(unit.config().dir_pin, -1);  // the field this class does own is untouched
+}
+
 TEST(SIT3088Config, InheritedFlushRXReachesTheBaseStorage)
 {
     m5::unit::UnitSIT3088 unit;
