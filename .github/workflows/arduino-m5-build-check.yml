@@ -170,9 +170,20 @@ jobs:
             board: m5stack_atoms3r
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
 
+          # Tab5's built-in transceiver is a different unit on a different wiring helper
+          # (UnitSIT3088 with a software DIR pin), and the example's #if branches are mutually
+          # exclusive, so without this job that branch is never compiled here at all.
+          - sketch: Transceiver
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_tab5
+            build-properties: "-DUSING_TAB5_BUILTIN_RS485"
           # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
-          # Representative board only -- the Stream usage is variant-independent and the wiring
-          # paths are already covered by Transceiver.
+          # The Stream usage is variant-independent, but the example's own #if branches are not,
+          # so each variant needs its own job. One board per variant: the variant decides the
+          # form factor (Hat = StickC, Atomic = Atom, built-in = Tab5).
           - sketch: StreamAdapter
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
             platform-version: 3.3.10
@@ -180,6 +191,27 @@ jobs:
             archi: esp32
             board: m5stack_core
             build-properties: "-DUSING_UNIT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_stickc_plus2
+            build-properties: "-DUSING_HAT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_atom
+            build-properties: "-DUSING_ATOMIC_RS485_BASE"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_tab5
+            build-properties: "-DUSING_TAB5_BUILTIN_RS485"
 
     steps:
       - name: Checkout

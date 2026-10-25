@@ -102,8 +102,9 @@ jobs:
             board: m5stack-atom
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
-          # Representative board only -- the Stream usage is variant-independent and the wiring
-          # paths are already covered by Transceiver.
+          # The Stream usage is variant-independent, but the example's own #if branches are not,
+          # so each variant needs its own job. Tab5 is absent: it is an ESP32-P4, which this core
+          # predates.
           - sketch: StreamAdapter
             platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
             platform-version: 2.0.17
@@ -111,6 +112,20 @@ jobs:
             archi: esp32
             board: m5stack-core-esp32
             build-properties: "-DUSING_UNIT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 2.0.17
+            platform: esp32
+            archi: esp32
+            board: m5stack-coreink
+            build-properties: "-DUSING_HAT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://espressif.github.io/arduino-esp32/package_esp32_index.json
+            platform-version: 2.0.17
+            platform: esp32
+            archi: esp32
+            board: m5stack-atom
+            build-properties: "-DUSING_ATOMIC_RS485_BASE"
 
     steps:
       - name: Checkout
