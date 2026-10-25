@@ -10,6 +10,7 @@
 #include <Wire.h>
 #include <M5Unified.h>
 #include <M5UnitUnified.hpp>
+#include <M5Utility.hpp>  // millis / hasElapsed
 #include <googletest/test_template.hpp>
 #include <unit/unit_SP485.hpp>
 #include <unit/unit_SP485_stream.hpp>               // UnitSP485Stream Arduino Stream adapter
@@ -218,4 +219,51 @@ TEST_F(TestSP485, StreamAdapterForwardsWrite)
     EXPECT_EQ(stream.write(buf, sizeof(buf)), sizeof(buf));
     // Print API delegates to write().
     EXPECT_EQ(stream.print("hi"), 2u);
+}
+
+// begin() is where config_t is meant to take effect, and flushRX is the one field whose effect is
+// observable from outside: RS485Component::begin() spends ~100 ms draining the RX side when it is
+// set. Nothing else in the suite proves that the flag is read at all. Each test gets a fresh unit
+// from SetUp(), so the local UnitUnified below may re-init the shared serial.
+namespace {
+
+unsigned long measure_begin(const bool flush_rx)
+{
+    m5::unit::UnitUnified units;
+    m5::unit::UnitSP485 unit;
+    auto cfg    = unit.config();
+    cfg.flushRX = flush_rx;
+    unit.config(cfg);
+
+    bool wired = false;
+#if defined(USING_HAT_RS485)
+    wired = m5::unit::wiring::addHatUART(units, unit, 19200);
+#elif defined(USING_ATOMIC_RS485_BASE)
+    wired = m5::unit::rs485::wiring::addAtomicBaseUART(units, unit, 19200);
+#else  // USING_UNIT_RS485
+    wired = m5::unit::wiring::addUART(units, unit, 19200);
+#endif
+    if (!wired) {
+        return 0;
+    }
+    const auto start = m5::utility::millis();
+    const bool ok    = units.begin();
+    const auto spent = m5::utility::millis() - start;
+    return ok ? spent : 0;
+}
+
+}  // namespace
+
+TEST_F(TestSP485, BeginAppliesFlushRX)
+{
+    SCOPED_TRACE(ustr);
+
+    const auto drained = measure_begin(true);
+    const auto plain   = measure_begin(false);
+
+    // The drain loop runs until 100 ms have elapsed, so a begin() that honours the flag cannot be
+    // quicker than that, and one that skips it has no reason to be anywhere near it.
+    EXPECT_GE(drained, 100u) << "flushRX = true did not drain";
+    EXPECT_LT(plain, 50u) << "flushRX = false still drained";
+    EXPECT_GT(drained, plain);
 }
