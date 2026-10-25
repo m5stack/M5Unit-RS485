@@ -108,7 +108,7 @@ struct IDFSerial : public RS485Component::ISerial {
         const int written = uart_write_bytes(_port, b, n);
         return (written > 0) ? static_cast<size_t>(written) : 0;
     }
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
         return write(&b, 1);
     }

@@ -86,7 +86,7 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
         tx.insert(tx.end(), b, b + n);
         return n;
     }
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
         tx.push_back(b);
         return 1;

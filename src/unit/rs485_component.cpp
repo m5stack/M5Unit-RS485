@@ -61,7 +61,7 @@ struct NullSerial final : public RS485Component::ISerial {
     {
         return 0;
     }
-    inline size_t write(uint8_t) override
+    inline size_t write(const uint8_t) override
     {
         return 0;
     }

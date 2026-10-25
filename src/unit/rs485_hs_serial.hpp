@@ -78,7 +78,7 @@ struct HSSerial : public RS485Component::ISerial {
     {
         return _hs->write(b, n);
     }
-    inline size_t write(uint8_t b) override
+    inline size_t write(const uint8_t b) override
     {
         return _hs->write(b);
     }

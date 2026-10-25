@@ -54,7 +54,7 @@ public:
         virtual void flush()                                                                = 0;
         virtual void flush(const bool txOnly)                                               = 0;
         virtual size_t write(const uint8_t *buf, const size_t len)                          = 0;
-        virtual size_t write(uint8_t b)                                                     = 0;
+        virtual size_t write(const uint8_t b)                                               = 0;
         virtual uint32_t baudRate() const                                                   = 0;
         // Called on the backend when its owning component has been moved. A backend that holds a
         // pointer back to its owner (see UnitSIT3088) overrides this to follow the move; one that

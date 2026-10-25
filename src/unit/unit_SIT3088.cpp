@@ -51,7 +51,7 @@ struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
         unit->set_transmit(false);
         return written;
     }
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
         return write(&b, 1);
     }
@@ -90,7 +90,7 @@ struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSeri
         unit->set_transmit(false);
         return written;
     }
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
         return write(&b, 1);
     }

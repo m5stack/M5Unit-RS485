@@ -63,7 +63,7 @@ public:
       @param b Byte to write
       @return Number of bytes written
      */
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
         return _unit.write(b);
     }
