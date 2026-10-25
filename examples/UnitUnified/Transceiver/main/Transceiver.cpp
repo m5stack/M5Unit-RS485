@@ -9,12 +9,12 @@
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedRS485.h>
-#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
+#include <M5Utility.hpp>
+#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
-#include <m5_utility/stl/byteswap.hpp>
 #include <string>
 #include <vector>
 
@@ -350,7 +350,6 @@ void setup()
 
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
-    lcd.fillScreen(TFT_DARKGREEN);
 
     log_view.configure();
     log_view.render();
@@ -407,20 +406,18 @@ void loop()
 #if !defined(ARDUINO)
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <esp_timer.h>
 
 #if CONFIG_FREERTOS_UNICORE
 // Single-core SoCs run loop() on the only CPU, so the IDLE task never gets scheduled while loop()
 // busy-waits. Yielding every iteration would break the RS-485 turnaround timing, so hand the CPU
 // over briefly at a long interval instead: just often enough for IDLE to feed the task watchdog.
-static inline void feed_idle_task_periodically()
+static void feed_idle_task_periodically()
 {
     constexpr uint32_t FEED_INTERVAL_MS{2000};
     constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
-    static uint32_t last_feed_ms{};
-    const uint32_t now_ms{static_cast<uint32_t>(esp_timer_get_time() / 1000)};
-    if (now_ms - last_feed_ms >= FEED_INTERVAL_MS) {
-        last_feed_ms = now_ms;
+    static m5::utility::elapsed_time_t last_feed{};
+    if (m5::utility::hasElapsed(last_feed, FEED_INTERVAL_MS)) {
+        last_feed = m5::utility::millis();
         vTaskDelay(FEED_SLEEP_TICKS);
     }
 }
