@@ -131,7 +131,15 @@ bool UnitSIT3088::begin()
     configure_dir_pin(_sit_cfg.dir_pin);
     _configured_dir_pin = _sit_cfg.dir_pin;
     set_transmit(false);  // start in RX mode
-    return RS485Component::begin();
+    if (!RS485Component::begin()) {
+        // The pin stays an output held low on purpose: that is the transceiver's receive state,
+        // and DIR is active high, so letting it float back to the internal pull-up would enable
+        // the driver and hold the whole bus (see the Caution section of README.md). Only the
+        // bookkeeping is undone, so the unit does not report a pin it never finished setting up.
+        _configured_dir_pin = -1;
+        return false;
+    }
+    return true;
 }
 
 void UnitSIT3088::configure_dir_pin(const int8_t pin)
@@ -152,6 +160,9 @@ void UnitSIT3088::configure_dir_pin(const int8_t pin)
 void UnitSIT3088::set_transmit(const bool tx_enable)
 {
 #if defined(ESP_PLATFORM)
+    if (_configured_dir_pin < 0) {
+        return;  // begin() never completed, so there is no pin to drive
+    }
     gpio_set_level(static_cast<gpio_num_t>(_configured_dir_pin), tx_enable ? 1 : 0);
 #else
     (void)tx_enable;

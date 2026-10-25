@@ -22,13 +22,27 @@
 namespace {
 
 // Exposes the DIR pin that begin() captured, which is protected because users have no business
-// reading it.
+// reading it, and counts how often begin() got as far as configuring a pin.
 class DirPinAccess : public m5::unit::UnitSIT3088 {
 public:
     int8_t capturedDirPin() const
     {
         return configured_dir_pin();
     }
+    int configureCalls() const
+    {
+        return _configure_calls;
+    }
+
+protected:
+    void configure_dir_pin(const int8_t pin) override
+    {
+        ++_configure_calls;
+        UnitSIT3088::configure_dir_pin(pin);
+    }
+
+private:
+    int _configure_calls{};
 };
 
 }  // namespace
@@ -164,8 +178,29 @@ TEST(RS485ComponentConfig, MoveAssignmentCarriesTheDerivedConfiguration)
 
 TEST(SIT3088BeginGuard, FailsWhenDirPinUnset)
 {
-    m5::unit::UnitSIT3088 unit;
+    DirPinAccess unit;
 
-    // The guard runs before anything framework-specific, so this holds on the host too
+    // EXPECT_FALSE on its own proves nothing here: the host has no adapter, so begin() fails
+    // whether or not the guard exists. Neither does the captured pin, which is -1 both when the
+    // guard refuses and when a later failure rolls it back. What the guard uniquely means is that
+    // begin() never reached configure_dir_pin() at all.
     EXPECT_FALSE(unit.begin());
+    EXPECT_EQ(unit.configureCalls(), 0);
+    EXPECT_EQ(unit.capturedDirPin(), -1);
+}
+
+// A begin() that gets past the dir_pin guard and then fails further in (no adapter, which is every
+// host run) must not leave the unit claiming a pin it never finished setting up. The pin itself
+// stays an output held low, because DIR is active high and a floating one would enable the driver.
+TEST(SIT3088BeginGuard, AFailedBeginDoesNotClaimTheDirPin)
+{
+    DirPinAccess unit;
+    auto cfg    = unit.config();
+    cfg.dir_pin = 34;
+    unit.config(cfg);
+    EXPECT_EQ(unit.config().dir_pin, 34);
+
+    EXPECT_FALSE(unit.begin());
+    EXPECT_EQ(unit.configureCalls(), 1);   // the guard let it through and the pin was configured
+    EXPECT_EQ(unit.capturedDirPin(), -1);  // ... but the failure undid the bookkeeping
 }
