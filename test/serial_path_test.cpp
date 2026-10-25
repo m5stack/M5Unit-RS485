@@ -314,6 +314,37 @@ TEST_F(TestSerialPath, WriteRejectsNullAndEmptyBuffers)
     EXPECT_EQ(fake->_flush_count, 0u);
 }
 
+// The deprecated three- and two-argument forms are what pre-0.2.0 code calls, and they have to keep
+// waiting until they are removed. Their only remaining coverage was a static_assert on the
+// signature, which says nothing about whether the wait still happens.
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
+TEST_F(TestSerialPath, DeprecatedWaitFormsStillWaitWhenAsked)
+{
+    EXPECT_EQ(unit.write(static_cast<uint8_t>(0xAB), true), 1u);
+    EXPECT_EQ(fake->_flush_tx_only_count, 1u);
+
+    EXPECT_EQ(unit.write(static_cast<uint8_t>(0xCD), false), 1u);
+    EXPECT_EQ(fake->_flush_tx_only_count, 1u);  // asked not to wait, so no flush
+
+    EXPECT_EQ(unit.write(WIRE, sizeof(WIRE), true), sizeof(WIRE));
+    EXPECT_EQ(fake->_flush_tx_only_count, 2u);
+
+    EXPECT_EQ(unit.write(WIRE, sizeof(WIRE), false), sizeof(WIRE));
+    EXPECT_EQ(fake->_flush_tx_only_count, 2u);
+
+    EXPECT_EQ(unit.write("hi", true), 2u);
+    EXPECT_EQ(fake->_flush_tx_only_count, 3u);
+
+    // Everything reached the backend regardless of whether it waited
+    EXPECT_EQ(fake->_tx.size(), 1u + 1u + sizeof(WIRE) + sizeof(WIRE) + 2u);
+}
+#if defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
+
 TEST_F(TestSerialPath, WriteQueuesWithoutWaiting)
 {
     EXPECT_EQ(unit.write(WIRE, sizeof(WIRE)), sizeof(WIRE));

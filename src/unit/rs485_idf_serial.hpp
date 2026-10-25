@@ -18,6 +18,7 @@
 #include "rs485_component.hpp"
 #include <m5_unit_component/adapter_uart.hpp>
 #include <driver/uart.h>
+#include "rs485_tick_math.hpp"
 #include <freertos/FreeRTOS.h>
 #include <soc/soc_caps.h>
 
@@ -128,19 +129,12 @@ struct IDFSerial : public RS485Component::ISerial {
     }
 
 protected:
-    // Milliseconds to ticks, avoiding both ends pdMS_TO_TICKS() gets wrong for a caller-supplied
-    // timeout. It truncates towards zero, so with the ESP-IDF default CONFIG_FREERTOS_HZ=100 any
-    // timeout below 10 ms would become a non-blocking read; and it multiplies in 32 bits, so a
-    // timeout above 2^32 / CONFIG_FREERTOS_HZ milliseconds would wrap to an unrelated, usually much
-    // shorter, wait. Saturate just below portMAX_DELAY, which means "block forever" and must not be
-    // reachable from a timeout argument.
+    // The conversion itself lives in rs485_tick_math.hpp, which carries no ESP-IDF headers so that
+    // its edges (the sub-tick floor and the saturation below portMAX_DELAY) can be tested on the
+    // host; this backend only ever builds for ESP-IDF.
     static TickType_t ticks_of(const uint32_t timeout_ms)
     {
-        const uint64_t ticks = (static_cast<uint64_t>(timeout_ms) * configTICK_RATE_HZ) / 1000U;
-        if (ticks == 0) {
-            return (timeout_ms > 0) ? 1 : 0;
-        }
-        return (ticks >= portMAX_DELAY) ? (portMAX_DELAY - 1) : static_cast<TickType_t>(ticks);
+        return rs485::detail::ticks_from_ms<TickType_t>(timeout_ms, configTICK_RATE_HZ, portMAX_DELAY);
     }
 
     size_t read_with_wait(uint8_t *b, const size_t n, const TickType_t ticks)
