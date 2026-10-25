@@ -23,6 +23,7 @@
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedRS485.h>
+#include <M5Utility.hpp>
 #include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 
@@ -64,6 +65,10 @@ m5::unit::Tab5BuiltinRS485 unit;
 m5::unit::UnitSP485Stream stream{unit};
 
 constexpr uint32_t UART_BAUD{57600};
+// readStringUntil() has to hold a whole line, so do not leave the RX ring at the
+// HardwareSerial default: a third-party Stream& library decides how long its lines are.
+constexpr size_t UART_RX_BUFFER_SIZE{2048};
+constexpr auto UART_CONFIG{m5::unit::wiring::UartConfig::Default};
 constexpr uint32_t SEND_INTERVAL_MS{2000};
 constexpr uint32_t LINE_TIMEOUT_MS{500};
 
@@ -81,7 +86,7 @@ void sendReport(Stream& out, const uint32_t sequence)
 }
 
 uint32_t sequence{};
-uint32_t last_send_at{};
+m5::utility::elapsed_time_t last_send_at{};
 
 }  // namespace
 
@@ -101,13 +106,15 @@ void setup()
     }
 
 #if defined(USING_HAT_RS485)
-    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_ATOMIC_RS485_BASE)
-    const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_TAB5_BUILTIN_RS485)
-    const bool wired = m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #else  // USING_UNIT_RS485
-    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #endif
 
     if (!wired || !Units.begin()) {
@@ -123,6 +130,7 @@ void setup()
     lcd.fillScreen(TFT_DARKGREEN);
     lcd.setTextColor(TFT_WHITE, TFT_DARKGREEN);
     lcd.setCursor(0, 0);
+    lcd.setTextScroll(true);  // received lines go straight to the LCD; keep the newest visible
     lcd.println("UnitSP485Stream");
 }
 
