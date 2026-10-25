@@ -99,6 +99,12 @@ The chosen `CONFIG_EXAMPLE_USING_*` is mapped to the source-level `USING_*` macr
 build.
 
 
+## Migration
+
+**0.2.0 changes released APIs.** [MIGRATION.md](MIGRATION.md) lists what changed from 0.1.0 to
+0.2.0, with code on both sides of each change, and carries the same list for later releases.
+
+
 ## Related Link
 - [Unit RS485 & Datasheet](https://docs.m5stack.com/en/unit/rs485)
 - [HAT RS485 & Datasheet](https://docs.m5stack.com/en/hat/hat-rs485)
