@@ -104,7 +104,7 @@ struct Sample0 {
     float b{-12.75f};
 };
 
-size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const size_t len,
+size_t write_chunked(m5::unit::RS485Component& rs485, const uint8_t* data, const size_t len,
                      const uint32_t timeout_ms = 200)
 {
     if (data == nullptr || len == 0) {
@@ -115,7 +115,7 @@ size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const siz
     size_t total{};
 
     while (total < len && !m5::utility::hasElapsed(start, timeout_ms)) {
-        const int available = s.availableForWrite();
+        const int available = rs485.availableForWrite();
         if (available <= 0) {
             m5::utility::delay(1);
             continue;
@@ -126,7 +126,7 @@ size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const siz
             to_write = len - total;
         }
 
-        const size_t wrote = s.write(data + total, to_write);
+        const size_t wrote = rs485.write(data + total, to_write);
         if (wrote == 0) {
             m5::utility::delay(1);
             continue;
@@ -136,7 +136,7 @@ size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const siz
     // write() only queues the bytes; flush() is what waits for them to leave the wire. Show both
     // halves, because that split is what the two-argument write() means since 0.2.0.
     if (total > 0) {
-        s.flush(true);  // true = TX only
+        rs485.flush(true);  // true = TX only
     }
     return total;
 }
@@ -146,7 +146,7 @@ size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const siz
 // limit has to be taken off the wire.
 // The timeout is per chunk, not an overall budget: it ends the read when the peer stops sending,
 // which is how RS-485 frames are delimited (Modbus RTU uses an idle gap of 3.5 character times).
-size_t read_chunked(m5::unit::RS485Component& s, uint8_t* buffer, const size_t len, const uint32_t timeout_ms = 200)
+size_t read_chunked(m5::unit::RS485Component& rs485, uint8_t* buffer, const size_t len, const uint32_t timeout_ms = 200)
 {
     if (buffer == nullptr || len == 0) {
         return 0;
@@ -154,7 +154,7 @@ size_t read_chunked(m5::unit::RS485Component& s, uint8_t* buffer, const size_t l
 
     size_t total{};
     while (total < len) {
-        const size_t got = s.readBytes(buffer + total, len - total, timeout_ms);
+        const size_t got = rs485.readBytes(buffer + total, len - total, timeout_ms);
         if (got == 0) {
             break;  // nothing more arrived within the timeout
         }
