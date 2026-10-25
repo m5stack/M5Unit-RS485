@@ -14,7 +14,7 @@ Hat RS485 is an RS485 converter compatible with StickC. It integrates SP485EEN i
 ### SKU:A131
 Atomic RS485 Base is a TTL-RS485 converter based on the Atomic design, used for converting TTL level to RS485 level. RS485 is a widely used electrical standard in the industrial field, featuring stronger anti-interference capability and longer transmission distance. It has a built-in DC-DC step-down regulator chip, which can directly convert the 6 ~ 24V voltage of RS485 to 5V to power the ATOM, eliminating the trouble of separate power supply. When multiple devices require communication control, using the Atomic RS485 for interface type conversion will be a good choice.
 
-### Tab5 built-in RS-485 (SIT3088)
+### Built-in SIT3088
 M5Stack Tab5 (ESP32-P4) has a built-in RS-485 transceiver (SIT3088) on the bottom edge, with RX=GPIO21 / TX=GPIO20 and manual direction control via DIR=GPIO34. Unlike SP485EEN-based products (U034 / U067 / A131), the DIR pin must be driven by software; `UnitSIT3088` handles this automatically via an internal decorator on the underlying Serial. `Tab5BuiltinRS485` is a thin subclass that bakes the Tab5-specific DIR pin (GPIO34) into config for out-of-the-box use.
 
 
@@ -69,7 +69,8 @@ You must choose a define symbol for the unit you will use.
 
 > **NOTE:** The ESP-IDF native build (`idf.py`) targets ESP-IDF **5.1 or later** (5.x and 6.x).
 
-The examples also build with `idf.py`. The unit is selected from menuconfig instead of a define symbol.
+The Transceiver example also builds with `idf.py`. The unit is selected from menuconfig instead of a
+define symbol.
 
 ```sh
 cd examples/UnitUnified/Transceiver

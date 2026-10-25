@@ -23,6 +23,10 @@ unit.flush(true);          // true = TX only
 The forms taking a trailing `bool` are kept as `[[deprecated]]` overloads, so existing code
 still compiles and still waits. They are scheduled for removal in 0.3.0.
 
+Code that relied on the old *default* gets no such warning: `write(buffer, size)` compiled in
+0.1.0 and compiles now, but it no longer waits. Look for two-argument `write()` calls whose next
+step needs the line free, and add `flush(true)` to them.
+
 A second argument that cannot be a byte count is now a compile error instead of a silent
 one-byte write: `write(buffer, 'a')` and `write(bytes, true)` are rejected.
 
