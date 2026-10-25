@@ -108,6 +108,15 @@ static_assert(!std::is_copy_assignable<m5::unit::UnitSP485>::value, "a unit must
 static_assert(!std::is_copy_constructible<m5::unit::UnitSIT3088>::value, "a unit must not be copyable");
 static_assert(!std::is_copy_constructible<m5::unit::Tab5BuiltinRS485>::value, "a unit must not be copyable");
 
+// config() reads the settings, so it must be callable on a const unit, and it returns a copy so
+// that a caller cannot write through it.
+static_assert(
+    std::is_same<decltype(std::declval<const m5::unit::UnitSP485&>().config()), m5::unit::UnitSP485::config_t>::value,
+    "config() must be const and return by value");
+static_assert(std::is_same<decltype(std::declval<const m5::unit::UnitSIT3088&>().config()),
+                           m5::unit::UnitSIT3088::config_t>::value,
+              "config() must be const and return by value");
+
 TEST(RS485ComponentConfig, UnitsAreMovableButNotCopyable)
 {
     EXPECT_TRUE(std::is_nothrow_move_constructible<m5::unit::UnitSP485>::value);

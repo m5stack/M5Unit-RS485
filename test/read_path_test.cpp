@@ -127,10 +127,6 @@ public:
         install_serial(std::unique_ptr<ISerial>(fake));
         return fake;
     }
-    uint32_t serialBaudRate()
-    {
-        return iserial()->baudRate();
-    }
     ISerial* current()
     {
         return iserial();
@@ -281,7 +277,7 @@ TEST_F(TestReadPath, FlushIsForwarded)
 TEST_F(TestReadPath, AvailableForWriteAndBaudRateAreForwarded)
 {
     EXPECT_EQ(unit.availableForWrite(), 64);
-    EXPECT_EQ(unit.serialBaudRate(), 19200u);
+    EXPECT_EQ(unit.baudRate(), 19200u);
 }
 
 TEST_F(TestReadPath, WriteQueuesWithoutWaiting)
@@ -311,6 +307,21 @@ TEST_F(TestReadPath, WriteValueWaitsForTheTransmission)
 
 // Every Serial-compatible method dereferences the backend unconditionally, so a component must
 // never be left without one: the fallback is shared, and installing nothing keeps it in place.
+// baudRate() answers through whatever backend is installed, so a unit that never reached a
+// successful begin() reports 0 through the shared fallback. This is the contract the accessor's
+// documentation states, and the only one observable without hardware.
+TEST(ReadPathSerialSeam, BaudRateIsZeroWithoutAnInstalledBackend)
+{
+    SerialAccess fresh{};
+    EXPECT_EQ(fresh.baudRate(), 0u);
+
+    SerialAccess moved_from{};
+    moved_from.install();
+    SerialAccess target{std::move(moved_from)};
+    EXPECT_EQ(target.baudRate(), 19200u);
+    EXPECT_EQ(moved_from.baudRate(), 0u);
+}
+
 TEST(ReadPathSerialSeam, FallbackIsSharedAndSurvivesAnEmptyInstall)
 {
     SerialAccess one{}, another{};

@@ -64,7 +64,7 @@ public:
       @brief Gets the configuration
       @return Current configuration
      */
-    inline config_t config()
+    inline config_t config() const
     {
         return _sit_cfg;
     }

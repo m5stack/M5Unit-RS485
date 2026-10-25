@@ -44,6 +44,13 @@ m5::unit::wiring::addAtomicBaseUART(units, unit, 115200, UartConfig::Default, 51
 
 The raw `SERIAL_*` form is kept as a `[[deprecated]]` overload, also scheduled for removal in 0.3.0.
 
+### readValue / writeValue are limited to 256 bytes
+
+Both templates copy the value through a stack buffer of `sizeof(T)` bytes, which had no upper
+bound. They now reject anything over 256 bytes at compile time -- the largest Modbus RTU frame,
+and this library's default RX buffer size. Aggregates stay supported up to that size; a larger
+one has to be read in pieces with `readBytes()`.
+
 ### A unit can be moved, but only before it is added
 
 `UnitRS485` / `UnitSP485` / `UnitSIT3088` / `Tab5BuiltinRS485` are movable, so a unit can be

@@ -105,7 +105,7 @@ public:
       @brief Gets the configuration
       @return Current configuration
      */
-    inline config_t config()
+    inline config_t config() const
     {
         return _cfg;
     }
@@ -129,6 +129,17 @@ public:
     inline operator bool() const
     {
         return isRegistered();
+    }
+    /*!
+      @brief Returns the baud rate the serial port is running at
+      @return Baud rate in bps, or 0 while no serial backend is installed, or if the driver
+      cannot report it
+      @note No backend is installed before the first successful begin(), and on a component
+            that has been moved from. A begin() that fails leaves the backend already installed.
+     */
+    inline uint32_t baudRate() const
+    {
+        return _serial->baudRate();
     }
     /*!
       @brief Returns the number of available bytes to read
@@ -381,12 +392,15 @@ public:
       @note Waits for sizeof(T) bytes with the backend's own timeout, as the two-argument
       readBytes() does: the one set by HardwareSerial::setTimeout() on Arduino, and a fixed
       1000 ms on ESP-IDF native. Use readBytes() with an explicit timeout to control it.
+      @note sizeof(T) must be 256 bytes or less: the value goes through a stack buffer, and 256
+      bytes is the largest Modbus RTU frame as well as this library's default RX buffer size.
      */
     template <typename T, bool LittleEndian = true>
     bool readValue(T &value)
     {
         static_assert(std::is_trivially_copyable<T>::value && std::is_standard_layout<T>::value,
                       "readValue requires trivially copyable, standard-layout types only");
+        static_assert(sizeof(T) <= 256, "readValue reads T through a stack buffer; sizeof(T) must be <= 256");
         value = T{};
         uint8_t buf[sizeof(T)]{};
         size_t got = _serial->readBytes(buf, sizeof(T));
@@ -413,12 +427,15 @@ public:
       bit patterns without special-casing.
       @note Unlike write(), this waits for the transmission to complete before returning, so a
       value is always fully on the wire when it reports success.
+      @note sizeof(T) must be 256 bytes or less: the value goes through a stack buffer, and 256
+      bytes is the largest Modbus RTU frame as well as this library's default RX buffer size.
      */
     template <typename T, bool LittleEndian = true>
     bool writeValue(const T value)
     {
         static_assert(std::is_trivially_copyable<T>::value && std::is_standard_layout<T>::value,
                       "writeValue requires trivially copyable, standard-layout types only");
+        static_assert(sizeof(T) <= 256, "writeValue writes T through a stack buffer; sizeof(T) must be <= 256");
         T tmp = value;
         if (LittleEndian != m5::endian::little) {
             tmp = byteswap_if_needed(tmp);
@@ -461,7 +478,7 @@ protected:
      */
     RS485Component &operator=(RS485Component &&other) noexcept;
 
-    //! @brief Writes bytes and waits for the transmission to complete
+    // Writes bytes and waits for the transmission to complete
     size_t write_waiting(const uint8_t *buffer, const size_t size);
 
     inline ISerial *iserial()
