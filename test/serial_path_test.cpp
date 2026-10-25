@@ -31,6 +31,9 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
     uint32_t _last_timeout_ms{};
     uint32_t _baud{19200};
     size_t _flush_count{}, _flush_tx_only_count{};
+    // Every read funnels into take(), so without these the four entry points are
+    // indistinguishable and nothing pins which one readValue() goes through.
+    size_t _read_count{}, _read_buf_count{}, _read_bytes_count{}, _read_bytes_timeout_count{};
 
     void feed(const uint8_t* data, const size_t len)
     {
@@ -56,18 +59,22 @@ struct FakeSerial : public m5::unit::RS485Component::ISerial {
     }
     int read() override
     {
+        ++_read_count;
         return (_pos < _rx.size()) ? static_cast<int>(_rx[_pos++]) : -1;
     }
     size_t read(uint8_t* b, const size_t n) override
     {
+        ++_read_buf_count;
         return take(b, n);
     }
     size_t readBytes(uint8_t* b, const size_t n) override
     {
+        ++_read_bytes_count;
         return take(b, n);
     }
     size_t readBytes(uint8_t* b, const size_t n, const uint32_t timeout_ms) override
     {
+        ++_read_bytes_timeout_count;
         _last_timeout_ms = timeout_ms;
         return take(b, n);
     }
@@ -214,6 +221,11 @@ TEST_F(TestSerialPath, ReadBytesOverloads)
     fake->feed(WIRE, sizeof(WIRE));
     EXPECT_EQ(unit.readBytes(cbuf, sizeof(cbuf), 1), sizeof(cbuf));
     EXPECT_EQ(fake->_last_timeout_ms, 1u);
+
+    // Two calls per form, and neither form may fall back to the other or to read()
+    EXPECT_EQ(fake->_read_bytes_count, 2u);
+    EXPECT_EQ(fake->_read_bytes_timeout_count, 2u);
+    EXPECT_EQ(fake->_read_count, 0u);
 }
 
 TEST_F(TestSerialPath, ReadValueLittleEndian)
@@ -224,6 +236,14 @@ TEST_F(TestSerialPath, ReadValueLittleEndian)
     uint16_t v{};
     EXPECT_TRUE((unit.readValue<uint16_t, true>(v)));
     EXPECT_EQ(v, 0x1234);
+
+    // readValue() must wait for the bytes, which is what the two-argument readBytes() does. Reading
+    // the value byte by byte, or with an explicit timeout, would return the same data here, so the
+    // route is asserted rather than the result.
+    EXPECT_EQ(fake->_read_bytes_count, 1u);
+    EXPECT_EQ(fake->_read_count, 0u);
+    EXPECT_EQ(fake->_read_buf_count, 0u);
+    EXPECT_EQ(fake->_read_bytes_timeout_count, 0u);
 }
 
 TEST_F(TestSerialPath, ReadValueBigEndian)
@@ -279,6 +299,19 @@ TEST_F(TestSerialPath, AvailableForWriteAndBaudRateAreForwarded)
 {
     EXPECT_EQ(unit.availableForWrite(), 64);
     EXPECT_EQ(unit.baudRate(), 19200u);
+}
+
+// The guards in RS485Component::write() -- a null buffer or a zero length -- were covered only by
+// the embedded suites, where a failure costs a hardware run to find.
+TEST_F(TestSerialPath, WriteRejectsNullAndEmptyBuffers)
+{
+    EXPECT_EQ(unit.write(WIRE, 0), 0u);
+    EXPECT_EQ(unit.write(static_cast<const uint8_t*>(nullptr), 5), 0u);
+    EXPECT_EQ(unit.write(static_cast<const char*>(nullptr), 5), 0u);
+    EXPECT_EQ(unit.write(static_cast<const char*>(nullptr)), 0u);
+
+    EXPECT_TRUE(fake->_tx.empty());
+    EXPECT_EQ(fake->_flush_count, 0u);
 }
 
 TEST_F(TestSerialPath, WriteQueuesWithoutWaiting)
