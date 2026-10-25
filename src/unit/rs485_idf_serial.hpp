@@ -48,13 +48,22 @@ struct IDFSerial : public RS485Component::ISerial {
     }
     int availableForWrite() override
     {
+        // uart_get_tx_buffer_free_size() answers ESP_OK with 0 both for a port installed without a
+        // TX ring buffer and for one whose ring is full, so a zero proves nothing. A non-zero answer
+        // does: it can only come from a ring, and once one has been seen, every later zero is a full
+        // ring rather than a missing one. Until then, report the hardware FIFO length, which is what
+        // a ring-less port can take in one go (uart_write_bytes() copies into the FIFO and blocks).
         size_t free_size{};
-        // The port is installed without a TX ring buffer, so uart_write_bytes() copies straight
-        // into the hardware FIFO and blocks. Report the FIFO length as the writable chunk size.
-        if (uart_get_tx_buffer_free_size(_port, &free_size) != ESP_OK || free_size == 0) {
-            return SOC_UART_FIFO_LEN;
+        if (uart_get_tx_buffer_free_size(_port, &free_size) == ESP_OK) {
+            if (free_size > 0) {
+                _tx_ring_seen = true;
+                return static_cast<int>(free_size);
+            }
+            if (_tx_ring_seen) {
+                return 0;  // the ring is there and full
+            }
         }
-        return static_cast<int>(free_size);
+        return SOC_UART_FIFO_LEN;
     }
     int peek() override
     {
@@ -153,6 +162,7 @@ protected:
     }
 
     uart_port_t _port{UART_NUM_1};
+    bool _tx_ring_seen{};  // a non-zero free size was observed once, so a TX ring exists
     int _peeked{-1};
     // Timeout of the two-argument readBytes() (and therefore of readValue<T>()). Fixed at the
     // Arduino Stream default: this backend has no HardwareSerial object whose setTimeout() could
