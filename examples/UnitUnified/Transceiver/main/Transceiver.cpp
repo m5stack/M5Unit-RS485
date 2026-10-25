@@ -133,6 +133,33 @@ size_t write_chunked(m5::unit::RS485Component& s, const uint8_t* data, const siz
         }
         total += wrote;
     }
+    // write() only queues the bytes; flush() is what waits for them to leave the wire. Show both
+    // halves, because that split is what the two-argument write() means since 0.2.0.
+    if (total > 0) {
+        s.flush(true);  // true = TX only
+    }
+    return total;
+}
+
+// Counterpart of write_chunked(): reads a block with an explicit timeout instead of polling
+// read() one byte at a time. readBytes() is also how a value larger than readValue()'s 256-byte
+// limit has to be taken off the wire.
+// The timeout is per chunk, not an overall budget: it ends the read when the peer stops sending,
+// which is how RS-485 frames are delimited (Modbus RTU uses an idle gap of 3.5 character times).
+size_t read_chunked(m5::unit::RS485Component& s, uint8_t* buffer, const size_t len, const uint32_t timeout_ms = 200)
+{
+    if (buffer == nullptr || len == 0) {
+        return 0;
+    }
+
+    size_t total{};
+    while (total < len) {
+        const size_t got = s.readBytes(buffer + total, len - total, timeout_ms);
+        if (got == 0) {
+            break;  // nothing more arrived within the timeout
+        }
+        total += got;
+    }
     return total;
 }
 
@@ -368,15 +395,8 @@ void loop()
 
     // Receive
     if (unit.available()) {
-        receive_bytes.clear();
-        receive_bytes.reserve(static_cast<size_t>(unit.available()));
-        while (unit.available() > 0) {
-            const int value = unit.read();
-            if (value < 0) {
-                break;
-            }
-            receive_bytes.push_back(static_cast<uint8_t>(value));
-        }
+        receive_bytes.resize(static_cast<size_t>(unit.available()));
+        receive_bytes.resize(read_chunked(unit, receive_bytes.data(), receive_bytes.size()));
 
         receive_batch_total = receive_bytes.size();
         flush_received(log_view);
