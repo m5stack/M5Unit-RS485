@@ -136,11 +136,27 @@ jobs:
             framework: Arduino
             espressif32: latest
           # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
-          # Representative board only -- the Stream usage is variant-independent and the wiring
-          # paths are already covered by Transceiver above.
+          # The Stream usage is variant-independent, but the example's own #if branches are
+          # mutually exclusive, so one job per variant is what compiles them at all. One board
+          # each: the variant decides the form factor (Hat = StickC, Atomic = Atom, built-in = Tab5).
           - example: StreamAdapter
             unit: 'UnitRS485'
             board: Core
+            framework: Arduino
+            espressif32: latest
+          - example: StreamAdapter
+            unit: 'HatRS485'
+            board: StickCPlus2
+            framework: Arduino
+            espressif32: latest
+          - example: StreamAdapter
+            unit: 'AtomicRS485Base'
+            board: AtomS3
+            framework: Arduino
+            espressif32: latest
+          - example: StreamAdapter
+            unit: 'BuiltinRS485'
+            board: Tab5
             framework: Arduino
             espressif32: latest
 
