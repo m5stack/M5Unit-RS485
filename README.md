@@ -31,6 +31,16 @@ Add **120Ω termination at both ends** of the RS485 bus to suppress reflections.
 **External products (SKU:U034 / SKU:U067 / SKU:A131) do not include built-in termination resistors**, so add external termination when needed.  
 **M5Stack Tab5 built-in RS-485 provides a switchable 120Ω terminator via a physical switch on the back of the device**; enable it when Tab5 sits at either end of the bus.
 
+**Not every pair of units talks at every baud rate.** The three external products drive the
+line through the same auto-direction circuit, but they are not identical, and some
+combinations lose data at higher rates while the same wiring works at a lower one. Measured
+on hardware at 57600 baud: Atomic RS485 Base (A131) paired with Hat RS485 (U067) decoded
+nothing in one direction -- long messages and six-byte values alike, the first byte of a
+frame arriving intact and the rest as noise -- while the identical cable, units and hosts
+carried all 1946 bytes in both directions once the sketch was rebuilt for 9600. The same
+A131 paired with Unit RS485 (U034) ran clean at 57600. Only the baud rate differed between
+those runs, so if a link garbles data, try a lower rate before changing code.
+
 **Leaving the unit's TX pin unconnected blocks the whole bus.** On U034 / U067 / A131 the
 transceiver's DI is tied to GND and its DE / /RE are driven from TX through a transistor (see the
 Schematics on each SKU page), so the driver is enabled exactly while TX is low. A floating TX
