@@ -11,6 +11,13 @@ Unit RS485 is a TTL-RS485 converter, used to convert TTL level signals to RS485 
 ### SKU:U067
 Hat RS485 is an RS485 converter compatible with StickC. It integrates SP485EEN internally, mainly consisting of a 485 automatic transceiver circuit and a DC-DC buck circuit (which can step down the input voltage to 5V). RS485 is a standard used to define the electrical characteristics of drivers and receivers for serial communication systems, widely used in industrial fields, supporting multi-point systems. This product is used to convert TTL standard to RS485 standard. If the external serial device uses the RS485 standard, this module performs TTL-RS485 level conversion to enable communication between devices.
 
+> **Note (StickS3 + Hat RS485 boot):** StickS3's Hat header uses GPIO 0 as its **RX** pin, and GPIO 0 is
+> the ESP32-S3 boot-mode strap. The Hat's receiver output drives that pin, so a low on the RS-485 bus
+> holds GPIO 0 low at reset and the board starts in DOWNLOAD MODE instead of running the sketch
+> (flashing itself still succeeds). Detach the Hat before flashing, then re-attach it once the firmware
+> is running. StickCPlus2 is not affected: its Hat header maps RX to GPIO 26 and GPIO 0 to TX, which the
+> host holds high.
+
 ### SKU:A131
 Atomic RS485 Base is a TTL-RS485 converter based on the Atomic design, used for converting TTL level to RS485 level. RS485 is a widely used electrical standard in the industrial field, featuring stronger anti-interference capability and longer transmission distance. It has a built-in DC-DC step-down regulator chip, which can directly convert the 6 ~ 24V voltage of RS485 to 5V to power the ATOM, eliminating the trouble of separate power supply. When multiple devices require communication control, using the Atomic RS485 for interface type conversion will be a good choice.
 
