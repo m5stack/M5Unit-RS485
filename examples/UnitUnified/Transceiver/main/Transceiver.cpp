@@ -393,6 +393,16 @@ void loop()
     }
 
     // Receive
+    //
+    // Whatever arrives is shown as-is, which is what makes this a demonstration rather than a
+    // pattern to copy. Two things a real application has to handle and this does not:
+    //
+    //  - RS-485 carries no framing, so a read returns whatever has arrived so far. A long message
+    //    shows up split across several batches here; an application needs a length header, a
+    //    delimiter, or an idle gap (Modbus RTU uses 3.5 character times) to know where a frame ends.
+    //  - A node whose power is coming up or going down drives the line while its transceiver is in
+    //    an indeterminate state, so bursts of corrupted bytes appear on the bus (see the Caution
+    //    section of README.md). An application needs a checksum to reject them.
     if (unit.available()) {
         receive_bytes.resize(static_cast<size_t>(unit.available()));
         receive_bytes.resize(read_chunked(unit, receive_bytes.data(), receive_bytes.size()));

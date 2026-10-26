@@ -30,6 +30,14 @@ Schematics on each SKU page), so the driver is enabled exactly while TX is low. 
 leaves the driver enabled and holds the line at that level, and a unit plugged in with nothing on
 its GROVE side then stops every other node from transmitting.
 
+**The same thing happens while a node's power is coming up or going down.** A host that has just
+lost power leaves TX low, so its driver stays enabled for as long as the unit's capacitors hold it
+up, and the whole bus is unusable until they drain. Measured on hardware: with the peer unplugged
+but still discharging, every message a second node sent came back to it corrupted; once the peer
+had drained, the same node sent a hundred messages with nothing returning. Power a node up and the
+transition drives the line briefly again. Plan for a device dropping off the bus to disturb it for
+a moment rather than cleanly disappearing.
+
 See also https://docs.m5stack.com/en/arduino/projects/atomic/atomic_rs485_232_base
 
 ## Examples
