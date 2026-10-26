@@ -23,6 +23,15 @@ namespace {
 
 // Exposes the DIR pin that begin() captured, which is protected because users have no business
 // reading it, and counts how often begin() got as far as configuring a pin.
+//
+// Neither override chains to the base, so no GPIO is touched. That is deliberate: this file sits in
+// test/, so it is compiled into every test environment, including boards whose chip has no built-in
+// SIT3088 at all. Driving a real pin there would mean picking a number that is below GPIO_NUM_MAX on
+// the smallest chip in the matrix (28 on ESP32-H2), output-capable (GPIO 34-39 are input-only on
+// ESP32 classic) and unused by the board under test (GPIO 1/2 are the GROVE UART these very tests
+// run on) -- three constraints that no single constant satisfies. What the real pin setup does is
+// covered where the hardware actually exists: TestTab5BuiltinRS485.DirPinConfigured and friends
+// drive GPIO 34 on a Tab5.
 class DirPinAccess : public m5::unit::UnitSIT3088 {
 public:
     int8_t capturedDirPin() const
@@ -35,10 +44,12 @@ public:
     }
 
 protected:
-    void configure_dir_pin(const int8_t pin) override
+    void configure_dir_pin(const int8_t /*pin*/) override
     {
         ++_configure_calls;
-        UnitSIT3088::configure_dir_pin(pin);
+    }
+    void set_transmit(const bool /*tx_enable*/) override
+    {
     }
 
 private:
@@ -211,10 +222,15 @@ TEST(SIT3088BeginGuard, FailsWhenDirPinUnset)
 TEST(SIT3088BeginGuard, AFailedBeginDoesNotClaimTheDirPin)
 {
     DirPinAccess unit;
-    auto cfg    = unit.config();
-    cfg.dir_pin = 34;
+    auto cfg = unit.config();
+    // Any pin below GPIO_NUM_MAX gets past the guard, and 2 is the one number that is a real GPIO on
+    // every chip this file is compiled for. The pin is never driven (see DirPinAccess), so the value
+    // carries no meaning beyond clearing the guard. Tab5's own 34 would fail the guard on ESP32-H2,
+    // whose GPIO_NUM_MAX is 28 -- correct library behaviour, but it stops this test before the
+    // rollback it exists to check.
+    cfg.dir_pin = 2;
     unit.config(cfg);
-    EXPECT_EQ(unit.config().dir_pin, 34);
+    EXPECT_EQ(unit.config().dir_pin, 2);
 
     EXPECT_FALSE(unit.begin());
     EXPECT_EQ(unit.configureCalls(), 1);   // the guard let it through and the pin was configured
