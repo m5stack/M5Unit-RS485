@@ -395,7 +395,7 @@ void loop()
     // Receive
     //
     // Whatever arrives is shown as-is, which is what makes this a demonstration rather than a
-    // pattern to copy. Two things a real application has to handle and this does not:
+    // pattern to copy. Three things a real application has to handle and this does not:
     //
     //  - RS-485 carries no framing, so a read returns whatever has arrived so far. A long message
     //    shows up split across several batches here; an application needs a length header, a
@@ -403,6 +403,8 @@ void loop()
     //  - A node whose power is coming up or going down drives the line while its transceiver is in
     //    an indeterminate state, so bursts of corrupted bytes appear on the bus (see the Caution
     //    section of README.md). An application needs a checksum to reject them.
+    //  - Drawing shares this loop, so on a large panel a read can lag the wire by seconds. The RX
+    //    ring (UART_RX_BUFFER_SIZE) absorbs that; a smaller one would drop bytes instead.
     if (unit.available()) {
         receive_bytes.resize(static_cast<size_t>(unit.available()));
         receive_bytes.resize(read_chunked(unit, receive_bytes.data(), receive_bytes.size()));
