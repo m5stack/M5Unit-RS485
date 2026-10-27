@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -126,7 +126,9 @@ Namespaces</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>SIT3088 unit for M5UnitUnified (manual direction-controlled RS-485 transceiver) </p>
-<p>The SIT3088 transceiver does NOT auto-control DE/RE like SP485EEN; the host must drive a DIR pin (typically DE and /RE tied) high before transmitting and low after transmission completes. Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34). </p><dl class="section note"><dt>Note</dt><dd>The public API is framework-agnostic. Framework-specific bits are confined to the translation unit. Direction-pin control requires ESP_PLATFORM (uses driver/gpio.h) — this covers Arduino-ESP32 today and will cover ESP-IDF native support (planned) equally. Non-ESP targets get a no-op set_transmit() and skip the DIR toggle. </dd></dl>
+<p>The SIT3088 transceiver does NOT auto-control DE/RE like SP485EEN; the host must drive a DIR pin (typically DE and /RE tied) high before transmitting and low after transmission completes. Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34). </p><dl class="section note"><dt>Note</dt><dd>Because DIR has to stay asserted until the last stop bit is on the wire, every write() on this unit waits for the transmission to complete &ndash; unlike RS485Component::write(), which only queues. flush() is therefore redundant here, not wrong. </dd>
+<dd>
+The public API is framework-agnostic. Framework-specific bits are confined to the translation unit. Direction-pin control requires ESP_PLATFORM (uses driver/gpio.h) — this covers Arduino-ESP32 and ESP-IDF native equally. Non-ESP targets get a no-op set_transmit() and skip the DIR toggle. </dd></dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

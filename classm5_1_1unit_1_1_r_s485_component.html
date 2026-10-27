@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -118,20 +118,18 @@ Inheritance diagram for m5::unit::RS485Component:</div>
   <img src="classm5_1_1unit_1_1_r_s485_component.png" usemap="#m5::unit::RS485Component_map" alt=""/>
   <map id="m5::unit::RS485Component_map" name="m5::unit::RS485Component_map">
 <area href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)" alt="m5::unit::UnitSIT3088" shape="rect" coords="0,112,160,136"/>
-<area href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit using the SP485EEN transceiver (auto direction control)" alt="m5::unit::UnitSP485" shape="rect" coords="170,112,330,136"/>
+<area href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit whose transceiver direction is controlled on the board, not by software." alt="m5::unit::UnitSP485" shape="rect" coords="170,112,330,136"/>
 <area href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html" title="M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)" alt="m5::unit::Tab5BuiltinRS485" shape="rect" coords="0,168,160,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__float__tag.html">byteswap_float_tag</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__int__tag.html">byteswap_int_tag</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__none__tag.html">byteswap_none_tag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__tag__of.html">byteswap_tag_of</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__value__tag.html">byteswap_value_tag</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Settings for begin.  <a href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html#details">More...</a><br /></td></tr>
@@ -146,20 +144,39 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~RS485Component</b
 <tr class="memitem:a78cf439bf663f660da85e9cedc76f823" id="r_a78cf439bf663f660da85e9cedc76f823"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a78cf439bf663f660da85e9cedc76f823">begin</a> () override</td></tr>
 <tr class="memdesc:a78cf439bf663f660da85e9cedc76f823"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begin using the registered UART adapter.  <br /></td></tr>
 <tr class="separator:a78cf439bf663f660da85e9cedc76f823"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Constructor</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><dl class="section warning"><dt>Warning</dt><dd>COPY PROHIBITED </dd></dl>
+</div></td></tr>
+<tr class="memitem:a905a7c6b5a6e3f420f6bd2f61ecc826f" id="r_a905a7c6b5a6e3f420f6bd2f61ecc826f"><td class="memItemLeft" align="right" valign="top"><a id="a905a7c6b5a6e3f420f6bd2f61ecc826f" name="a905a7c6b5a6e3f420f6bd2f61ecc826f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>RS485Component</b> (const <a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;)=delete</td></tr>
+<tr class="memdesc:a905a7c6b5a6e3f420f6bd2f61ecc826f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: a component owns its serial backend, so it cannot be copied. <br /></td></tr>
+<tr class="separator:a905a7c6b5a6e3f420f6bd2f61ecc826f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Assignment</div></td></tr>
+<tr><td colspan="2"><div class="groupText"><dl class="section warning"><dt>Warning</dt><dd>COPY PROHIBITED </dd></dl>
+</div></td></tr>
+<tr class="memitem:af93458b5c9659fff7934f9980c7ccf5c" id="r_af93458b5c9659fff7934f9980c7ccf5c"><td class="memItemLeft" align="right" valign="top"><a id="af93458b5c9659fff7934f9980c7ccf5c" name="af93458b5c9659fff7934f9980c7ccf5c"></a>
+<a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (const <a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;)=delete</td></tr>
+<tr class="memdesc:af93458b5c9659fff7934f9980c7ccf5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: a component owns its serial backend, so it cannot be copied. <br /></td></tr>
+<tr class="separator:af93458b5c9659fff7934f9980c7ccf5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Settings for begin</div></td></tr>
-<tr class="memitem:ae0367a7c2b1e8918c2861d8e506aee4a" id="r_ae0367a7c2b1e8918c2861d8e506aee4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae0367a7c2b1e8918c2861d8e506aee4a">config</a> ()</td></tr>
-<tr class="memdesc:ae0367a7c2b1e8918c2861d8e506aee4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the configuration.  <br /></td></tr>
-<tr class="separator:ae0367a7c2b1e8918c2861d8e506aee4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab84ce9e1ba0948f590a905b2c2f658af" id="r_ab84ce9e1ba0948f590a905b2c2f658af"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab84ce9e1ba0948f590a905b2c2f658af">config</a> () const</td></tr>
+<tr class="memdesc:ab84ce9e1ba0948f590a905b2c2f658af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the configuration.  <br /></td></tr>
+<tr class="separator:ab84ce9e1ba0948f590a905b2c2f658af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab57110ec1d21a7355be9d0e801239c55" id="r_ab57110ec1d21a7355be9d0e801239c55"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab57110ec1d21a7355be9d0e801239c55">config</a> (const <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a> &amp;cfg)</td></tr>
 <tr class="memdesc:ab57110ec1d21a7355be9d0e801239c55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the configuration.  <br /></td></tr>
 <tr class="separator:ab57110ec1d21a7355be9d0e801239c55"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Arduino Serial Compatibility API</div></td></tr>
-<tr><td colspan="2"><div class="groupText"><dl class="section note"><dt>Note</dt><dd>See also Arduino documents </dd></dl>
+<tr><td colspan="2"><div class="groupText"><dl class="section note"><dt>Note</dt><dd>See also Arduino documents </dd>
+<dd>
+<a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> only queues the bytes; <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> is what waits for the transmission to complete. A subclass that drives a direction pin (<a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)">UnitSIT3088</a>) has to drain inside its own ISerial before releasing the line, so its <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> blocks even though this one does not. </dd></dl>
 </div></td></tr>
 <tr class="memitem:a1c7c541e1fb232b4b0d3cb125fbd3484" id="r_a1c7c541e1fb232b4b0d3cb125fbd3484"><td class="memItemLeft" align="right" valign="top"><a id="a1c7c541e1fb232b4b0d3cb125fbd3484" name="a1c7c541e1fb232b4b0d3cb125fbd3484"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>operator bool</b> () const</td></tr>
 <tr class="memdesc:a1c7c541e1fb232b4b0d3cb125fbd3484"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns true if the unit is registered. <br /></td></tr>
 <tr class="separator:a1c7c541e1fb232b4b0d3cb125fbd3484"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f31c9ccbb0e85ddf051bffda4e6aafb" id="r_a0f31c9ccbb0e85ddf051bffda4e6aafb"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f31c9ccbb0e85ddf051bffda4e6aafb">baudRate</a> () const</td></tr>
+<tr class="memdesc:a0f31c9ccbb0e85ddf051bffda4e6aafb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the baud rate the serial port is running at.  <br /></td></tr>
+<tr class="separator:a0f31c9ccbb0e85ddf051bffda4e6aafb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f03b7056b0481a5d602ce95041d2687" id="r_a0f03b7056b0481a5d602ce95041d2687"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0f03b7056b0481a5d602ce95041d2687">available</a> ()</td></tr>
 <tr class="memdesc:a0f03b7056b0481a5d602ce95041d2687"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the number of available bytes to read.  <br /></td></tr>
 <tr class="separator:a0f03b7056b0481a5d602ce95041d2687"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -184,6 +201,12 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~RS485Component</b
 <tr class="memitem:a66ff875644e01980034e50ae132a4751" id="r_a66ff875644e01980034e50ae132a4751"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a66ff875644e01980034e50ae132a4751">readBytes</a> (char *buffer, const size_t length)</td></tr>
 <tr class="memdesc:a66ff875644e01980034e50ae132a4751"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads bytes with timeout defined by underlying Serial.  <br /></td></tr>
 <tr class="separator:a66ff875644e01980034e50ae132a4751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab0130b72753ea63ffa2bf01fceaba885" id="r_ab0130b72753ea63ffa2bf01fceaba885"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab0130b72753ea63ffa2bf01fceaba885">readBytes</a> (uint8_t *buffer, const size_t length, const uint32_t timeout_ms)</td></tr>
+<tr class="memdesc:ab0130b72753ea63ffa2bf01fceaba885"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads bytes with an explicit timeout.  <br /></td></tr>
+<tr class="separator:ab0130b72753ea63ffa2bf01fceaba885"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1234431cdce664fa1014b51c4ec2160" id="r_ab1234431cdce664fa1014b51c4ec2160"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab1234431cdce664fa1014b51c4ec2160">readBytes</a> (char *buffer, const size_t length, const uint32_t timeout_ms)</td></tr>
+<tr class="memdesc:ab1234431cdce664fa1014b51c4ec2160"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads bytes with an explicit timeout.  <br /></td></tr>
+<tr class="separator:ab1234431cdce664fa1014b51c4ec2160"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9020fe4bec37e9abc85f427d404e472d" id="r_a9020fe4bec37e9abc85f427d404e472d"><td class="memItemLeft" align="right" valign="top"><a id="a9020fe4bec37e9abc85f427d404e472d" name="a9020fe4bec37e9abc85f427d404e472d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr>
 <tr class="memdesc:a9020fe4bec37e9abc85f427d404e472d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes the serial port. <br /></td></tr>
@@ -191,18 +214,41 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()</td></tr
 <tr class="memitem:acccb3eb8f4b7400a3ecea04e51beed48" id="r_acccb3eb8f4b7400a3ecea04e51beed48"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acccb3eb8f4b7400a3ecea04e51beed48">flush</a> (const bool txOnly)</td></tr>
 <tr class="memdesc:acccb3eb8f4b7400a3ecea04e51beed48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes the serial port.  <br /></td></tr>
 <tr class="separator:acccb3eb8f4b7400a3ecea04e51beed48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acaddbd83f1e2d94a4cfd6a6ac2b92ae3" id="r_acaddbd83f1e2d94a4cfd6a6ac2b92ae3"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acaddbd83f1e2d94a4cfd6a6ac2b92ae3">write</a> (const uint8_t d, const bool <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d">flush</a>=true)</td></tr>
-<tr class="memdesc:acaddbd83f1e2d94a4cfd6a6ac2b92ae3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes one byte.  <br /></td></tr>
-<tr class="separator:acaddbd83f1e2d94a4cfd6a6ac2b92ae3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e8a135d45c8e45673f7a520041a6b00" id="r_a5e8a135d45c8e45673f7a520041a6b00"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5e8a135d45c8e45673f7a520041a6b00">write</a> (const uint8_t *buffer, const size_t size, const bool <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d">flush</a>=true)</td></tr>
-<tr class="memdesc:a5e8a135d45c8e45673f7a520041a6b00"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer.  <br /></td></tr>
-<tr class="separator:a5e8a135d45c8e45673f7a520041a6b00"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18e57f5192d16c953fbbda194479c0a4" id="r_a18e57f5192d16c953fbbda194479c0a4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a18e57f5192d16c953fbbda194479c0a4">write</a> (const char *buffer, const size_t size, const bool <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d">flush</a>=true)</td></tr>
-<tr class="memdesc:a18e57f5192d16c953fbbda194479c0a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer.  <br /></td></tr>
-<tr class="separator:a18e57f5192d16c953fbbda194479c0a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6feb5e5e01994f0d4e5022492635d254" id="r_a6feb5e5e01994f0d4e5022492635d254"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6feb5e5e01994f0d4e5022492635d254">write</a> (const char *s, const bool <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d">flush</a>=true)</td></tr>
-<tr class="memdesc:a6feb5e5e01994f0d4e5022492635d254"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a null-terminated string.  <br /></td></tr>
-<tr class="separator:a6feb5e5e01994f0d4e5022492635d254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ad672f73bdc6c5b745393ef4077a7f0" id="r_a4ad672f73bdc6c5b745393ef4077a7f0"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0">write</a> (const uint8_t d)</td></tr>
+<tr class="memdesc:a4ad672f73bdc6c5b745393ef4077a7f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes one byte.  <br /></td></tr>
+<tr class="separator:a4ad672f73bdc6c5b745393ef4077a7f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d166d7ce461d612180cc93dc1a2b5de" id="r_a4d166d7ce461d612180cc93dc1a2b5de"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d166d7ce461d612180cc93dc1a2b5de">write</a> (const uint8_t *buffer, const size_t size)</td></tr>
+<tr class="memdesc:a4d166d7ce461d612180cc93dc1a2b5de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer.  <br /></td></tr>
+<tr class="separator:a4d166d7ce461d612180cc93dc1a2b5de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93ce50982097835b2fc2686db9e817f4" id="r_a93ce50982097835b2fc2686db9e817f4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93ce50982097835b2fc2686db9e817f4">write</a> (const char *buffer, const size_t size)</td></tr>
+<tr class="memdesc:a93ce50982097835b2fc2686db9e817f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer.  <br /></td></tr>
+<tr class="separator:a93ce50982097835b2fc2686db9e817f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf062a5ae1279ccfb53b57ce8a66c1ea" id="r_abf062a5ae1279ccfb53b57ce8a66c1ea"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abf062a5ae1279ccfb53b57ce8a66c1ea">write</a> (const char *s)</td></tr>
+<tr class="memdesc:abf062a5ae1279ccfb53b57ce8a66c1ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a null-terminated string.  <br /></td></tr>
+<tr class="separator:abf062a5ae1279ccfb53b57ce8a66c1ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a060723e96c37d144a14eba97b54a8557" id="r_a060723e96c37d144a14eba97b54a8557"><td class="memTemplParams" colspan="2">template&lt;typename Size , typename std::enable_if&lt;!std::is_integral&lt; Size &gt;::value||std::is_same&lt; Size, char &gt;::value||std::is_same&lt; Size, signed char &gt;::value||std::is_same&lt; Size, bool &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:a060723e96c37d144a14eba97b54a8557"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a060723e96c37d144a14eba97b54a8557">write</a> (const uint8_t *buffer, const Size size)=delete</td></tr>
+<tr class="memdesc:a060723e96c37d144a14eba97b54a8557"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: the second argument of <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> is a byte count.  <br /></td></tr>
+<tr class="separator:a060723e96c37d144a14eba97b54a8557"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7efa2cef88f7763f78ae7ea8bdaa1be9" id="r_a7efa2cef88f7763f78ae7ea8bdaa1be9"><td class="memTemplParams" colspan="2">template&lt;typename Size , typename std::enable_if&lt;!std::is_integral&lt; Size &gt;::value||std::is_same&lt; Size, char &gt;::value||std::is_same&lt; Size, signed char &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:a7efa2cef88f7763f78ae7ea8bdaa1be9"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a7efa2cef88f7763f78ae7ea8bdaa1be9">write</a> (const char *buffer, const Size size)=delete</td></tr>
+<tr class="memdesc:a7efa2cef88f7763f78ae7ea8bdaa1be9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deleted: the second argument of <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> is a byte count.  <br /></td></tr>
+<tr class="separator:a7efa2cef88f7763f78ae7ea8bdaa1be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Deprecated Arduino Serial Compatibility API</div></td></tr>
+<tr class="memitem:ac5dcdade6f6f31c5acc8652afc7b8606" id="r_ac5dcdade6f6f31c5acc8652afc7b8606"><td class="memTemplParams" colspan="2">template&lt;typename Wait , typename std::enable_if&lt; std::is_same&lt; Wait, bool &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:ac5dcdade6f6f31c5acc8652afc7b8606"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#ac5dcdade6f6f31c5acc8652afc7b8606">write</a> (const uint8_t d, const Wait wait)</td></tr>
+<tr class="memdesc:ac5dcdade6f6f31c5acc8652afc7b8606"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes one byte, optionally waiting for the transmission to complete.  <br /></td></tr>
+<tr class="separator:ac5dcdade6f6f31c5acc8652afc7b8606"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb13f7b70439f64528ccf4216eda1696" id="r_afb13f7b70439f64528ccf4216eda1696"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afb13f7b70439f64528ccf4216eda1696">write</a> (const uint8_t *buffer, const size_t size, const bool wait)</td></tr>
+<tr class="memdesc:afb13f7b70439f64528ccf4216eda1696"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer, optionally waiting for the transmission to complete.  <br /></td></tr>
+<tr class="separator:afb13f7b70439f64528ccf4216eda1696"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ea081c545381a6d7373005e7dfa8adb" id="r_a2ea081c545381a6d7373005e7dfa8adb"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a2ea081c545381a6d7373005e7dfa8adb">write</a> (const char *buffer, const size_t size, const bool wait)</td></tr>
+<tr class="memdesc:a2ea081c545381a6d7373005e7dfa8adb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes bytes from buffer, optionally waiting for the transmission to complete.  <br /></td></tr>
+<tr class="separator:a2ea081c545381a6d7373005e7dfa8adb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7d39199234501522ffbe7ac1d15ac73" id="r_aa7d39199234501522ffbe7ac1d15ac73"><td class="memTemplParams" colspan="2">template&lt;typename Wait , typename std::enable_if&lt; std::is_same&lt; Wait, bool &gt;::value, int &gt;::type  = 0&gt; </td></tr>
+<tr class="memitem:aa7d39199234501522ffbe7ac1d15ac73"><td class="memTemplItemLeft" align="right" valign="top">size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#aa7d39199234501522ffbe7ac1d15ac73">write</a> (const char *s, const Wait wait)</td></tr>
+<tr class="memdesc:aa7d39199234501522ffbe7ac1d15ac73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a null-terminated string, optionally waiting for the transmission to complete.  <br /></td></tr>
+<tr class="separator:aa7d39199234501522ffbe7ac1d15ac73"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr><td colspan="2"><div class="groupHeader">Read/Write a trivially copyable value</div></td></tr>
 <tr class="memitem:a48e367f5583fa07247ef6f91adc0bad0" id="r_a48e367f5583fa07247ef6f91adc0bad0"><td class="memTemplParams" colspan="2">template&lt;typename T , bool LittleEndian = true&gt; </td></tr>
 <tr class="memitem:a48e367f5583fa07247ef6f91adc0bad0"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="#a48e367f5583fa07247ef6f91adc0bad0">readValue</a> (T &amp;value)</td></tr>
@@ -219,9 +265,21 @@ Protected Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>RS485Component</b> (const uint8_t addr)</td></tr>
 <tr class="memdesc:a4228fca551b4f185714fec13ea2b11a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Base constructor (concrete subclasses pass their DEFAULT_ADDRESS) <br /></td></tr>
 <tr class="separator:a4228fca551b4f185714fec13ea2b11a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a427dcd814a878a9f15c46dda564e7c9a" id="r_a427dcd814a878a9f15c46dda564e7c9a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a427dcd814a878a9f15c46dda564e7c9a">RS485Component</a> (<a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a427dcd814a878a9f15c46dda564e7c9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <br /></td></tr>
+<tr class="separator:a427dcd814a878a9f15c46dda564e7c9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ec0b181a6b63eec8e31b8a2aaad5240" id="r_a4ec0b181a6b63eec8e31b8a2aaad5240"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4ec0b181a6b63eec8e31b8a2aaad5240">operator=</a> (<a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a4ec0b181a6b63eec8e31b8a2aaad5240"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment.  <br /></td></tr>
+<tr class="separator:a4ec0b181a6b63eec8e31b8a2aaad5240"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc7f0ac456d33b5508e07e927f394992" id="r_adc7f0ac456d33b5508e07e927f394992"><td class="memItemLeft" align="right" valign="top"><a id="adc7f0ac456d33b5508e07e927f394992" name="adc7f0ac456d33b5508e07e927f394992"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>write_waiting</b> (const uint8_t *buffer, const size_t size)</td></tr>
+<tr class="separator:adc7f0ac456d33b5508e07e927f394992"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc5f52fad2cba5d563209daee96cabc0" id="r_abc5f52fad2cba5d563209daee96cabc0"><td class="memItemLeft" align="right" valign="top"><a id="abc5f52fad2cba5d563209daee96cabc0" name="abc5f52fad2cba5d563209daee96cabc0"></a>
 ISerial *&#160;</td><td class="memItemRight" valign="bottom"><b>iserial</b> ()</td></tr>
 <tr class="separator:abc5f52fad2cba5d563209daee96cabc0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62136c69af40d960c3c29c70e2505a62" id="r_a62136c69af40d960c3c29c70e2505a62"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a62136c69af40d960c3c29c70e2505a62">install_serial</a> (std::unique_ptr&lt; ISerial &gt; serial)</td></tr>
+<tr class="memdesc:a62136c69af40d960c3c29c70e2505a62"><td class="mdescLeft">&#160;</td><td class="mdescRight">Installs a serial backend, taking over ownership and replacing the current one.  <br /></td></tr>
+<tr class="separator:a62136c69af40d960c3c29c70e2505a62"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3fc4c599f0561917f126be0925fa59e" id="r_af3fc4c599f0561917f126be0925fa59e"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af3fc4c599f0561917f126be0925fa59e">make_serial</a> (AdapterUART *ad)</td></tr>
 <tr class="memdesc:af3fc4c599f0561917f126be0925fa59e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Factory hook: build the concrete ISerial to be used by <a class="el" href="#a78cf439bf663f660da85e9cedc76f823" title="Begin using the registered UART adapter.">begin()</a>.  <br /></td></tr>
 <tr class="separator:af3fc4c599f0561917f126be0925fa59e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -232,14 +290,10 @@ Static Protected Member Functions</h2></td></tr>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a7a2e6366f262e3bd1b72c6ef8ca4761f"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap_if_needed</b> (T v)</td></tr>
 <tr class="separator:a7a2e6366f262e3bd1b72c6ef8ca4761f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5474b6ac8dd3cd02ca4bf3db72afdc3" id="r_ae5474b6ac8dd3cd02ca4bf3db72afdc3"><td class="memTemplParams" colspan="2"><a id="ae5474b6ac8dd3cd02ca4bf3db72afdc3" name="ae5474b6ac8dd3cd02ca4bf3db72afdc3"></a>
+<tr class="memitem:a847ac449641aa0eacc510c7a58d49da6" id="r_a847ac449641aa0eacc510c7a58d49da6"><td class="memTemplParams" colspan="2"><a id="a847ac449641aa0eacc510c7a58d49da6" name="a847ac449641aa0eacc510c7a58d49da6"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae5474b6ac8dd3cd02ca4bf3db72afdc3"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap_if_needed_impl</b> (T v, <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__int__tag.html">byteswap_int_tag</a>)</td></tr>
-<tr class="separator:ae5474b6ac8dd3cd02ca4bf3db72afdc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af940028e44c9b6519bd21e3ce5ef9940" id="r_af940028e44c9b6519bd21e3ce5ef9940"><td class="memTemplParams" colspan="2"><a id="af940028e44c9b6519bd21e3ce5ef9940" name="af940028e44c9b6519bd21e3ce5ef9940"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:af940028e44c9b6519bd21e3ce5ef9940"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap_if_needed_impl</b> (T v, <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__float__tag.html">byteswap_float_tag</a>)</td></tr>
-<tr class="separator:af940028e44c9b6519bd21e3ce5ef9940"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a847ac449641aa0eacc510c7a58d49da6"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap_if_needed_impl</b> (T v, <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__value__tag.html">byteswap_value_tag</a>)</td></tr>
+<tr class="separator:a847ac449641aa0eacc510c7a58d49da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7744e083cf9969018dd72e22e3c06a14" id="r_a7744e083cf9969018dd72e22e3c06a14"><td class="memTemplParams" colspan="2"><a id="a7744e083cf9969018dd72e22e3c06a14" name="a7744e083cf9969018dd72e22e3c06a14"></a>
 template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a7744e083cf9969018dd72e22e3c06a14"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><b>byteswap_if_needed_impl</b> (T v, <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1byteswap__none__tag.html">byteswap_none_tag</a>)</td></tr>
@@ -247,16 +301,52 @@ template&lt;typename T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-attribs" name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a479cf71cf42945068a05968f2392c631" id="r_a479cf71cf42945068a05968f2392c631"><td class="memItemLeft" align="right" valign="top"><a id="a479cf71cf42945068a05968f2392c631" name="a479cf71cf42945068a05968f2392c631"></a>
-std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>_serial</b> {}</td></tr>
-<tr class="separator:a479cf71cf42945068a05968f2392c631"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53d6f04a731a847034000c0e140e67b6" id="r_a53d6f04a731a847034000c0e140e67b6"><td class="memItemLeft" align="right" valign="top"><a id="a53d6f04a731a847034000c0e140e67b6" name="a53d6f04a731a847034000c0e140e67b6"></a>
 <a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>_cfg</b> {}</td></tr>
 <tr class="separator:a53d6f04a731a847034000c0e140e67b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Non-instantiable base class for RS-485 transceiver units. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a427dcd814a878a9f15c46dda564e7c9a" name="a427dcd814a878a9f15c46dda564e7c9a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a427dcd814a878a9f15c46dda564e7c9a">&#9670;&#160;</a></span>RS485Component()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">m5::unit::RS485Component::RS485Component </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Move constructor. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Component to move from</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>The serial backend is taken over and told about its new owner, so a backend that points back at the component it serves (<a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)">UnitSIT3088</a> drives the DIR pin through the unit) follows the move. The moved-from component is left with the null-behavior backend, so its Serial-compatible methods keep answering. </p><dl class="section note"><dt>Note</dt><dd>Protected on purpose: moving through a reference to this base would hand a backend built for one unit to a component of another type. The concrete units declare their own move members, so a unit is movable as a unit. </dd>
+<dd>
+Do not move a unit once UnitUnified::add() has registered it: UnitUnified keeps the address it was given, and the links to a parent or child component are copied rather than redirected. </dd>
+<dd>
+Recreate any <a class="el" href="classm5_1_1unit_1_1_unit_s_p485_stream.html" title="Thin Arduino Stream/Print adapter for any RS485Component (UnitSP485 / UnitSIT3088 / ....">UnitSP485Stream</a> that wraps the unit: it holds a reference to the component it was built from, which after a move answers through the null backend. </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a0f03b7056b0481a5d602ce95041d2687" name="a0f03b7056b0481a5d602ce95041d2687"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0f03b7056b0481a5d602ce95041d2687">&#9670;&#160;</a></span>available()</h2>
 
@@ -313,6 +403,35 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
+<a id="a0f31c9ccbb0e85ddf051bffda4e6aafb" name="a0f31c9ccbb0e85ddf051bffda4e6aafb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f31c9ccbb0e85ddf051bffda4e6aafb">&#9670;&#160;</a></span>baudRate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t m5::unit::RS485Component::baudRate </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the baud rate the serial port is running at. </p>
+<dl class="section return"><dt>Returns</dt><dd>Baud rate in bps, or 0 while no serial backend is installed, or if the driver cannot report it </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>No backend is installed before the first successful <a class="el" href="#a78cf439bf663f660da85e9cedc76f823" title="Begin using the registered UART adapter.">begin()</a>, and on a component that has been moved from. A <a class="el" href="#a78cf439bf663f660da85e9cedc76f823" title="Begin using the registered UART adapter.">begin()</a> that fails leaves the backend already installed. </dd></dl>
+
+</div>
+</div>
 <a id="a78cf439bf663f660da85e9cedc76f823" name="a78cf439bf663f660da85e9cedc76f823"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a78cf439bf663f660da85e9cedc76f823">&#9670;&#160;</a></span>begin()</h2>
 
@@ -343,8 +462,8 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
-<a id="ae0367a7c2b1e8918c2861d8e506aee4a" name="ae0367a7c2b1e8918c2861d8e506aee4a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0367a7c2b1e8918c2861d8e506aee4a">&#9670;&#160;</a></span>config() <span class="overload">[1/2]</span></h2>
+<a id="ab84ce9e1ba0948f590a905b2c2f658af" name="ab84ce9e1ba0948f590a905b2c2f658af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab84ce9e1ba0948f590a905b2c2f658af">&#9670;&#160;</a></span>config() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -356,7 +475,7 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
           <td class="memname"><a class="el" href="structm5_1_1unit_1_1_r_s485_component_1_1config__t.html">config_t</a> m5::unit::RS485Component::config </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
   </td>
@@ -437,6 +556,40 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
+<a id="a62136c69af40d960c3c29c70e2505a62" name="a62136c69af40d960c3c29c70e2505a62"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62136c69af40d960c3c29c70e2505a62">&#9670;&#160;</a></span>install_serial()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void m5::unit::RS485Component::install_serial </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; ISerial &gt;</td>          <td class="paramname"><span class="paramname"><em>serial</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Installs a serial backend, taking over ownership and replacing the current one. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">serial</td><td>Backend to install, typically the result of <a class="el" href="#af3fc4c599f0561917f126be0925fa59e" title="Factory hook: build the concrete ISerial to be used by begin().">make_serial()</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>A null argument is ignored: every Serial-compatible method dereferences the backend unconditionally, so the component must never be left without one. </dd></dl>
+
+</div>
+</div>
 <a id="af3fc4c599f0561917f126be0925fa59e" name="af3fc4c599f0561917f126be0925fa59e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af3fc4c599f0561917f126be0925fa59e">&#9670;&#160;</a></span>make_serial()</h2>
 
@@ -471,6 +624,41 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 <dl class="section note"><dt>Note</dt><dd>Default implementation wraps the Arduino HardwareSerial exposed by the adapter. Chip-specific subclasses (e.g. <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)">UnitSIT3088</a>) override to install a decorator that adds direction-pin control, etc. </dd></dl>
 
 <p>Reimplemented in <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html#a9ba33ad0478d4eca410aa76f0b3784f2">m5::unit::UnitSIT3088</a>.</p>
+
+</div>
+</div>
+<a id="a4ec0b181a6b63eec8e31b8a2aaad5240" name="a4ec0b181a6b63eec8e31b8a2aaad5240"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ec0b181a6b63eec8e31b8a2aaad5240">&#9670;&#160;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp; m5::unit::RS485Component::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a> &amp;&amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Move assignment. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>Component to move from </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this component</dd></dl>
+<p>Hands over the serial backend as the move constructor does, and releases the backend this component held. </p><dl class="section note"><dt>Note</dt><dd>The same three cautions as for the move constructor apply. </dd></dl>
 
 </div>
 </div>
@@ -609,7 +797,7 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 </div>
 </div>
 <a id="a66ff875644e01980034e50ae132a4751" name="a66ff875644e01980034e50ae132a4751"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a66ff875644e01980034e50ae132a4751">&#9670;&#160;</a></span>readBytes() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a66ff875644e01980034e50ae132a4751">&#9670;&#160;</a></span>readBytes() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -647,8 +835,53 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
 
 </div>
 </div>
+<a id="ab1234431cdce664fa1014b51c4ec2160" name="ab1234431cdce664fa1014b51c4ec2160"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1234431cdce664fa1014b51c4ec2160">&#9670;&#160;</a></span>readBytes() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::readBytes </td>
+          <td>(</td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>length</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>timeout_ms</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads bytes with an explicit timeout. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Destination buffer </td></tr>
+    <tr><td class="paramname">length</td><td>Number of bytes to read </td></tr>
+    <tr><td class="paramname">timeout_ms</td><td>Maximum time to wait for the requested bytes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes actually read </dd></dl>
+
+</div>
+</div>
 <a id="a105e1964761b7819ed70e25514e3a58d" name="a105e1964761b7819ed70e25514e3a58d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a105e1964761b7819ed70e25514e3a58d">&#9670;&#160;</a></span>readBytes() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a105e1964761b7819ed70e25514e3a58d">&#9670;&#160;</a></span>readBytes() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -683,6 +916,52 @@ std::unique_ptr&lt; ISerial &gt;&#160;</td><td class="memItemRight" valign="bott
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes actually read </dd></dl>
+
+</div>
+</div>
+<a id="ab0130b72753ea63ffa2bf01fceaba885" name="ab0130b72753ea63ffa2bf01fceaba885"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0130b72753ea63ffa2bf01fceaba885">&#9670;&#160;</a></span>readBytes() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::readBytes </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>length</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>timeout_ms</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads bytes with an explicit timeout. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Destination buffer </td></tr>
+    <tr><td class="paramname">length</td><td>Number of bytes to read </td></tr>
+    <tr><td class="paramname">timeout_ms</td><td>Maximum time to wait for the requested bytes </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes actually read </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Prefer this over the two-argument form: it does not depend on the backend's timeout state, which is only reachable through framework-specific API. </dd></dl>
 
 </div>
 </div>
@@ -728,15 +1007,88 @@ template&lt;typename T , bool LittleEndian = true&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>True if successful </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>LittleEndian byteswap is applied for integral / enum types and for 32-bit / 64-bit floating-point types (via bit-cast). Aggregate / struct types are stored as-is in host byte order; the LittleEndian parameter is ignored for those. </dd>
 <dd>
-LittleEndian only declares the wire byte order; the peer must agree on the same convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw bit patterns without special-casing. </dd></dl>
+LittleEndian only declares the wire byte order; the peer must agree on the same convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw bit patterns without special-casing. </dd>
+<dd>
+Waits for sizeof(T) bytes with the backend's own timeout, as the two-argument <a class="el" href="#a105e1964761b7819ed70e25514e3a58d" title="Reads bytes with timeout defined by underlying Serial.">readBytes()</a> does: the one set by HardwareSerial::setTimeout() on Arduino, and a fixed 1000 ms on ESP-IDF native. Use <a class="el" href="#a105e1964761b7819ed70e25514e3a58d" title="Reads bytes with timeout defined by underlying Serial.">readBytes()</a> with an explicit timeout to control it. </dd>
+<dd>
+sizeof(T) must be 256 bytes or less: the value goes through a stack buffer, and 256 bytes is the largest Modbus RTU frame as well as this library's default RX buffer size. </dd></dl>
 
 </div>
 </div>
-<a id="a18e57f5192d16c953fbbda194479c0a4" name="a18e57f5192d16c953fbbda194479c0a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18e57f5192d16c953fbbda194479c0a4">&#9670;&#160;</a></span>write() <span class="overload">[1/4]</span></h2>
+<a id="a7efa2cef88f7763f78ae7ea8bdaa1be9" name="a7efa2cef88f7763f78ae7ea8bdaa1be9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7efa2cef88f7763f78ae7ea8bdaa1be9">&#9670;&#160;</a></span>write() <span class="overload">[1/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Size , typename std::enable_if&lt;!std::is_integral&lt; Size &gt;::value||std::is_same&lt; Size, char &gt;::value||std::is_same&lt; Size, signed char &gt;::value, int &gt;::type  = 0&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Size</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted: the second argument of <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> is a byte count. </p>
+<p>The same rule as <a class="el" href="#a060723e96c37d144a14eba97b54a8557" title="Deleted: the second argument of write() is a byte count.">write(const uint8_t *, const Size)</a>, except that bool is still accepted here: write(s, wait) is a released signature, so the deprecated overload below has to keep binding it. For a uint8_t buffer the wait form was always write(buffer, size, wait), so there bool is rejected. </p>
+
+</div>
+</div>
+<a id="a93ce50982097835b2fc2686db9e817f4" name="a93ce50982097835b2fc2686db9e817f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a93ce50982097835b2fc2686db9e817f4">&#9670;&#160;</a></span>write() <span class="overload">[2/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes bytes from buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Source buffer </td></tr>
+    <tr><td class="paramname">size</td><td>Number of bytes to write </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Queues the bytes; call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> to wait for the transmission to complete. </dd></dl>
+
+</div>
+</div>
+<a id="a2ea081c545381a6d7373005e7dfa8adb" name="a2ea081c545381a6d7373005e7dfa8adb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ea081c545381a6d7373005e7dfa8adb">&#9670;&#160;</a></span>write() <span class="overload">[3/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t m5::unit::RS485Component::write </td>
@@ -751,29 +1103,67 @@ LittleEndian only declares the wire byte order; the peer must agree on the same 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>flush</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>wait</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Writes bytes from buffer. </p>
+<p>Writes bytes from buffer, optionally waiting for the transmission to complete. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">buffer</td><td>Source buffer </td></tr>
     <tr><td class="paramname">size</td><td>Number of bytes to write </td></tr>
-    <tr><td class="paramname">flush</td><td>If true, flush TX before returning </td></tr>
+    <tr><td class="paramname">wait</td><td>If true, wait for TX to drain before returning </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated</a></b></dt><dd><a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> no longer waits; write the bytes and call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> yourself. </dd></dl>
 
 </div>
 </div>
-<a id="a6feb5e5e01994f0d4e5022492635d254" name="a6feb5e5e01994f0d4e5022492635d254"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6feb5e5e01994f0d4e5022492635d254">&#9670;&#160;</a></span>write() <span class="overload">[2/4]</span></h2>
+<a id="abf062a5ae1279ccfb53b57ce8a66c1ea" name="abf062a5ae1279ccfb53b57ce8a66c1ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf062a5ae1279ccfb53b57ce8a66c1ea">&#9670;&#160;</a></span>write() <span class="overload">[4/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>s</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes a null-terminated string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">s</td><td>Null-terminated string </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Queues the bytes; call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> to wait for the transmission to complete. </dd></dl>
+
+</div>
+</div>
+<a id="aa7d39199234501522ffbe7ac1d15ac73" name="aa7d39199234501522ffbe7ac1d15ac73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7d39199234501522ffbe7ac1d15ac73">&#9670;&#160;</a></span>write() <span class="overload">[5/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Wait , typename std::enable_if&lt; std::is_same&lt; Wait, bool &gt;::value, int &gt;::type  = 0&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t m5::unit::RS485Component::write </td>
@@ -783,28 +1173,104 @@ LittleEndian only declares the wire byte order; the peer must agree on the same 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>flush</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">const Wait</td>          <td class="paramname"><span class="paramname"><em>wait</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Writes a null-terminated string. </p>
+<p>Writes a null-terminated string, optionally waiting for the transmission to complete. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">s</td><td>Null-terminated string </td></tr>
-    <tr><td class="paramname">flush</td><td>If true, flush TX before returning </td></tr>
+    <tr><td class="paramname">wait</td><td>If true, wait for TX to drain before returning </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated</a></b></dt><dd><a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> no longer waits; write the bytes and call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> yourself. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Only an exact bool binds here, so write(buffer, length) with a plain integer length is never mistaken for this overload. </dd></dl>
 
 </div>
 </div>
-<a id="a5e8a135d45c8e45673f7a520041a6b00" name="a5e8a135d45c8e45673f7a520041a6b00"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5e8a135d45c8e45673f7a520041a6b00">&#9670;&#160;</a></span>write() <span class="overload">[3/4]</span></h2>
+<a id="a060723e96c37d144a14eba97b54a8557" name="a060723e96c37d144a14eba97b54a8557"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a060723e96c37d144a14eba97b54a8557">&#9670;&#160;</a></span>write() <span class="overload">[6/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename Size , typename std::enable_if&lt;!std::is_integral&lt; Size &gt;::value||std::is_same&lt; Size, char &gt;::value||std::is_same&lt; Size, signed char &gt;::value||std::is_same&lt; Size, bool &gt;::value, int &gt;::type  = 0&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Size</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">delete</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deleted: the second argument of <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> is a byte count. </p>
+<p>Rejects what cannot be a count &ndash; char and signed char (write(buffer, 'a') would otherwise mean 97 bytes), bool, and any non-integral type, including the bool-convertible proxies of std::vector&lt;bool&gt; / std::bitset&lt;N&gt;, which used to slip through as a length. An integer length is filtered out by SFINAE and keeps resolving to <a class="el" href="#a4d166d7ce461d612180cc93dc1a2b5de" title="Writes bytes from buffer.">write(const uint8_t *, size_t)</a>. </p>
+
+</div>
+</div>
+<a id="a4d166d7ce461d612180cc93dc1a2b5de" name="a4d166d7ce461d612180cc93dc1a2b5de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d166d7ce461d612180cc93dc1a2b5de">&#9670;&#160;</a></span>write() <span class="overload">[7/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>size</em></span>&#160;)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes bytes from buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buffer</td><td>Source buffer </td></tr>
+    <tr><td class="paramname">size</td><td>Number of bytes to write </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Queues the bytes; call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> to wait for the transmission to complete. </dd></dl>
+
+</div>
+</div>
+<a id="afb13f7b70439f64528ccf4216eda1696" name="afb13f7b70439f64528ccf4216eda1696"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb13f7b70439f64528ccf4216eda1696">&#9670;&#160;</a></span>write() <span class="overload">[8/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t m5::unit::RS485Component::write </td>
@@ -819,29 +1285,67 @@ LittleEndian only declares the wire byte order; the peer must agree on the same 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>flush</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>wait</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Writes bytes from buffer. </p>
+<p>Writes bytes from buffer, optionally waiting for the transmission to complete. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">buffer</td><td>Source buffer </td></tr>
     <tr><td class="paramname">size</td><td>Number of bytes to write </td></tr>
-    <tr><td class="paramname">flush</td><td>If true, flush TX before returning </td></tr>
+    <tr><td class="paramname">wait</td><td>If true, wait for TX to drain before returning </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated</a></b></dt><dd><a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> no longer waits; write the bytes and call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> yourself. </dd></dl>
 
 </div>
 </div>
-<a id="acaddbd83f1e2d94a4cfd6a6ac2b92ae3" name="acaddbd83f1e2d94a4cfd6a6ac2b92ae3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acaddbd83f1e2d94a4cfd6a6ac2b92ae3">&#9670;&#160;</a></span>write() <span class="overload">[4/4]</span></h2>
+<a id="a4ad672f73bdc6c5b745393ef4077a7f0" name="a4ad672f73bdc6c5b745393ef4077a7f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ad672f73bdc6c5b745393ef4077a7f0">&#9670;&#160;</a></span>write() <span class="overload">[9/10]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t m5::unit::RS485Component::write </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t</td>          <td class="paramname"><span class="paramname"><em>d</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Writes one byte. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">d</td><td>Byte to write </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Queues the byte, as Arduino's Print::write() does. Call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> when the caller has to know the byte has left the wire. </dd></dl>
+
+</div>
+</div>
+<a id="ac5dcdade6f6f31c5acc8652afc7b8606" name="ac5dcdade6f6f31c5acc8652afc7b8606"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5dcdade6f6f31c5acc8652afc7b8606">&#9670;&#160;</a></span>write() <span class="overload">[10/10]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Wait , typename std::enable_if&lt; std::is_same&lt; Wait, bool &gt;::value, int &gt;::type  = 0&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">size_t m5::unit::RS485Component::write </td>
@@ -851,20 +1355,26 @@ LittleEndian only declares the wire byte order; the peer must agree on the same 
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const bool</td>          <td class="paramname"><span class="paramname"><em>flush</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>&#160;)</td>
+          <td class="paramtype">const Wait</td>          <td class="paramname"><span class="paramname"><em>wait</em></span>&#160;)</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
-<p>Writes one byte. </p>
+<p>Writes one byte, optionally waiting for the transmission to complete. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">d</td><td>Byte to write </td></tr>
-    <tr><td class="paramname">flush</td><td>If true, flush TX before returning </td></tr>
+    <tr><td class="paramname">wait</td><td>If true, wait for TX to drain before returning </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated</a></b></dt><dd><a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a> no longer waits; write the bytes and call <a class="el" href="#a9020fe4bec37e9abc85f427d404e472d" title="Flushes the serial port.">flush()</a> yourself. </dd></dl>
 
 </div>
 </div>
@@ -910,7 +1420,11 @@ template&lt;typename T , bool LittleEndian = true&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>True if successful </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>LittleEndian byteswap is applied for integral / enum types and for 32-bit / 64-bit floating-point types (via bit-cast). Aggregate / struct types are sent as-is in host byte order; the LittleEndian parameter is ignored for those. </dd>
 <dd>
-LittleEndian only declares the wire byte order; the peer must agree on the same convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw bit patterns without special-casing. </dd></dl>
+LittleEndian only declares the wire byte order; the peer must agree on the same convention. Floating-point special values (NaN, +/-inf, +/-0) are byte-reversed as raw bit patterns without special-casing. </dd>
+<dd>
+Unlike <a class="el" href="#a4ad672f73bdc6c5b745393ef4077a7f0" title="Writes one byte.">write()</a>, this waits for the transmission to complete before returning, so a value is always fully on the wire when it reports success. </dd>
+<dd>
+sizeof(T) must be 256 bytes or less: the value goes through a stack buffer, and 256 bytes is the largest Modbus RTU frame as well as this library's default RX buffer size. </dd></dl>
 
 </div>
 </div>

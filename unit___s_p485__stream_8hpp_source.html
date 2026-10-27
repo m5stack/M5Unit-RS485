@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -107,59 +107,93 @@ $(function(){initNavTree('unit___s_p485__stream_8hpp_source.html',''); initResiz
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#ifndef M5_UNIT_RS485_UNIT_SP485_STREAM_HPP</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#define M5_UNIT_RS485_UNIT_SP485_STREAM_HPP</span></div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#if defined(ARDUINO)</span></div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)</span></div>
 <div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &quot;<a class="code" href="rs485__component_8hpp.html">rs485_component.hpp</a>&quot;</span></div>
 <div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;Stream.h&gt;</span></div>
 <div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span> </div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacem5.html">m5</a> {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespaceunit.html">unit</a> {</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="keyword">class </span>UnitSP485Stream final : <span class="keyword">public</span> Stream {</div>
+<div class="foldopen" id="foldopen00027" data-start="{" data-end="};">
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html">   27</a></span><span class="keyword">class </span><a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_p485_stream.html">UnitSP485Stream</a> final : <span class="keyword">public</span> Stream {</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    <span class="keyword">explicit</span> UnitSP485Stream(RS485Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>) : _unit(<a class="code hl_namespace" href="namespaceunit.html">unit</a>)</div>
+<div class="foldopen" id="foldopen00033" data-start="{" data-end="}">
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a6cb08d16e0cea7888cebb7c8be9a1356">   33</a></span>    <span class="keyword">explicit</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a6cb08d16e0cea7888cebb7c8be9a1356">UnitSP485Stream</a>(<a class="code hl_class" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a>&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>) : _unit(<a class="code hl_namespace" href="namespaceunit.html">unit</a>)</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    {</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    }</div>
+</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>    <span class="keywordtype">int</span> available()<span class="keyword"> override</span></div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="}">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ad2c4ecbf6f9b21477822f416c0c60915">   41</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ad2c4ecbf6f9b21477822f416c0c60915">available</a>()<span class="keyword"> override</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">return</span> _unit.available();</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a0f03b7056b0481a5d602ce95041d2687">available</a>();</div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>    }</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>    <span class="keywordtype">int</span> read()<span class="keyword"> override</span></div>
+</div>
+<div class="foldopen" id="foldopen00049" data-start="{" data-end="}">
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a9bf4c3b091ecad696a81a2de89bb2ba9">   49</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a9bf4c3b091ecad696a81a2de89bb2ba9">read</a>()<span class="keyword"> override</span></div>
 <div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> _unit.read();</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a6ddc65cc7211436e7ae031034ad6b745">read</a>();</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    }</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>    <span class="keywordtype">int</span> peek()<span class="keyword"> override</span></div>
+</div>
+<div class="foldopen" id="foldopen00057" data-start="{" data-end="}">
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a2b98153866a68d21155750633a4c5281">   57</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a2b98153866a68d21155750633a4c5281">peek</a>()<span class="keyword"> override</span></div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordflow">return</span> _unit.peek();</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a4e5266d723ca843b8ca6b4d39d359ccd">peek</a>();</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    }</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keywordtype">size_t</span> write(uint8_t b)<span class="keyword"> override</span></div>
+</div>
+<div class="foldopen" id="foldopen00066" data-start="{" data-end="}">
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ae0303fbe67c7591390ae5aa8813b0ace">   66</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ae0303fbe67c7591390ae5aa8813b0ace">write</a>(<span class="keyword">const</span> uint8_t b)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">return</span> _unit.write(b);</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a4ad672f73bdc6c5b745393ef4077a7f0">write</a>(b);</div>
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    }</div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordtype">size_t</span> write(<span class="keyword">const</span> uint8_t* buffer, <span class="keywordtype">size_t</span> size)<span class="keyword"> override</span></div>
+</div>
+<div class="foldopen" id="foldopen00076" data-start="{" data-end="}">
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a4f36b677bfca36022b79ecfe5a9ef72d">   76</a></span>    <span class="keywordtype">size_t</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a4f36b677bfca36022b79ecfe5a9ef72d">write</a>(<span class="keyword">const</span> uint8_t* buffer, <span class="keywordtype">size_t</span> size)<span class="keyword"> override</span></div>
 <div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keywordflow">return</span> _unit.write(buffer, size);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a4ad672f73bdc6c5b745393ef4077a7f0">write</a>(buffer, size);</div>
 <div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    <span class="keywordtype">void</span> flush()<span class="keyword"> override</span></div>
+</div>
+<div class="foldopen" id="foldopen00083" data-start="{" data-end="}">
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a17d05ed41200941df37ccfbc3a303243">   83</a></span>    <span class="keywordtype">void</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a17d05ed41200941df37ccfbc3a303243">flush</a>()<span class="keyword"> override</span></div>
 <div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span><span class="keyword">    </span>{</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        _unit.flush();</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>        _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#a9020fe4bec37e9abc85f427d404e472d">flush</a>();</div>
 <div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    }</div>
+</div>
 <div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span> </div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordtype">int</span> availableForWrite()</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>    {</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordflow">return</span> _unit.availableForWrite();</div>
+<div class="foldopen" id="foldopen00092" data-start="{" data-end="}">
+<div class="line"><a id="l00092" name="l00092"></a><span class="lineno"><a class="line" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ade3d6eb609c912b7f360561c0d0e9ee0">   92</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ade3d6eb609c912b7f360561c0d0e9ee0">availableForWrite</a>()<span class="keyword"> override</span></div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span><span class="keyword">    </span>{</div>
+<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span>        <span class="keywordflow">return</span> _unit.<a class="code hl_function" href="classm5_1_1unit_1_1_r_s485_component.html#aa809f689bf899160bb796ae39b4bd005">availableForWrite</a>();</div>
 <div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    }</div>
+</div>
 <div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
 <div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>    <span class="keyword">using </span>Print::write;</div>
 <div class="line"><a id="l00098" name="l00098"></a><span class="lineno">   98</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno">   99</span><span class="keyword">private</span>:</div>
-<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    RS485Component&amp; _unit;</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>    <a class="code hl_class" href="classm5_1_1unit_1_1_r_s485_component.html">RS485Component</a>&amp; _unit;</div>
 <div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>};</div>
+</div>
 <div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span> </div>
 <div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>}  <span class="comment">// namespace unit</span></div>
 <div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>}  <span class="comment">// namespace m5</span></div>
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html">m5::unit::RS485Component</a></div><div class="ttdoc">Non-instantiable base class for RS-485 transceiver units.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:37</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_a0f03b7056b0481a5d602ce95041d2687"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#a0f03b7056b0481a5d602ce95041d2687">m5::unit::RS485Component::available</a></div><div class="ttdeci">int available()</div><div class="ttdoc">Returns the number of available bytes to read.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:148</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_a4ad672f73bdc6c5b745393ef4077a7f0"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#a4ad672f73bdc6c5b745393ef4077a7f0">m5::unit::RS485Component::write</a></div><div class="ttdeci">size_t write(const uint8_t d)</div><div class="ttdoc">Writes one byte.</div><div class="ttdef"><b>Definition</b> rs485_component.cpp:179</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_a4e5266d723ca843b8ca6b4d39d359ccd"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#a4e5266d723ca843b8ca6b4d39d359ccd">m5::unit::RS485Component::peek</a></div><div class="ttdeci">int peek()</div><div class="ttdoc">Peeks the next incoming byte without removing it.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:164</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_a6ddc65cc7211436e7ae031034ad6b745"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#a6ddc65cc7211436e7ae031034ad6b745">m5::unit::RS485Component::read</a></div><div class="ttdeci">int read()</div><div class="ttdoc">Reads one byte.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:172</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_a9020fe4bec37e9abc85f427d404e472d"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#a9020fe4bec37e9abc85f427d404e472d">m5::unit::RS485Component::flush</a></div><div class="ttdeci">void flush()</div><div class="ttdoc">Flushes the serial port.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:243</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_r_s485_component_html_aa809f689bf899160bb796ae39b4bd005"><div class="ttname"><a href="classm5_1_1unit_1_1_r_s485_component.html#aa809f689bf899160bb796ae39b4bd005">m5::unit::RS485Component::availableForWrite</a></div><div class="ttdeci">int availableForWrite()</div><div class="ttdoc">Returns the number of bytes that can be written without blocking.</div><div class="ttdef"><b>Definition</b> rs485_component.hpp:156</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html">m5::unit::UnitSP485Stream</a></div><div class="ttdoc">Thin Arduino Stream/Print adapter for any RS485Component (UnitSP485 / UnitSIT3088 / ....</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:27</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_a17d05ed41200941df37ccfbc3a303243"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a17d05ed41200941df37ccfbc3a303243">m5::unit::UnitSP485Stream::flush</a></div><div class="ttdeci">void flush() override</div><div class="ttdoc">Flushes the serial port.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:83</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_a2b98153866a68d21155750633a4c5281"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a2b98153866a68d21155750633a4c5281">m5::unit::UnitSP485Stream::peek</a></div><div class="ttdeci">int peek() override</div><div class="ttdoc">Peeks the next incoming byte without removing it.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:57</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_a4f36b677bfca36022b79ecfe5a9ef72d"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a4f36b677bfca36022b79ecfe5a9ef72d">m5::unit::UnitSP485Stream::write</a></div><div class="ttdeci">size_t write(const uint8_t *buffer, size_t size) override</div><div class="ttdoc">Writes bytes from buffer.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:76</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_a6cb08d16e0cea7888cebb7c8be9a1356"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a6cb08d16e0cea7888cebb7c8be9a1356">m5::unit::UnitSP485Stream::UnitSP485Stream</a></div><div class="ttdeci">UnitSP485Stream(RS485Component &amp;unit)</div><div class="ttdoc">Constructs a Stream adapter for any RS485Component-derived unit.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:33</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_a9bf4c3b091ecad696a81a2de89bb2ba9"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#a9bf4c3b091ecad696a81a2de89bb2ba9">m5::unit::UnitSP485Stream::read</a></div><div class="ttdeci">int read() override</div><div class="ttdoc">Reads one byte.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:49</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_ad2c4ecbf6f9b21477822f416c0c60915"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ad2c4ecbf6f9b21477822f416c0c60915">m5::unit::UnitSP485Stream::available</a></div><div class="ttdeci">int available() override</div><div class="ttdoc">Returns the number of bytes available to read.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:41</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_ade3d6eb609c912b7f360561c0d0e9ee0"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ade3d6eb609c912b7f360561c0d0e9ee0">m5::unit::UnitSP485Stream::availableForWrite</a></div><div class="ttdeci">int availableForWrite() override</div><div class="ttdoc">Returns available buffer space for write.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:92</div></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_p485_stream_html_ae0303fbe67c7591390ae5aa8813b0ace"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_p485_stream.html#ae0303fbe67c7591390ae5aa8813b0ace">m5::unit::UnitSP485Stream::write</a></div><div class="ttdeci">size_t write(const uint8_t b) override</div><div class="ttdoc">Writes one byte.</div><div class="ttdef"><b>Definition</b> unit_SP485_stream.hpp:66</div></div>
 <div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5Stack.</div></div>
 <div class="ttc" id="anamespaceunit_html"><div class="ttname"><a href="namespaceunit.html">unit</a></div><div class="ttdoc">Unit-related namespace.</div></div>
 <div class="ttc" id="ars485__component_8hpp_html"><div class="ttname"><a href="rs485__component_8hpp.html">rs485_component.hpp</a></div><div class="ttdoc">Common base for RS-485 transceiver units in M5UnitUnified.</div></div>

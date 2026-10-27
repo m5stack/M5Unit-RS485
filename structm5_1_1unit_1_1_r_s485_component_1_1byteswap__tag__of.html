@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -105,12 +105,12 @@ $(function(){initNavTree('structm5_1_1unit_1_1_r_s485_component_1_1byteswap__tag
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:adebe5236756bf7cfb0c921922ea27f07" id="r_adebe5236756bf7cfb0c921922ea27f07"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adebe5236756bf7cfb0c921922ea27f07">type</a></td></tr>
-<tr class="separator:adebe5236756bf7cfb0c921922ea27f07"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a449103487b2d330e113e8ab0e9d7d478" id="r_a449103487b2d330e113e8ab0e9d7d478"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a449103487b2d330e113e8ab0e9d7d478">type</a></td></tr>
+<tr class="separator:a449103487b2d330e113e8ab0e9d7d478"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="adebe5236756bf7cfb0c921922ea27f07" name="adebe5236756bf7cfb0c921922ea27f07"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adebe5236756bf7cfb0c921922ea27f07">&#9670;&#160;</a></span>type</h2>
+<a id="a449103487b2d330e113e8ab0e9d7d478" name="a449103487b2d330e113e8ab0e9d7d478"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a449103487b2d330e113e8ab0e9d7d478">&#9670;&#160;</a></span>type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,10 +122,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Initial value:</b><div class="fragment"><div class="line"> </div>
-<div class="line">            <span class="keyword">typename</span> std::conditional&lt;std::is_integral&lt;T&gt;::value || std::is_enum&lt;T&gt;::value, byteswap_int_tag,</div>
-<div class="line">                                      <span class="keyword">typename</span> std::conditional&lt;std::is_floating_point&lt;T&gt;::value, byteswap_float_tag,</div>
-<div class="line">                                                                byteswap_none_tag&gt;::type&gt;::type</div>
+<b>Initial value:</b><div class="fragment"><div class="line"> <span class="keyword">typename</span> std::conditional&lt;std::is_integral&lt;T&gt;::value || std::is_enum&lt;T&gt;::value ||</div>
+<div class="line">                                                   std::is_floating_point&lt;T&gt;::value,</div>
+<div class="line">                                               byteswap_value_tag, byteswap_none_tag&gt;::type</div>
 </div><!-- fragment -->
 </div>
 </div>

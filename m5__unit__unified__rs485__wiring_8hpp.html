@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -97,7 +97,9 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp.html',''); initR
 
 <div class="header">
   <div class="summary">
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">m5_unit_unified_rs485_wiring.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -107,14 +109,46 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp.html',''); initR
 <div class="textblock"><code>#include &quot;<a class="el" href="unit___s_i_t3088_8hpp_source.html">../unit/unit_SIT3088.hpp</a>&quot;</code><br />
 <code>#include &lt;M5UnitUnified.hpp&gt;</code><br />
 <code>#include &lt;wiring/m5_unit_unified_wiring.hpp&gt;</code><br />
+<code>#include &lt;HardwareSerial.h&gt;</code><br />
 </div>
 <p><a href="m5__unit__unified__rs485__wiring_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">m5::unit::rs485::wiring::AtomicBasePinPair</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">UART pin assignments (rx, tx) for AtomicRS485Base on the Atom-family bottom base.  <a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">m5::unit::rs485::wiring::Tab5BuiltinRS485Pins</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pin assignments (rx, tx, dir) for M5Stack Tab5 built-in SIT3088 RS-485.  <a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacem5.html">m5</a></td></tr>
 <tr class="memdesc:namespacem5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Top level namespace of M5Stack. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a101b793b928ca906f552174388f81901" id="r_a101b793b928ca906f552174388f81901"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">AtomicBasePinPair</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a101b793b928ca906f552174388f81901">m5::unit::rs485::wiring::atomicBaseUartPins</a> ()</td></tr>
+<tr class="memdesc:a101b793b928ca906f552174388f81901"><td class="mdescLeft">&#160;</td><td class="mdescRight">Board-aware lookup for AtomicRS485Base UART pins.  <br /></td></tr>
+<tr class="separator:a101b793b928ca906f552174388f81901"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad34534d8883872d571faa98286f34456" id="r_ad34534d8883872d571faa98286f34456"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad34534d8883872d571faa98286f34456">m5::unit::rs485::wiring::addAtomicBaseUART</a> (UnitUnified &amp;units, Component &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)</td></tr>
+<tr class="memdesc:ad34534d8883872d571faa98286f34456"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit whose transceiver direction is controlled on the board, not by software.">UnitSP485</a> (aliased as AtomicRS485Base) on the Atom-family bottom base UART.  <br /></td></tr>
+<tr class="separator:ad34534d8883872d571faa98286f34456"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a5991b30fb462d5f60c7841b99908fb" id="r_a4a5991b30fb462d5f60c7841b99908fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4a5991b30fb462d5f60c7841b99908fb">m5::unit::rs485::wiring::addAtomicBaseUART</a> (UnitUnified &amp;units, Component &amp;unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size=0)</td></tr>
+<tr class="memdesc:a4a5991b30fb462d5f60c7841b99908fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a <a class="el" href="classm5_1_1unit_1_1_unit_s_p485.html" title="RS-485 unit whose transceiver direction is controlled on the board, not by software.">UnitSP485</a> (aliased as AtomicRS485Base) with a raw Arduino serial config.  <br /></td></tr>
+<tr class="separator:a4a5991b30fb462d5f60c7841b99908fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr><td colspan="2"><div class="groupHeader">Tab5 built-in RS-485 (SIT3088)</div></td></tr>
+<tr class="memitem:a11b58aef395451d36404664b50539cb8" id="r_a11b58aef395451d36404664b50539cb8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">Tab5BuiltinRS485Pins</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a11b58aef395451d36404664b50539cb8">m5::unit::rs485::wiring::tab5BuiltinRS485Pins</a> ()</td></tr>
+<tr class="memdesc:a11b58aef395451d36404664b50539cb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Fixed pin assignments for Tab5 built-in RS-485.  <br /></td></tr>
+<tr class="separator:a11b58aef395451d36404664b50539cb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6dc1df7e31bf489561d90cbc6767b18e" id="r_a6dc1df7e31bf489561d90cbc6767b18e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6dc1df7e31bf489561d90cbc6767b18e">m5::unit::rs485::wiring::addTab5BuiltinRS485UART</a> (UnitUnified &amp;units, <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a> &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)</td></tr>
+<tr class="memdesc:a6dc1df7e31bf489561d90cbc6767b18e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)">UnitSIT3088</a> (aliased as <a class="el" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html" title="M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)">Tab5BuiltinRS485</a>) on Tab5's built-in RS-485.  <br /></td></tr>
+<tr class="separator:a6dc1df7e31bf489561d90cbc6767b18e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d248b72e9e9a95c4297c986ddaf1afc" id="r_a7d248b72e9e9a95c4297c986ddaf1afc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7d248b72e9e9a95c4297c986ddaf1afc">m5::unit::rs485::wiring::addTab5BuiltinRS485UART</a> (UnitUnified &amp;units, <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a> &amp;unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size=0)</td></tr>
+<tr class="memdesc:a7d248b72e9e9a95c4297c986ddaf1afc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a <a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html" title="RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)">UnitSIT3088</a> (aliased as <a class="el" href="classm5_1_1unit_1_1_tab5_builtin_r_s485.html" title="M5Stack Tab5 built-in RS-485 (SIT3088 with DIR pin fixed to GPIO34)">Tab5BuiltinRS485</a>) with a raw Arduino serial config.  <br /></td></tr>
+<tr class="separator:a7d248b72e9e9a95c4297c986ddaf1afc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Opt-in, header-only board-aware connection helpers specific to M5Unit-RS485. </p>
@@ -123,7 +157,296 @@ Namespaces</h2></td></tr>
 <li>Tab5 built-in RS-485 (SIT3088 with manual DIR pin): fixed to M5Stack Tab5 (ESP32-P4, RX=G21, TX=G20, DIR=G34). <dl class="section note"><dt>Note</dt><dd>Include this LAST (it self-includes the core wiring helper, which detects M5Unified via <code>__M5UNIFIED_HPP__</code>). Example/test must <code>#include &lt;M5Unified.h&gt;</code> before this header. </dd></dl>
 </li>
 </ul>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a4a5991b30fb462d5f60c7841b99908fb" name="a4a5991b30fb462d5f60c7841b99908fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a5991b30fb462d5f60c7841b99908fb">&#9670;&#160;</a></span>addAtomicBaseUART() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool m5::unit::rs485::wiring::addAtomicBaseUART </td>
+          <td>(</td>
+          <td class="paramtype">UnitUnified &amp;</td>          <td class="paramname"><span class="paramname"><em>units</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Component &amp;</td>          <td class="paramname"><span class="paramname"><em>unit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>baud</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>config</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>rx_buffer_size</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add a UnitSP485 (aliased as AtomicRS485Base) with a raw Arduino serial config. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">units</td><td>UnitUnified manager </td></tr>
+    <tr><td class="paramname">unit</td><td>UnitSP485 / AtomicRS485Base instance </td></tr>
+    <tr><td class="paramname">baud</td><td>Baud rate </td></tr>
+    <tr><td class="paramname">config</td><td>Raw Arduino serial config (<code>SERIAL_8N1</code>, ...) </td></tr>
+    <tr><td class="paramname">rx_buffer_size</td><td>RX buffer size in bytes; 0 (default) keeps the HardwareSerial default </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if successful; false on unsupported board / RX buffer rejected </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated</a></b></dt><dd>Pass a UartConfig so the call is the same on both frameworks. </dd></dl>
+
+</div>
+</div>
+<a id="ad34534d8883872d571faa98286f34456" name="ad34534d8883872d571faa98286f34456"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad34534d8883872d571faa98286f34456">&#9670;&#160;</a></span>addAtomicBaseUART() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool m5::unit::rs485::wiring::addAtomicBaseUART </td>
+          <td>(</td>
+          <td class="paramtype">UnitUnified &amp;</td>          <td class="paramname"><span class="paramname"><em>units</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Component &amp;</td>          <td class="paramname"><span class="paramname"><em>unit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>baud</em></span><span class="paramdefsep"> = </span><span class="paramdefval">115200</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const m5::unit::wiring::UartConfig</td>          <td class="paramname"><span class="paramname"><em>config</em></span><span class="paramdefsep"> = </span><span class="paramdefval">m5::unit::wiring::UartConfig::Default</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>rx_buffer_size</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add a UnitSP485 (aliased as AtomicRS485Base) on the Atom-family bottom base UART. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">units</td><td>UnitUnified manager </td></tr>
+    <tr><td class="paramname">unit</td><td>UnitSP485 / AtomicRS485Base instance </td></tr>
+    <tr><td class="paramname">baud</td><td>Baud rate (default 115200) </td></tr>
+    <tr><td class="paramname">config</td><td>UartConfig (default <code>UartConfig::Default</code> = 8N1) </td></tr>
+    <tr><td class="paramname">rx_buffer_size</td><td>RX buffer size in bytes; 0 (default) keeps the HardwareSerial default </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if successful; false on unsupported board / RX buffer rejected </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART). </dd></dl>
+
+</div>
+</div>
+<a id="a7d248b72e9e9a95c4297c986ddaf1afc" name="a7d248b72e9e9a95c4297c986ddaf1afc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d248b72e9e9a95c4297c986ddaf1afc">&#9670;&#160;</a></span>addTab5BuiltinRS485UART() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool m5::unit::rs485::wiring::addTab5BuiltinRS485UART </td>
+          <td>(</td>
+          <td class="paramtype">UnitUnified &amp;</td>          <td class="paramname"><span class="paramname"><em>units</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>unit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>baud</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>config</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>rx_buffer_size</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) with a raw Arduino serial config. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">units</td><td>UnitUnified manager </td></tr>
+    <tr><td class="paramname">unit</td><td>UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config()) </td></tr>
+    <tr><td class="paramname">baud</td><td>Baud rate </td></tr>
+    <tr><td class="paramname">config</td><td>Raw Arduino serial config (<code>SERIAL_8N1</code>, ...) </td></tr>
+    <tr><td class="paramname">rx_buffer_size</td><td>RX buffer size in bytes; 0 (default) keeps the HardwareSerial default </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if successful; false on unsupported board / RX buffer rejected </dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000006">Deprecated</a></b></dt><dd>Pass a UartConfig so the call is the same on both frameworks. </dd></dl>
+
+</div>
+</div>
+<a id="a6dc1df7e31bf489561d90cbc6767b18e" name="a6dc1df7e31bf489561d90cbc6767b18e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6dc1df7e31bf489561d90cbc6767b18e">&#9670;&#160;</a></span>addTab5BuiltinRS485UART() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool m5::unit::rs485::wiring::addTab5BuiltinRS485UART </td>
+          <td>(</td>
+          <td class="paramtype">UnitUnified &amp;</td>          <td class="paramname"><span class="paramname"><em>units</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>unit</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const uint32_t</td>          <td class="paramname"><span class="paramname"><em>baud</em></span><span class="paramdefsep"> = </span><span class="paramdefval">115200</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const m5::unit::wiring::UartConfig</td>          <td class="paramname"><span class="paramname"><em>config</em></span><span class="paramdefsep"> = </span><span class="paramdefval">m5::unit::wiring::UartConfig::Default</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t</td>          <td class="paramname"><span class="paramname"><em>rx_buffer_size</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">units</td><td>UnitUnified manager </td></tr>
+    <tr><td class="paramname">unit</td><td>UnitSIT3088 / Tab5BuiltinRS485 instance (dir_pin is set via config()) </td></tr>
+    <tr><td class="paramname">baud</td><td>Baud rate (default 115200) </td></tr>
+    <tr><td class="paramname">config</td><td>UartConfig (default <code>UartConfig::Default</code> = 8N1) </td></tr>
+    <tr><td class="paramname">rx_buffer_size</td><td>RX buffer size in bytes; 0 (default) keeps the HardwareSerial default </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if successful; false on unsupported board / RX buffer rejected </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The HardwareSerial is selected via m5::unit::wiring::defaultUartSerial() (mirrors addUART). </dd></dl>
+
+</div>
+</div>
+<a id="a101b793b928ca906f552174388f81901" name="a101b793b928ca906f552174388f81901"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a101b793b928ca906f552174388f81901">&#9670;&#160;</a></span>atomicBaseUartPins()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">AtomicBasePinPair m5::unit::rs485::wiring::atomicBaseUartPins </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Board-aware lookup for AtomicRS485Base UART pins. </p>
+<dl class="section return"><dt>Returns</dt><dd>AtomicBasePinPair for the current board; {-1, -1} for unsupported boards </dd></dl>
+
+</div>
+</div>
+<a id="a11b58aef395451d36404664b50539cb8" name="a11b58aef395451d36404664b50539cb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11b58aef395451d36404664b50539cb8">&#9670;&#160;</a></span>tab5BuiltinRS485Pins()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Tab5BuiltinRS485Pins m5::unit::rs485::wiring::tab5BuiltinRS485Pins </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Fixed pin assignments for Tab5 built-in RS-485. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pins for Tab5; {-1, -1, -1} on any other board. </dd></dl>
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

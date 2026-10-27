@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.1.0 git rev:8a0af48</span>
+   <div id="projectname">M5Unit-RS485<span id="projectnumber">&#160;0.2.0 git rev:0956c20</span>
    </div>
   </td>
  </tr>
@@ -111,7 +111,7 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp_source.html','')
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">#include &lt;M5UnitUnified.hpp&gt;</span></div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">#include &lt;wiring/m5_unit_unified_wiring.hpp&gt;</span>  <span class="comment">// core wiring: defaultUartSerial / uartPortHandle / defaultUartPort</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span> </div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#if defined(ARDUINO)</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)</span></div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#include &lt;HardwareSerial.h&gt;</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span> </div>
@@ -120,14 +120,17 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp_source.html','')
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="keyword">namespace </span>rs485 {</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span><span class="keyword">namespace </span>wiring {</div>
 <div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#if defined(__M5UNIFIED_HPP__)</span></div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span><span class="preprocessor">#if defined(__M5UNIFIED_HPP__) || defined(DOXYGEN_PROCESS)</span></div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span> </div>
-<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="keyword">struct </span>AtomicBasePinPair {</div>
-<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>    int8_t rx;  </div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>    int8_t tx;  </div>
+<div class="foldopen" id="foldopen00041" data-start="{" data-end="};">
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">   41</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">AtomicBasePinPair</a> {</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a3910e04b6e82fa1ee9f1fdc566351fc1">   42</a></span>    int8_t <a class="code hl_variable" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a3910e04b6e82fa1ee9f1fdc566351fc1">rx</a>;  </div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a5193b07fc05a3cd884cea8b950e08d14">   43</a></span>    int8_t <a class="code hl_variable" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a5193b07fc05a3cd884cea8b950e08d14">tx</a>;  </div>
 <div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>};</div>
+</div>
 <div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span> </div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="keyword">inline</span> AtomicBasePinPair atomicBaseUartPins()</div>
+<div class="foldopen" id="foldopen00050" data-start="{" data-end="}">
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#a101b793b928ca906f552174388f81901">   50</a></span><span class="keyword">inline</span> <a class="code hl_struct" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">AtomicBasePinPair</a> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#a101b793b928ca906f552174388f81901">atomicBaseUartPins</a>()</div>
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>{</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>    <span class="keywordflow">switch</span> (M5.getBoard()) {</div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomLite:</div>
@@ -136,7 +139,7 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp_source.html','')
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomS3:</div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomS3Lite:</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomS3R:</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomEchoS3R:</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomVoiceS3R:</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomS3RCam:</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        <span class="keywordflow">case</span> m5::board_t::board_M5AtomS3RExt:</div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            <span class="keywordflow">return</span> {5, 6};</div>
@@ -144,106 +147,174 @@ $(function(){initNavTree('m5__unit__unified__rs485__wiring_8hpp_source.html','')
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            <span class="keywordflow">return</span> {-1, -1};</div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    }</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>}</div>
+</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#if defined(ARDUINO)</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> addAtomicBaseUART(UnitUnified&amp; units, Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud = 115200,</div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>                              <span class="keyword">const</span> uint32_t config = SERIAL_8N1)</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>{</div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = atomicBaseUartPins();</div>
-<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0) {</div>
-<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addAtomicBaseUART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
-<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>    }</div>
-<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring: addAtomicBaseUART board=0x%02x rx=%d tx=%d baud=%lu&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()),</div>
-<div class="line"><a id="l00087" name="l00087"></a><span class="lineno">   87</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">long</span><span class="keyword">&gt;</span>(baud));</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)</span></div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="comment">// Shared body of the two addAtomicBaseUART overloads; cfg is an Arduino SERIAL_* value.</span></div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> add_atomic_base_uart(UnitUnified&amp; units, Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud, <span class="keyword">const</span> uint32_t cfg,</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>                                 <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size)</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>{</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = atomicBaseUartPins();</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0) {</div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addAtomicBaseUART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    }</div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring: addAtomicBaseUART board=0x%02x rx=%d tx=%d baud=%lu&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()),</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">long</span><span class="keyword">&gt;</span>(baud));</div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span> </div>
+<div class="line"><a id="l00083" name="l00083"></a><span class="lineno">   83</span>    HardwareSerial&amp; serial = m5::unit::wiring::defaultUartSerial();</div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordflow">return</span> m5::unit::wiring::beginUartSerial(serial, baud, cfg, p.rx, p.tx, rx_buffer_size) &amp;&amp; units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, serial);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span>}</div>
+<div class="line"><a id="l00086" name="l00086"></a><span class="lineno">   86</span>}  <span class="comment">// namespace detail</span></div>
 <div class="line"><a id="l00088" name="l00088"></a><span class="lineno">   88</span> </div>
-<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    HardwareSerial&amp; serial = m5::unit::wiring::defaultUartSerial();</div>
-<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span>    serial.end();</div>
-<div class="line"><a id="l00091" name="l00091"></a><span class="lineno">   91</span>    serial.begin(baud, config, p.rx, p.tx);</div>
-<div class="line"><a id="l00092" name="l00092"></a><span class="lineno">   92</span>    <span class="keywordflow">return</span> units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, serial);</div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno">   93</span>}</div>
-<div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span><span class="preprocessor">#else   </span><span class="comment">// ESP-IDF native</span></div>
-<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>inline bool addAtomicBaseUART(UnitUnified&amp; units, Component&amp; unit, const uint32_t baud = 115200,</div>
-<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>                              <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default)</div>
-<div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>{</div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = atomicBaseUartPins();</div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0) {</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addAtomicBaseUART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    }</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring(ESP-IDF): addAtomicBaseUART board=0x%02x rx=%d tx=%d baud=%u&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()),</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(baud));</div>
-<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>    <span class="keyword">auto</span> port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.rx),</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>                                                 <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.tx), baud, config);</div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keywordflow">if</span> (port == UART_NUM_MAX) {</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    }</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>    <span class="keywordflow">return</span> units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, port);</div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>}</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="preprocessor">#endif  </span><span class="comment">// ARDUINO</span></div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00126" name="l00126"></a><span class="lineno">  126</span> </div>
-<div class="line"><a id="l00130" name="l00130"></a><span class="lineno">  130</span><span class="keyword">struct </span>Tab5BuiltinRS485Pins {</div>
-<div class="line"><a id="l00131" name="l00131"></a><span class="lineno">  131</span>    int8_t rx;   </div>
-<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>    int8_t tx;   </div>
-<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>    int8_t dir;  </div>
-<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>};</div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span> </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span><span class="keyword">inline</span> Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>{</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>    <span class="keywordflow">switch</span> (M5.getBoard()) {</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span>        <span class="keywordflow">case</span> m5::board_t::board_M5Tab5:</div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>            <span class="keywordflow">return</span> {21, 20, 34};</div>
-<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>        <span class="keywordflow">default</span>:</div>
-<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>            <span class="keywordflow">return</span> {-1, -1, -1};</div>
-<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>    }</div>
-<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>}</div>
-<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span> </div>
-<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span><span class="preprocessor">#if defined(ARDUINO)</span></div>
-<div class="line"><a id="l00160" name="l00160"></a><span class="lineno">  160</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> addTab5BuiltinRS485UART(UnitUnified&amp; units, UnitSIT3088&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud = 115200,</div>
-<div class="line"><a id="l00161" name="l00161"></a><span class="lineno">  161</span>                                    <span class="keyword">const</span> uint32_t config = SERIAL_8N1)</div>
-<div class="line"><a id="l00162" name="l00162"></a><span class="lineno">  162</span>{</div>
-<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = tab5BuiltinRS485Pins();</div>
-<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0 || p.dir &lt; 0) {</div>
-<div class="line"><a id="l00165" name="l00165"></a><span class="lineno">  165</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addTab5BuiltinRS485UART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
-<div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>    }</div>
-<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring: addTab5BuiltinRS485UART board=0x%02x rx=%d tx=%d dir=%d baud=%lu&quot;</span>,</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx),</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.dir), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">long</span><span class="keyword">&gt;</span>(baud));</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span> </div>
-<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>    <span class="keyword">auto</span> cfg    = <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config();</div>
-<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>    cfg.dir_pin = p.dir;</div>
-<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>    <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config(cfg);</div>
-<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span> </div>
-<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    HardwareSerial&amp; serial = m5::unit::wiring::defaultUartSerial();</div>
-<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>    serial.end();</div>
-<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span>    serial.begin(baud, config, p.rx, p.tx);</div>
-<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>    <span class="keywordflow">return</span> units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, serial);</div>
-<div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>}</div>
-<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="preprocessor">#else   </span><span class="comment">// ESP-IDF native</span></div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>inline bool addTab5BuiltinRS485UART(UnitUnified&amp; units, UnitSIT3088&amp; unit, const uint32_t baud = 115200,</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                                    <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default)</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>{</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>    (void)units;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    (void)<a class="code hl_namespace" href="namespaceunit.html">unit</a>;</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    (void)baud;</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    (void)config;</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>    M5_LIB_LOGE(<span class="stringliteral">&quot;wiring(ESP-IDF): addTab5BuiltinRS485UART is not yet supported&quot;</span>);</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>    <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>}</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span><span class="preprocessor">#endif  </span><span class="comment">// ARDUINO</span></div>
+<div class="foldopen" id="foldopen00099" data-start="{" data-end="}">
+<div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#ad34534d8883872d571faa98286f34456">   99</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#ad34534d8883872d571faa98286f34456">addAtomicBaseUART</a>(UnitUnified&amp; units, Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud = 115200,</div>
+<div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span>                              <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,</div>
+<div class="line"><a id="l00101" name="l00101"></a><span class="lineno">  101</span>                              <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size               = 0)</div>
+<div class="line"><a id="l00102" name="l00102"></a><span class="lineno">  102</span>{</div>
+<div class="line"><a id="l00103" name="l00103"></a><span class="lineno">  103</span>    <span class="keywordflow">return</span> detail::add_atomic_base_uart(units, <a class="code hl_namespace" href="namespaceunit.html">unit</a>, baud, m5::unit::wiring::toArduinoSerialConfig(config),</div>
+<div class="line"><a id="l00104" name="l00104"></a><span class="lineno">  104</span>                                        rx_buffer_size);</div>
+<div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00116" data-start="{" data-end="}">
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#a4a5991b30fb462d5f60c7841b99908fb">  116</a></span>[[deprecated(<span class="stringliteral">&quot;Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value&quot;</span>)]] <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#ad34534d8883872d571faa98286f34456">addAtomicBaseUART</a>(</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    UnitUnified&amp; units, Component&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud, <span class="keyword">const</span> uint32_t config, <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size = 0)</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>{</div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>    <span class="keywordflow">return</span> detail::add_atomic_base_uart(units, <a class="code hl_namespace" href="namespaceunit.html">unit</a>, baud, config, rx_buffer_size);</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>}</div>
+</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">#else   </span><span class="comment">// ESP-IDF native</span></div>
+<div class="line"><a id="l00132" name="l00132"></a><span class="lineno">  132</span>inline bool addAtomicBaseUART(UnitUnified&amp; units, Component&amp; unit, const uint32_t baud = 115200,</div>
+<div class="line"><a id="l00133" name="l00133"></a><span class="lineno">  133</span>                              <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,</div>
+<div class="line"><a id="l00134" name="l00134"></a><span class="lineno">  134</span>                              <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size               = 0)</div>
+<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>{</div>
+<div class="line"><a id="l00136" name="l00136"></a><span class="lineno">  136</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = atomicBaseUartPins();</div>
+<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0) {</div>
+<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addAtomicBaseUART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
+<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>    }</div>
+<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring(ESP-IDF): addAtomicBaseUART board=0x%02x rx=%d tx=%d baud=%u&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()),</div>
+<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(baud));</div>
+<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
+<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span>    <span class="keyword">auto</span> port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.rx),</div>
+<div class="line"><a id="l00145" name="l00145"></a><span class="lineno">  145</span>                                                 <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.tx), baud, config, rx_buffer_size);</div>
+<div class="line"><a id="l00146" name="l00146"></a><span class="lineno">  146</span>    <span class="keywordflow">if</span> (port == UART_NUM_MAX) {</div>
+<div class="line"><a id="l00147" name="l00147"></a><span class="lineno">  147</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00148" name="l00148"></a><span class="lineno">  148</span>    }</div>
+<div class="line"><a id="l00149" name="l00149"></a><span class="lineno">  149</span>    <span class="keywordflow">return</span> units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, port);</div>
+<div class="line"><a id="l00150" name="l00150"></a><span class="lineno">  150</span>}</div>
+<div class="line"><a id="l00151" name="l00151"></a><span class="lineno">  151</span><span class="preprocessor">#endif  </span><span class="comment">// ARDUINO</span></div>
+<div class="line"><a id="l00152" name="l00152"></a><span class="lineno">  152</span> </div>
+<div class="line"><a id="l00155" name="l00155"></a><span class="lineno">  155</span> </div>
+<div class="foldopen" id="foldopen00159" data-start="{" data-end="};">
+<div class="line"><a id="l00159" name="l00159"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">  159</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">Tab5BuiltinRS485Pins</a> {</div>
+<div class="line"><a id="l00160" name="l00160"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#a2eabb67f4fc258d7f0ba78a7df03afa4">  160</a></span>    int8_t <a class="code hl_variable" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#a2eabb67f4fc258d7f0ba78a7df03afa4">rx</a>;   </div>
+<div class="line"><a id="l00161" name="l00161"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#af8af34837d07af614a1442df2d8de348">  161</a></span>    int8_t <a class="code hl_variable" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#af8af34837d07af614a1442df2d8de348">tx</a>;   </div>
+<div class="line"><a id="l00162" name="l00162"></a><span class="lineno"><a class="line" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#aef889c9795ad99488af6a2d4c635b8be">  162</a></span>    int8_t <a class="code hl_variable" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#aef889c9795ad99488af6a2d4c635b8be">dir</a>;  </div>
+<div class="line"><a id="l00163" name="l00163"></a><span class="lineno">  163</span>};</div>
+</div>
+<div class="line"><a id="l00164" name="l00164"></a><span class="lineno">  164</span> </div>
+<div class="foldopen" id="foldopen00169" data-start="{" data-end="}">
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#a11b58aef395451d36404664b50539cb8">  169</a></span><span class="keyword">inline</span> <a class="code hl_struct" href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">Tab5BuiltinRS485Pins</a> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#a11b58aef395451d36404664b50539cb8">tab5BuiltinRS485Pins</a>()</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>{</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>    <span class="keywordflow">switch</span> (M5.getBoard()) {</div>
+<div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span>        <span class="keywordflow">case</span> m5::board_t::board_M5Tab5:</div>
+<div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <span class="keywordflow">return</span> {21, 20, 34};</div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno">  174</span>        <span class="keywordflow">default</span>:</div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span>            <span class="keywordflow">return</span> {-1, -1, -1};</div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span>    }</div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span>}</div>
+</div>
+<div class="line"><a id="l00178" name="l00178"></a><span class="lineno">  178</span> </div>
+<div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span><span class="preprocessor">#if defined(ARDUINO) || defined(DOXYGEN_PROCESS)</span></div>
+<div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span><span class="keyword">namespace </span>detail {</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span><span class="comment">// Shared body of the two addTab5BuiltinRS485UART overloads; cfg is an Arduino SERIAL_* value.</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span><span class="keyword">inline</span> <span class="keywordtype">bool</span> add_tab5_builtin_rs485_uart(UnitUnified&amp; units, <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a>&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud, <span class="keyword">const</span> uint32_t cfg,</div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                                        <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size)</div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>{</div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = tab5BuiltinRS485Pins();</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0 || p.dir &lt; 0) {</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addTab5BuiltinRS485UART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>    }</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring: addTab5BuiltinRS485UART board=0x%02x rx=%d tx=%d dir=%d baud=%lu&quot;</span>,</div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx),</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.dir), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">long</span><span class="keyword">&gt;</span>(baud));</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span> </div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>    <span class="keyword">auto</span> unit_cfg    = <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config();</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>    unit_cfg.dir_pin = p.dir;</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>    <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config(unit_cfg);</div>
 <div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span> </div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span><span class="preprocessor">#endif  </span><span class="comment">// __M5UNIFIED_HPP__</span></div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span> </div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>}  <span class="comment">// namespace wiring</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>}  <span class="comment">// namespace rs485</span></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>}  <span class="comment">// namespace unit</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>}  <span class="comment">// namespace m5</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="preprocessor">#endif  </span><span class="comment">// M5_UNIT_UNIFIED_RS485_WIRING_HPP</span></div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>    HardwareSerial&amp; serial = m5::unit::wiring::defaultUartSerial();</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>    <span class="keywordflow">return</span> m5::unit::wiring::beginUartSerial(serial, baud, cfg, p.rx, p.tx, rx_buffer_size) &amp;&amp; units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, serial);</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>}</div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>}  <span class="comment">// namespace detail</span></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span> </div>
+<div class="foldopen" id="foldopen00215" data-start="{" data-end="}">
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#a6dc1df7e31bf489561d90cbc6767b18e">  215</a></span><span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#a6dc1df7e31bf489561d90cbc6767b18e">addTab5BuiltinRS485UART</a>(UnitUnified&amp; units, <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a>&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud = 115200,</div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                                    <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,</div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size               = 0)</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>{</div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>    <span class="keywordflow">return</span> detail::add_tab5_builtin_rs485_uart(units, <a class="code hl_namespace" href="namespaceunit.html">unit</a>, baud, m5::unit::wiring::toArduinoSerialConfig(config),</div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                                               rx_buffer_size);</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>}</div>
+</div>
+<div class="foldopen" id="foldopen00232" data-start="{" data-end="}">
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno"><a class="line" href="m5__unit__unified__rs485__wiring_8hpp.html#a7d248b72e9e9a95c4297c986ddaf1afc">  232</a></span>[[deprecated(<span class="stringliteral">&quot;Pass m5::unit::wiring::UartConfig instead of a raw SERIAL_* value&quot;</span>)]] <span class="keyword">inline</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="m5__unit__unified__rs485__wiring_8hpp.html#a6dc1df7e31bf489561d90cbc6767b18e">addTab5BuiltinRS485UART</a>(</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>    UnitUnified&amp; units, <a class="code hl_class" href="classm5_1_1unit_1_1_unit_s_i_t3088.html">UnitSIT3088</a>&amp; <a class="code hl_namespace" href="namespaceunit.html">unit</a>, <span class="keyword">const</span> uint32_t baud, <span class="keyword">const</span> uint32_t config, <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size = 0)</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>{</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>    <span class="keywordflow">return</span> detail::add_tab5_builtin_rs485_uart(units, <a class="code hl_namespace" href="namespaceunit.html">unit</a>, baud, config, rx_buffer_size);</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>}</div>
+</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span><span class="preprocessor">#else   </span><span class="comment">// ESP-IDF native</span></div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>inline bool addTab5BuiltinRS485UART(UnitUnified&amp; units, UnitSIT3088&amp; unit, const uint32_t baud = 115200,</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>                                    <span class="keyword">const</span> m5::unit::wiring::UartConfig config = m5::unit::wiring::UartConfig::Default,</div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>                                    <span class="keyword">const</span> <span class="keywordtype">size_t</span> rx_buffer_size               = 0)</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>{</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>    <span class="keyword">const</span> <span class="keyword">auto</span> p = tab5BuiltinRS485Pins();</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>    <span class="keywordflow">if</span> (p.rx &lt; 0 || p.tx &lt; 0 || p.dir &lt; 0) {</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>        M5_LIB_LOGE(<span class="stringliteral">&quot;wiring: addTab5BuiltinRS485UART unsupported board=0x%02x&quot;</span>, <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()));</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>    }</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>    M5_LIB_LOGI(<span class="stringliteral">&quot;wiring(ESP-IDF): addTab5BuiltinRS485UART board=0x%02x rx=%d tx=%d dir=%d baud=%u&quot;</span>,</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(M5.getBoard()), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.rx), <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.tx),</div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                <span class="keyword">static_cast&lt;</span><span class="keywordtype">int</span><span class="keyword">&gt;</span>(p.dir), <span class="keyword">static_cast&lt;</span><span class="keywordtype">unsigned</span><span class="keyword">&gt;</span>(baud));</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span> </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>    <span class="keyword">auto</span> cfg    = <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config();</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>    cfg.dir_pin = p.dir;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>    <a class="code hl_namespace" href="namespaceunit.html">unit</a>.config(cfg);</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span> </div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>    <span class="keyword">auto</span> port = m5::unit::wiring::uartPortHandle(m5::unit::wiring::defaultUartPort(), <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.rx),</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                                                 <span class="keyword">static_cast&lt;</span>gpio_num_t<span class="keyword">&gt;</span>(p.tx), baud, config, rx_buffer_size);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>    <span class="keywordflow">if</span> (port == UART_NUM_MAX) {</div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>        <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>    }</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>    <span class="keywordflow">return</span> units.add(<a class="code hl_namespace" href="namespaceunit.html">unit</a>, port);</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>}</div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span><span class="preprocessor">#endif  </span><span class="comment">// ARDUINO</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span><span class="preprocessor">#endif  </span><span class="comment">// __M5UNIFIED_HPP__</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span> </div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>}  <span class="comment">// namespace wiring</span></div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>}  <span class="comment">// namespace rs485</span></div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>}  <span class="comment">// namespace unit</span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>}  <span class="comment">// namespace m5</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span><span class="preprocessor">#endif  </span><span class="comment">// M5_UNIT_UNIFIED_RS485_WIRING_HPP</span></div>
+<div class="ttc" id="aclassm5_1_1unit_1_1_unit_s_i_t3088_html"><div class="ttname"><a href="classm5_1_1unit_1_1_unit_s_i_t3088.html">m5::unit::UnitSIT3088</a></div><div class="ttdoc">RS-485 unit using the SIT3088 transceiver (manual direction control via a DIR pin)</div><div class="ttdef"><b>Definition</b> unit_SIT3088.hpp:33</div></div>
+<div class="ttc" id="am5__unit__unified__rs485__wiring_8hpp_html_a101b793b928ca906f552174388f81901"><div class="ttname"><a href="m5__unit__unified__rs485__wiring_8hpp.html#a101b793b928ca906f552174388f81901">m5::unit::rs485::wiring::atomicBaseUartPins</a></div><div class="ttdeci">AtomicBasePinPair atomicBaseUartPins()</div><div class="ttdoc">Board-aware lookup for AtomicRS485Base UART pins.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:50</div></div>
+<div class="ttc" id="am5__unit__unified__rs485__wiring_8hpp_html_a11b58aef395451d36404664b50539cb8"><div class="ttname"><a href="m5__unit__unified__rs485__wiring_8hpp.html#a11b58aef395451d36404664b50539cb8">m5::unit::rs485::wiring::tab5BuiltinRS485Pins</a></div><div class="ttdeci">Tab5BuiltinRS485Pins tab5BuiltinRS485Pins()</div><div class="ttdoc">Fixed pin assignments for Tab5 built-in RS-485.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:169</div></div>
+<div class="ttc" id="am5__unit__unified__rs485__wiring_8hpp_html_a6dc1df7e31bf489561d90cbc6767b18e"><div class="ttname"><a href="m5__unit__unified__rs485__wiring_8hpp.html#a6dc1df7e31bf489561d90cbc6767b18e">m5::unit::rs485::wiring::addTab5BuiltinRS485UART</a></div><div class="ttdeci">bool addTab5BuiltinRS485UART(UnitUnified &amp;units, UnitSIT3088 &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)</div><div class="ttdoc">Add a UnitSIT3088 (aliased as Tab5BuiltinRS485) on Tab5's built-in RS-485.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:215</div></div>
+<div class="ttc" id="am5__unit__unified__rs485__wiring_8hpp_html_ad34534d8883872d571faa98286f34456"><div class="ttname"><a href="m5__unit__unified__rs485__wiring_8hpp.html#ad34534d8883872d571faa98286f34456">m5::unit::rs485::wiring::addAtomicBaseUART</a></div><div class="ttdeci">bool addAtomicBaseUART(UnitUnified &amp;units, Component &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)</div><div class="ttdoc">Add a UnitSP485 (aliased as AtomicRS485Base) on the Atom-family bottom base UART.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:99</div></div>
 <div class="ttc" id="anamespacem5_html"><div class="ttname"><a href="namespacem5.html">m5</a></div><div class="ttdoc">Top level namespace of M5Stack.</div></div>
 <div class="ttc" id="anamespaceunit_html"><div class="ttname"><a href="namespaceunit.html">unit</a></div><div class="ttdoc">Unit-related namespace.</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair_html"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html">m5::unit::rs485::wiring::AtomicBasePinPair</a></div><div class="ttdoc">UART pin assignments (rx, tx) for AtomicRS485Base on the Atom-family bottom base.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:41</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair_html_a3910e04b6e82fa1ee9f1fdc566351fc1"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a3910e04b6e82fa1ee9f1fdc566351fc1">m5::unit::rs485::wiring::AtomicBasePinPair::rx</a></div><div class="ttdeci">int8_t rx</div><div class="ttdoc">UART RX pin on the Atom-family bottom base.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:42</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair_html_a5193b07fc05a3cd884cea8b950e08d14"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html#a5193b07fc05a3cd884cea8b950e08d14">m5::unit::rs485::wiring::AtomicBasePinPair::tx</a></div><div class="ttdeci">int8_t tx</div><div class="ttdoc">UART TX pin on the Atom-family bottom base.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:43</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins_html"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html">m5::unit::rs485::wiring::Tab5BuiltinRS485Pins</a></div><div class="ttdoc">Pin assignments (rx, tx, dir) for M5Stack Tab5 built-in SIT3088 RS-485.</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:159</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins_html_a2eabb67f4fc258d7f0ba78a7df03afa4"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#a2eabb67f4fc258d7f0ba78a7df03afa4">m5::unit::rs485::wiring::Tab5BuiltinRS485Pins::rx</a></div><div class="ttdeci">int8_t rx</div><div class="ttdoc">UART RX (Tab5 built-in: GPIO21)</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:160</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins_html_aef889c9795ad99488af6a2d4c635b8be"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#aef889c9795ad99488af6a2d4c635b8be">m5::unit::rs485::wiring::Tab5BuiltinRS485Pins::dir</a></div><div class="ttdeci">int8_t dir</div><div class="ttdoc">SIT3088 DIR (DE/RE tied, Tab5 built-in: GPIO34)</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:162</div></div>
+<div class="ttc" id="astructm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins_html_af8af34837d07af614a1442df2d8de348"><div class="ttname"><a href="structm5_1_1unit_1_1rs485_1_1wiring_1_1_tab5_builtin_r_s485_pins.html#af8af34837d07af614a1442df2d8de348">m5::unit::rs485::wiring::Tab5BuiltinRS485Pins::tx</a></div><div class="ttdeci">int8_t tx</div><div class="ttdoc">UART TX (Tab5 built-in: GPIO20)</div><div class="ttdef"><b>Definition</b> m5_unit_unified_rs485_wiring.hpp:161</div></div>
 <div class="ttc" id="aunit___s_i_t3088_8hpp_html"><div class="ttname"><a href="unit___s_i_t3088_8hpp.html">unit_SIT3088.hpp</a></div><div class="ttdoc">SIT3088 unit for M5UnitUnified (manual direction-controlled RS-485 transceiver)</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->

@@ -1,6 +1,10 @@
 var searchData=
 [
-  ['atomicrs485base_0',['AtomicRS485Base',['../_m5_unit_unified_r_s485_8hpp.html#a3c86dc11133cab2f39d84adf47af5c96',1,'m5::unit']]],
-  ['available_1',['available',['../classm5_1_1unit_1_1_r_s485_component.html#a0f03b7056b0481a5d602ce95041d2687',1,'m5::unit::RS485Component']]],
-  ['availableforwrite_2',['availableForWrite',['../classm5_1_1unit_1_1_r_s485_component.html#aa809f689bf899160bb796ae39b4bd005',1,'m5::unit::RS485Component']]]
+  ['addatomicbaseuart_0',['addAtomicBaseUART',['../m5__unit__unified__rs485__wiring_8hpp.html#ad34534d8883872d571faa98286f34456',1,'m5::unit::rs485::wiring::addAtomicBaseUART(UnitUnified &amp;units, Component &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)'],['../m5__unit__unified__rs485__wiring_8hpp.html#a4a5991b30fb462d5f60c7841b99908fb',1,'m5::unit::rs485::wiring::addAtomicBaseUART(UnitUnified &amp;units, Component &amp;unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size=0)']]],
+  ['addtab5builtinrs485uart_1',['addTab5BuiltinRS485UART',['../m5__unit__unified__rs485__wiring_8hpp.html#a6dc1df7e31bf489561d90cbc6767b18e',1,'m5::unit::rs485::wiring::addTab5BuiltinRS485UART(UnitUnified &amp;units, UnitSIT3088 &amp;unit, const uint32_t baud=115200, const m5::unit::wiring::UartConfig config=m5::unit::wiring::UartConfig::Default, const size_t rx_buffer_size=0)'],['../m5__unit__unified__rs485__wiring_8hpp.html#a7d248b72e9e9a95c4297c986ddaf1afc',1,'m5::unit::rs485::wiring::addTab5BuiltinRS485UART(UnitUnified &amp;units, UnitSIT3088 &amp;unit, const uint32_t baud, const uint32_t config, const size_t rx_buffer_size=0)']]],
+  ['atomicbasepinpair_2',['AtomicBasePinPair',['../structm5_1_1unit_1_1rs485_1_1wiring_1_1_atomic_base_pin_pair.html',1,'m5::unit::rs485::wiring']]],
+  ['atomicbaseuartpins_3',['atomicBaseUartPins',['../m5__unit__unified__rs485__wiring_8hpp.html#a101b793b928ca906f552174388f81901',1,'m5::unit::rs485::wiring']]],
+  ['atomicrs485base_4',['AtomicRS485Base',['../_m5_unit_unified_r_s485_8hpp.html#a3c86dc11133cab2f39d84adf47af5c96',1,'m5::unit']]],
+  ['available_5',['available',['../classm5_1_1unit_1_1_r_s485_component.html#a0f03b7056b0481a5d602ce95041d2687',1,'m5::unit::RS485Component::available()'],['../classm5_1_1unit_1_1_unit_s_p485_stream.html#ad2c4ecbf6f9b21477822f416c0c60915',1,'m5::unit::UnitSP485Stream::available()']]],
+  ['availableforwrite_6',['availableForWrite',['../classm5_1_1unit_1_1_r_s485_component.html#aa809f689bf899160bb796ae39b4bd005',1,'m5::unit::RS485Component::availableForWrite()'],['../classm5_1_1unit_1_1_unit_s_p485_stream.html#ade3d6eb609c912b7f360561c0d0e9ee0',1,'m5::unit::UnitSP485Stream::availableForWrite()']]]
 ];
