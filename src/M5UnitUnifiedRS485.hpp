@@ -38,7 +38,7 @@ using UnitRS485 = m5::unit::UnitSP485;
  */
 using HatRS485 = m5::unit::UnitSP485;
 /*!
-  @brief AtomicRS485Base alias of UnitSP485 (A131; SP485EEN auto-direction)
+  @brief AtomicRS485Base alias of UnitSP485 (A131; SP3485EN, same auto-direction circuit)
  */
 using AtomicRS485Base = m5::unit::UnitSP485;
 /*!
@@ -58,6 +58,10 @@ public:
         config(cfg);
     }
     virtual ~Tab5BuiltinRS485() = default;
+    //! @brief Move constructor. Declared because the destructor above suppresses the implicit one.
+    Tab5BuiltinRS485(Tab5BuiltinRS485 &&) noexcept = default;
+    //! @brief Move assignment. Declared for the same reason as the move constructor.
+    Tab5BuiltinRS485 &operator=(Tab5BuiltinRS485 &&) noexcept = default;
 };
 
 }  // namespace unit

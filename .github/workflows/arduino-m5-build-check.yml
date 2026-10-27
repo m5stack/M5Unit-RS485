@@ -65,18 +65,21 @@ jobs:
           - "-DUSING_UNIT_RS485"
 
         board:
+        # Reduced to the 5 chip-arch representatives plus the boards whose FQBN bakes in build
+        # properties cores3 does not have (PSRAM / memory_type / USB mode): sticks3, atoms3r,
+        # papers3, cardputer. The rest differ only in pins_arduino.h.
           - m5stack_tab5
           - m5stack_core
-          - m5stack_fire
-          - m5stack_core2
-          - m5stack_tough
+#          - m5stack_fire  # ESP32: represented by m5stack_core
+#          - m5stack_core2  # ESP32: represented by m5stack_core
+#          - m5stack_tough  # ESP32: represented by m5stack_core
 #          - m5stack_station
-          - m5stack_stickc
-          - m5stack_stickc_plus
-          - m5stack_stickc_plus2
+#          - m5stack_stickc  # ESP32: represented by m5stack_core
+#          - m5stack_stickc_plus  # ESP32: represented by m5stack_core
+#          - m5stack_stickc_plus2  # ESP32: represented by m5stack_core (the Hat path is an include entry below)
           - m5stack_sticks3
-          - m5stack_atom
-          - m5stack_atoms3
+#          - m5stack_atom  # ESP32: represented by m5stack_core (the Atomic base path is an include entry below)
+#          - m5stack_atoms3  # ESP32-S3: represented by m5stack_cores3 (the Atomic base path is an include entry below)
           - m5stack_atoms3r
           - m5stack_cores3
 #          - m5stack_timer_cam
@@ -84,25 +87,25 @@ jobs:
 #          - m5stack_unit_cams3
 #          - m5stack_unit_c6l
 #          - m5stack_poe_cam
-          - m5stack_paper
+#          - m5stack_paper  # ESP32: represented by m5stack_core
           - m5stack_papers3
-          - m5stack_coreink
+#          - m5stack_coreink  # ESP32: represented by m5stack_core
 #          - m5stack_stamp_pico
 #          - m5stack_stamp_c3
-          - m5stack_stamp_s3
-          - m5stack_capsule
+#          - m5stack_stamp_s3  # ESP32-S3: represented by m5stack_cores3
+#          - m5stack_capsule  # ESP32-S3: represented by m5stack_cores3
 #          - m5stack_stamplc
           - m5stack_cardputer
-          - m5stack_dial
-          - m5stack_dinmeter
+#          - m5stack_dial  # ESP32-S3: represented by m5stack_cores3
+#          - m5stack_dinmeter  # ESP32-S3: represented by m5stack_cores3
           - m5stack_nano_c6
-#          - m5stack_nano_h2
+          - m5stack_nano_h2
 #          - m5stack_powerhub
 #          - m5stack_chain_dualkey
-          - arduino_nesso_n1
+#          - arduino_nesso_n1  # ESP32-C6: represented by m5stack_nano_c6 (the Hat/LP-I2C path is an include entry below)
 
         platform-version:
-          - 3.2.5
+          - 3.3.10
 
         platform:
           - m5stack
@@ -112,37 +115,37 @@ jobs:
 
         include:
           # HAT
-          - sketch: Transceiver  
+          - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_stickc_plus2
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_coreink
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_sticks3
             build-properties: "-DUSING_HAT_RS485"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: arduino_nesso_n1
@@ -150,25 +153,68 @@ jobs:
           # AtomicBase
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atom
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atoms3
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
           - sketch: Transceiver
             platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
-            platform-version: 3.2.5
+            platform-version: 3.3.10
             platform: m5stack
             archi: esp32
             board: m5stack_atoms3r
             build-properties: "-DUSING_ATOMIC_RS485_BASE"
+
+          # Tab5's built-in transceiver is a different unit on a different wiring helper
+          # (UnitSIT3088 with a software DIR pin), and the example's #if branches are mutually
+          # exclusive, so without this job that branch is never compiled here at all.
+          - sketch: Transceiver
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_tab5
+            build-properties: "-DUSING_TAB5_BUILTIN_RS485"
+          # StreamAdapter: secondary example (Arduino only, demonstrates UnitSP485Stream).
+          # The Stream usage is variant-independent, but the example's own #if branches are not,
+          # so each variant needs its own job. One board per variant: the variant decides the
+          # form factor (Hat = StickC, Atomic = Atom, built-in = Tab5).
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_core
+            build-properties: "-DUSING_UNIT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_stickc_plus2
+            build-properties: "-DUSING_HAT_RS485"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_atom
+            build-properties: "-DUSING_ATOMIC_RS485_BASE"
+          - sketch: StreamAdapter
+            platform-url: https://m5stack.oss-cn-shenzhen.aliyuncs.com/resource/arduino/package_m5stack_index.json
+            platform-version: 3.3.10
+            platform: m5stack
+            archi: esp32
+            board: m5stack_tab5
+            build-properties: "-DUSING_TAB5_BUILTIN_RS485"
 
     steps:
       - name: Checkout

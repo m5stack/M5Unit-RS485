@@ -10,10 +10,13 @@
            the host must drive a DIR pin (typically DE and /RE tied) high before
            transmitting and low after transmission completes.
            Used by M5Stack Tab5's built-in RS-485 (DIR = GPIO34).
+  @note Because DIR has to stay asserted until the last stop bit is on the wire, every write()
+        on this unit waits for the transmission to complete -- unlike RS485Component::write(),
+        which only queues. flush() is therefore redundant here, not wrong.
   @note The public API is framework-agnostic. Framework-specific bits are confined to the
         translation unit. Direction-pin control requires ESP_PLATFORM (uses driver/gpio.h) —
-        this covers Arduino-ESP32 today and will cover ESP-IDF native support (planned)
-        equally. Non-ESP targets get a no-op set_transmit() and skip the DIR toggle.
+        this covers Arduino-ESP32 and ESP-IDF native equally. Non-ESP targets get a no-op
+        set_transmit() and skip the DIR toggle.
  */
 #ifndef M5_UNIT_RS485_UNIT_SIT3088_HPP
 #define M5_UNIT_RS485_UNIT_SIT3088_HPP
@@ -61,9 +64,15 @@ public:
       @brief Gets the configuration
       @return Current configuration
      */
-    inline config_t config()
+    inline config_t config() const
     {
-        return _sit_cfg;
+        // Only dir_pin lives here; the inherited fields are kept by the base alone, so that a write
+        // through an RS485Component & reference cannot leave two copies disagreeing. Assigning the
+        // base slice rather than each field keeps this correct when the base gains one.
+        config_t cfg{};
+        static_cast<RS485Component::config_t &>(cfg) = RS485Component::config();
+        cfg.dir_pin                                  = _dir_pin;
+        return cfg;
     }
     /*!
       @brief Sets the configuration
@@ -72,8 +81,7 @@ public:
      */
     inline void config(const config_t &cfg)
     {
-        _sit_cfg = cfg;
-        // Sync inherited fields (flushRX) to the parent's storage so RS485Component::begin() sees them.
+        _dir_pin = cfg.dir_pin;
         RS485Component::config(cfg);
     }
     ///@}
@@ -102,12 +110,15 @@ protected:
     }
 
 private:
-    config_t _sit_cfg{};
-    int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
+    // ISerial decorators that drive the DIR pin around each write, one per framework, defined in
+    // the translation unit. Nesting them here is what gives them access to set_transmit(), and it
+    // keeps their names out of the enclosing namespace. Declared unconditionally: a nested class
+    // that is never defined on this framework is harmless.
+    struct DirControlledSerial;     // Arduino
+    struct DirControlledIDFSerial;  // ESP-IDF native
 
-#if defined(ARDUINO)
-    friend struct DirControlledSerial;  // internal decorator needs set_transmit() access
-#endif
+    int8_t _dir_pin{-1};             // the only field this class owns; see config()
+    int8_t _configured_dir_pin{-1};  // captured during begin(); immune to post-begin config changes
 };
 
 }  // namespace unit

@@ -9,13 +9,14 @@
 #include <M5Unified.h>
 #include <M5UnitUnified.h>
 #include <M5UnitUnifiedRS485.h>
-#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART / defaultUartSerial
+#include <M5Utility.hpp>
+#include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: addUART / addHatUART
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addAtomicBaseUART
 #include <algorithm>
 #include <cstdio>
 #include <cstring>
-#include <m5_utility/stl/byteswap.hpp>
 #include <string>
+#include <vector>
 
 // *************************************************************
 // Choose one define symbol to match the unit you are using
@@ -36,21 +37,20 @@ namespace {
 auto& lcd = M5.Display;
 m5::unit::UnitUnified Units;
 #if defined(USING_UNIT_RS485)
-#pragma message "Using UnitRS485"
+#pragma message("Using UnitRS485")
 m5::unit::UnitRS485 unit;
 #elif defined(USING_HAT_RS485)
-#pragma message "Using HatRS485"
+#pragma message("Using HatRS485")
 m5::unit::HatRS485 unit;
 #elif defined(USING_ATOMIC_RS485_BASE)
-#pragma message "Using AtomicRS485Base"
+#pragma message("Using AtomicRS485Base")
 m5::unit::AtomicRS485Base unit;
 #elif defined(USING_TAB5_BUILTIN_RS485)
-#pragma message "Using Tab5BuiltinRS485"
+#pragma message("Using Tab5BuiltinRS485")
 m5::unit::Tab5BuiltinRS485 unit;
 #else
 #error Please choose unit!
 #endif
-m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
 
 /*
  **** Caution ****
@@ -60,6 +60,10 @@ m5::unit::UnitSP485Stream stream{unit};  // Class inherited from Arduino Stream
  termination when needed.
  */
 constexpr uint32_t UART_BAUD{57600};
+// Receiver RX buffer, sized for this demo's ~640-byte message bursts (the default is 256 bytes on
+// the native backend and the HardwareSerial default on Arduino).
+constexpr size_t UART_RX_BUFFER_SIZE{2048};
+constexpr auto UART_CONFIG{m5::unit::wiring::UartConfig::Default};
 
 //
 constexpr char message_0[] =
@@ -100,29 +104,18 @@ struct Sample0 {
     float b{-12.75f};
 };
 
-size_t write_float_bytes(const float v, const bool little_endian)
-{
-    uint8_t tmp[sizeof(float)]{};
-    std::memcpy(tmp, &v, sizeof(tmp));
-    if (!little_endian) {
-        for (size_t i = 0; i < sizeof(tmp) / 2; ++i) {
-            std::swap(tmp[i], tmp[sizeof(tmp) - 1 - i]);
-        }
-    }
-    return unit.write(tmp, sizeof(tmp));
-}
-
-size_t write_chunked(Stream& s, const uint8_t* data, const size_t len, const uint32_t timeout_ms = 200)
+size_t write_chunked(m5::unit::RS485Component& rs485, const uint8_t* data, const size_t len,
+                     const uint32_t timeout_ms = 200)
 {
     if (data == nullptr || len == 0) {
         return 0;
     }
 
-    const auto timeout_at = m5::utility::millis() + timeout_ms;
+    const auto start = m5::utility::millis();
     size_t total{};
 
-    while (total < len && m5::utility::millis() <= timeout_at) {
-        const int available = s.availableForWrite();
+    while (total < len && !m5::utility::hasElapsed(start, timeout_ms)) {
+        const int available = rs485.availableForWrite();
         if (available <= 0) {
             m5::utility::delay(1);
             continue;
@@ -133,12 +126,39 @@ size_t write_chunked(Stream& s, const uint8_t* data, const size_t len, const uin
             to_write = len - total;
         }
 
-        const size_t wrote = s.write(data + total, to_write);
+        const size_t wrote = rs485.write(data + total, to_write);
         if (wrote == 0) {
             m5::utility::delay(1);
             continue;
         }
         total += wrote;
+    }
+    // write() only queues the bytes; flush() is what waits for them to leave the wire. Show both
+    // halves, because that split is what the two-argument write() means since 0.2.0.
+    if (total > 0) {
+        rs485.flush(true);  // true = TX only
+    }
+    return total;
+}
+
+// Counterpart of write_chunked(): reads a block with an explicit timeout instead of polling
+// read() one byte at a time. readBytes() is also how a value larger than readValue()'s 256-byte
+// limit has to be taken off the wire.
+// The timeout is per chunk, not an overall budget: it ends the read when the peer stops sending,
+// which is how RS-485 frames are delimited (Modbus RTU uses an idle gap of 3.5 character times).
+size_t read_chunked(m5::unit::RS485Component& rs485, uint8_t* buffer, const size_t len, const uint32_t timeout_ms = 200)
+{
+    if (buffer == nullptr || len == 0) {
+        return 0;
+    }
+
+    size_t total{};
+    while (total < len) {
+        const size_t got = rs485.readBytes(buffer + total, len - total, timeout_ms);
+        if (got == 0) {
+            break;  // nothing more arrived within the timeout
+        }
+        total += got;
     }
     return total;
 }
@@ -238,11 +258,6 @@ private:
 
 LogView log_view{lcd};
 
-bool is_ascii_ok(const uint8_t c)
-{
-    return (c == '\r' || c == '\n' || c == '\t' || (c >= 0x20 && c <= 0x7E));
-}
-
 void flush_received(LogView& view)
 {
     if (receive_bytes.empty()) {
@@ -276,7 +291,7 @@ void flush_received(LogView& view)
             lcd_hex.push_back(' ');
 
             const uint8_t c = receive_bytes[i];
-            if (is_ascii_ok(c) && c >= 0x20 && c <= 0x7E) {
+            if (c >= 0x20 && c <= 0x7E) {
                 ascii_line.push_back(static_cast<char>(c));
             } else {
                 ascii_line.push_back('.');
@@ -315,35 +330,33 @@ void setup()
         unit.config(cfg);
     }
 
-    // Bump receiver RX buffer to accommodate this demo's ~640-byte message bursts.
-    // Must be set BEFORE Serial.begin() (called inside the wiring helper below).
-    m5::unit::wiring::defaultUartSerial().setRxBufferSize(2048);
-
+    // The wiring helpers size the RX buffer themselves, before the port is opened.
 #if defined(USING_HAT_RS485)
-    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addHatUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_ATOMIC_RS485_BASE)
-    const bool wired = m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addAtomicBaseUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #elif defined(USING_TAB5_BUILTIN_RS485)
-    const bool wired = m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD);
+    const bool wired =
+        m5::unit::rs485::wiring::addTab5BuiltinRS485UART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #else  // USING_UNIT_RS485
-    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD);
+    const bool wired = m5::unit::wiring::addUART(Units, unit, UART_BAUD, UART_CONFIG, UART_RX_BUFFER_SIZE);
 #endif
 
     if (!wired || !Units.begin()) {
         M5_LOGE("Failed to begin");
-        lcd.fillScreen(TFT_RED);
-        m5::unit::wiring::failStop();
+        m5::unit::wiring::failStop();  // fills the screen red itself
     }
 
     M5_LOGI("M5UnitUnified initialized");
     M5_LOGI("%s", Units.debugInfo().c_str());
-    lcd.fillScreen(TFT_DARKGREEN);
 
     log_view.configure();
     log_view.render();
 
     M5.Log.printf("READY\n");
-    lcd.drawString("READY", 0, 0);
+    log_view.appendLine("READY");
+    log_view.render();
 }
 
 void loop()
@@ -360,35 +373,76 @@ void loop()
             const char* msg = message_table[step];
             M5.Log.printf("%s\n", msg);
             const size_t len = std::strlen(msg);
-            sent             = write_chunked(stream, reinterpret_cast<const uint8_t*>(msg), len);
+            sent             = write_chunked(unit, reinterpret_cast<const uint8_t*>(msg), len);
             if (sent != len) {
                 M5_LOGW("TX timeout: %u/%u bytes", static_cast<uint32_t>(sent), static_cast<uint32_t>(len));
             }
         } else if (step == m5::stl::size(message_table)) {
             Sample0 s0{};
             M5.Log.printf("Sample0 (LE): a=0x%04X b=%f\n", s0.a, s0.b);
-            unit.writeValue<uint16_t, true>(s0.a);
-            sent = write_float_bytes(s0.b, true);
+            sent = unit.writeValue<uint16_t, true>(s0.a) ? sizeof(s0.a) : 0;
+            sent += unit.writeValue<float, true>(s0.b) ? sizeof(s0.b) : 0;
         } else {
             Sample0 s0{};
             M5.Log.printf("Sample0 (BE): a=0x%04X b=%f\n", s0.a, s0.b);
-            unit.writeValue<uint16_t, false>(s0.a);
-            sent = write_float_bytes(s0.b, false);
+            sent = unit.writeValue<uint16_t, false>(s0.a) ? sizeof(s0.a) : 0;
+            sent += unit.writeValue<float, false>(s0.b) ? sizeof(s0.b) : 0;
         }
         M5.Log.printf("<<<< %zu sent\n", sent);
         step = (step + 1) % (m5::stl::size(message_table) + 2);
     }
 
     // Receive
-    if (stream.available()) {
-        receive_bytes.clear();
-        receive_bytes.reserve(static_cast<size_t>(stream.available()));
-        while (stream.available()) {
-            receive_bytes.push_back(static_cast<uint8_t>(stream.read()));
-        }
+    //
+    // Whatever arrives is shown as-is, which is what makes this a demonstration rather than a
+    // pattern to copy. Three things a real application has to handle and this does not:
+    //
+    //  - RS-485 carries no framing, so a read returns whatever has arrived so far. A long message
+    //    shows up split across several batches here; an application needs a length header, a
+    //    delimiter, or an idle gap (Modbus RTU uses 3.5 character times) to know where a frame ends.
+    //  - A node whose power is coming up or going down drives the line while its transceiver is in
+    //    an indeterminate state, so bursts of corrupted bytes appear on the bus (see the Caution
+    //    section of README.md). An application needs a checksum to reject them.
+    //  - Drawing shares this loop, so on a large panel a read can lag the wire by seconds. The RX
+    //    ring (UART_RX_BUFFER_SIZE) absorbs that; a smaller one would drop bytes instead.
+    if (unit.available()) {
+        receive_bytes.resize(static_cast<size_t>(unit.available()));
+        receive_bytes.resize(read_chunked(unit, receive_bytes.data(), receive_bytes.size()));
 
         receive_batch_total = receive_bytes.size();
         flush_received(log_view);
     }
     log_view.render();
 }
+
+#if !defined(ARDUINO)
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
+#if CONFIG_FREERTOS_UNICORE
+// Single-core SoCs run loop() on the only CPU, so the IDLE task never gets scheduled while loop()
+// busy-waits. Yielding every iteration would break the RS-485 turnaround timing, so hand the CPU
+// over briefly at a long interval instead: just often enough for IDLE to feed the task watchdog.
+static void feed_idle_task_periodically()
+{
+    constexpr uint32_t FEED_INTERVAL_MS{2000};
+    constexpr TickType_t FEED_SLEEP_TICKS{pdMS_TO_TICKS(5)};
+    static m5::utility::elapsed_time_t last_feed{};
+    if (m5::utility::hasElapsed(last_feed, FEED_INTERVAL_MS)) {
+        last_feed = m5::utility::millis();
+        vTaskDelay(FEED_SLEEP_TICKS);
+    }
+}
+#endif
+
+extern "C" void app_main(void)
+{
+    setup();
+    for (;;) {
+#if CONFIG_FREERTOS_UNICORE
+        feed_idle_task_periodically();
+#endif
+        loop();
+    }
+}
+#endif

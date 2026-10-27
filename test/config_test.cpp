@@ -1,0 +1,238 @@
+/*
+ * SPDX-FileCopyrightText: 2026 M5Stack Technology CO LTD
+ *
+ * SPDX-License-Identifier: MIT
+ */
+/*!
+  @file config_test.cpp
+  @brief Tests for the begin-time settings of the RS-485 units
+
+  config_t is a begin-time setting: what the unit acts on is captured by begin(), and later writes
+  to config() must not reach it. The parts that need no begin() are checked here; whether begin()
+  really applies them needs an adapter, which only exists on a framework, so those cases live in
+  the embedded suites.
+ */
+#include <gtest/gtest.h>
+#include <type_traits>
+#include <utility>
+#include <M5UnitUnifiedRS485.hpp>  // Tab5BuiltinRS485 subclass
+#include <unit/unit_SIT3088.hpp>
+#include <unit/unit_SP485.hpp>
+
+namespace {
+
+// Exposes the DIR pin that begin() captured, which is protected because users have no business
+// reading it, and counts how often begin() got as far as configuring a pin.
+//
+// Neither override chains to the base, so no GPIO is touched. That is deliberate: this file sits in
+// test/, so it is compiled into every test environment, including boards whose chip has no built-in
+// SIT3088 at all. Driving a real pin there would mean picking a number that is below GPIO_NUM_MAX on
+// the smallest chip in the matrix (28 on ESP32-H2), output-capable (GPIO 34-39 are input-only on
+// ESP32 classic) and unused by the board under test (GPIO 1/2 are the GROVE UART these very tests
+// run on) -- three constraints that no single constant satisfies. What the real pin setup does is
+// covered where the hardware actually exists: TestTab5BuiltinRS485.DirPinConfigured and friends
+// drive GPIO 34 on a Tab5.
+class DirPinAccess : public m5::unit::UnitSIT3088 {
+public:
+    int8_t capturedDirPin() const
+    {
+        return configured_dir_pin();
+    }
+    int configureCalls() const
+    {
+        return _configure_calls;
+    }
+
+protected:
+    void configure_dir_pin(const int8_t /*pin*/) override
+    {
+        ++_configure_calls;
+    }
+    void set_transmit(const bool /*tx_enable*/) override
+    {
+    }
+
+private:
+    int _configure_calls{};
+};
+
+}  // namespace
+
+TEST(RS485ComponentConfig, FlushRXRoundTrips)
+{
+    m5::unit::UnitSP485 unit;
+
+    EXPECT_TRUE(unit.config().flushRX);
+
+    auto cfg    = unit.config();
+    cfg.flushRX = false;
+    unit.config(cfg);
+    EXPECT_FALSE(unit.config().flushRX);
+}
+
+TEST(SIT3088Config, DirPinRoundTrips)
+{
+    m5::unit::UnitSIT3088 unit;
+
+    // A bare UnitSIT3088 has no DIR pin: begin() has to refuse it rather than toggle GPIO -1
+    EXPECT_EQ(unit.config().dir_pin, -1);
+
+    auto cfg    = unit.config();
+    cfg.dir_pin = 7;
+    unit.config(cfg);
+    EXPECT_EQ(unit.config().dir_pin, 7);
+}
+
+// The inherited fields have a single home in the base, so a write through an RS485Component &
+// reference is visible through this class's config() as well. With a second copy in the derived
+// class, the two disagreed and whichever one the caller read decided what they believed.
+TEST(SIT3088Config, InheritedFieldsHaveASingleHome)
+{
+    m5::unit::UnitSIT3088 unit;
+    EXPECT_TRUE(unit.config().flushRX);
+
+    auto base_cfg    = static_cast<m5::unit::RS485Component&>(unit).config();
+    base_cfg.flushRX = false;
+    static_cast<m5::unit::RS485Component&>(unit).config(base_cfg);
+
+    EXPECT_FALSE(unit.config().flushRX);
+    EXPECT_EQ(unit.config().dir_pin, -1);  // the field this class does own is untouched
+}
+
+TEST(SIT3088Config, InheritedFlushRXReachesTheBaseStorage)
+{
+    m5::unit::UnitSIT3088 unit;
+
+    auto cfg    = unit.config();
+    cfg.dir_pin = 7;
+    cfg.flushRX = false;
+    unit.config(cfg);
+
+    // UnitSIT3088::config() hides the base one, so the inherited field has to be copied down for
+    // RS485Component::begin() to see it
+    EXPECT_FALSE(static_cast<m5::unit::RS485Component&>(unit).config().flushRX);
+}
+
+TEST(SIT3088Config, DirPinIsNotCapturedBeforeBegin)
+{
+    DirPinAccess unit;
+
+    auto cfg    = unit.config();
+    cfg.dir_pin = 7;
+    unit.config(cfg);
+
+    // Writing config() must not reach the pin the decorator drives; only begin() captures it
+    EXPECT_EQ(unit.capturedDirPin(), -1);
+}
+
+TEST(Tab5BuiltinRS485Config, BakesDirPin34)
+{
+    m5::unit::Tab5BuiltinRS485 unit;
+
+    EXPECT_EQ(unit.config().dir_pin, 34);
+}
+
+// A unit must be movable, and the move must not throw: the base class defaults the move members
+// with noexcept, which a base whose own move can throw would turn into deleted ones.
+// Tab5BuiltinRS485 declares a destructor, so it has to declare the move members as well.
+static_assert(std::is_nothrow_move_constructible<m5::unit::UnitSP485>::value, "a unit must be movable");
+static_assert(std::is_nothrow_move_constructible<m5::unit::UnitSIT3088>::value, "a unit must be movable");
+static_assert(std::is_nothrow_move_constructible<m5::unit::Tab5BuiltinRS485>::value, "a unit must be movable");
+static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSP485>::value, "a unit must be move-assignable");
+static_assert(std::is_nothrow_move_assignable<m5::unit::UnitSIT3088>::value, "a unit must be move-assignable");
+static_assert(std::is_nothrow_move_assignable<m5::unit::Tab5BuiltinRS485>::value, "a unit must be move-assignable");
+
+// Copying is prohibited: two components cannot own one serial backend. UnitSIT3088 and
+// Tab5BuiltinRS485 get it from declaring move members, which is easy to undo by accident.
+static_assert(!std::is_copy_constructible<m5::unit::UnitSP485>::value, "a unit must not be copyable");
+static_assert(!std::is_copy_assignable<m5::unit::UnitSP485>::value, "a unit must not be copy-assignable");
+static_assert(!std::is_copy_constructible<m5::unit::UnitSIT3088>::value, "a unit must not be copyable");
+static_assert(!std::is_copy_constructible<m5::unit::Tab5BuiltinRS485>::value, "a unit must not be copyable");
+
+// config() reads the settings, so it must be callable on a const unit, and it returns a copy so
+// that a caller cannot write through it.
+static_assert(
+    std::is_same<decltype(std::declval<const m5::unit::UnitSP485&>().config()), m5::unit::UnitSP485::config_t>::value,
+    "config() must be const and return by value");
+static_assert(std::is_same<decltype(std::declval<const m5::unit::UnitSIT3088&>().config()),
+                           m5::unit::UnitSIT3088::config_t>::value,
+              "config() must be const and return by value");
+
+TEST(RS485ComponentConfig, UnitsAreMovableButNotCopyable)
+{
+    EXPECT_TRUE(std::is_nothrow_move_constructible<m5::unit::UnitSP485>::value);
+    EXPECT_TRUE(std::is_nothrow_move_constructible<m5::unit::UnitSIT3088>::value);
+    EXPECT_TRUE(std::is_nothrow_move_assignable<m5::unit::UnitSP485>::value);
+    EXPECT_FALSE(std::is_copy_constructible<m5::unit::UnitSP485>::value);
+
+    // The DIR pin setting survives a move
+    m5::unit::Tab5BuiltinRS485 unit;
+    m5::unit::Tab5BuiltinRS485 moved{std::move(unit)};
+    EXPECT_EQ(moved.config().dir_pin, 34);
+}
+
+// Move assignment carries the configuration as well. The two halves need separate units to be
+// observed: RS485Component::operator= copies the base config_t by hand, which only a unit that
+// does not shadow config() exposes, while the derived config_t rides on the unit's own defaulted
+// operator.
+TEST(RS485ComponentConfig, MoveAssignmentCarriesTheBaseConfiguration)
+{
+    m5::unit::UnitSP485 source;
+    auto source_cfg    = source.config();
+    source_cfg.flushRX = false;
+    source.config(source_cfg);
+
+    m5::unit::UnitSP485 target;
+    EXPECT_TRUE(target.config().flushRX);
+
+    target = std::move(source);
+    EXPECT_FALSE(target.config().flushRX);
+}
+
+TEST(RS485ComponentConfig, MoveAssignmentCarriesTheDerivedConfiguration)
+{
+    m5::unit::Tab5BuiltinRS485 source;
+    auto source_cfg    = source.config();
+    source_cfg.dir_pin = 21;
+    source.config(source_cfg);
+
+    m5::unit::Tab5BuiltinRS485 target;
+    EXPECT_EQ(target.config().dir_pin, 34);
+
+    target = std::move(source);
+    EXPECT_EQ(target.config().dir_pin, 21);
+}
+
+TEST(SIT3088BeginGuard, FailsWhenDirPinUnset)
+{
+    DirPinAccess unit;
+
+    // EXPECT_FALSE on its own proves nothing here: the host has no adapter, so begin() fails
+    // whether or not the guard exists. Neither does the captured pin, which is -1 both when the
+    // guard refuses and when a later failure rolls it back. What the guard uniquely means is that
+    // begin() never reached configure_dir_pin() at all.
+    EXPECT_FALSE(unit.begin());
+    EXPECT_EQ(unit.configureCalls(), 0);
+    EXPECT_EQ(unit.capturedDirPin(), -1);
+}
+
+// A begin() that gets past the dir_pin guard and then fails further in (no adapter, which is every
+// host run) must not leave the unit claiming a pin it never finished setting up. The pin itself
+// stays an output held low, because DIR is active high and a floating one would enable the driver.
+TEST(SIT3088BeginGuard, AFailedBeginDoesNotClaimTheDirPin)
+{
+    DirPinAccess unit;
+    auto cfg = unit.config();
+    // Any pin below GPIO_NUM_MAX gets past the guard, and 2 is the one number that is a real GPIO on
+    // every chip this file is compiled for. The pin is never driven (see DirPinAccess), so the value
+    // carries no meaning beyond clearing the guard. Tab5's own 34 would fail the guard on ESP32-H2,
+    // whose GPIO_NUM_MAX is 28 -- correct library behaviour, but it stops this test before the
+    // rollback it exists to check.
+    cfg.dir_pin = 2;
+    unit.config(cfg);
+    EXPECT_EQ(unit.config().dir_pin, 2);
+
+    EXPECT_FALSE(unit.begin());
+    EXPECT_EQ(unit.configureCalls(), 1);   // the guard let it through and the pin was configured
+    EXPECT_EQ(unit.capturedDirPin(), -1);  // ... but the failure undid the bookkeeping
+}

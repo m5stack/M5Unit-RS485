@@ -8,14 +8,12 @@
   @brief SIT3088 unit for M5UnitUnified
  */
 #include "unit_SIT3088.hpp"
+#include "rs485_hs_serial.hpp"
+#include "rs485_idf_serial.hpp"
 #include <M5Utility.hpp>
 
 #if defined(ESP_PLATFORM)
 #include <driver/gpio.h>  // gpio_config / gpio_set_level / gpio_num_t
-#endif
-
-#if defined(ARDUINO)
-#include <HardwareSerial.h>  // decorator wraps HardwareSerial; no Arduino.h dependency needed
 #endif
 
 using namespace m5::utility::mmh3;
@@ -26,78 +24,87 @@ namespace unit {
 
 #if defined(ARDUINO)
 //
-// DIR-pin-controlled ISerial decorator for SIT3088.
-// Read side passes through to HardwareSerial. Write side calls the unit's protected
-// set_transmit() before the transfer, blocks on flush() to guarantee the last stop bit
-// is on the wire, then calls set_transmit(false) to re-enable the receiver.
-// Timing per SIT3088E datasheet: driver tPHZ / tPLZ <= 85 ns, receiver enable from
-// shutdown <= 500 ns, so the small extra pin toggle stays within RS-485 turn-around.
+// DIR-pin-controlled ISerial decorator for SIT3088. Only the write side differs from the plain
+// HardwareSerial backend, so the read side is inherited as-is: set_transmit() is called before the
+// transfer, flush() blocks until the last stop bit is on the wire, then the receiver is re-enabled.
+// Timing per SIT3088E datasheet: driver disable tPHZ / tPLZ <= 85 ns and receiver enable
+// tRPZH / tRPZL <= 40 ns. DE and /RE are tied, so the 500 ns shutdown-exit path (tRPSH / tRPSL)
+// cannot be entered. The extra pin toggle therefore stays within the RS-485 turn-around budget.
 //
-struct DirControlledSerial final : public RS485Component::ISerial {
-    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : _hs(hs), _unit(unit)
+struct UnitSIT3088::DirControlledSerial final : public rs485::detail::HSSerial {
+    DirControlledSerial(HardwareSerial *hs, UnitSIT3088 *unit) : rs485::detail::HSSerial(hs), _owner(unit)
     {
     }
 
-    inline int available() override
-    {
-        return _hs->available();
-    }
-    inline int availableForWrite() override
-    {
-        return _hs->availableForWrite();
-    }
-    inline int peek() override
-    {
-        return _hs->peek();
-    }
-    inline int read() override
-    {
-        return _hs->read();
-    }
-    inline size_t read(uint8_t *b, const size_t n) override
-    {
-        return _hs->read(b, n);
-    }
-    inline size_t readBytes(uint8_t *b, const size_t n) override
-    {
-        return _hs->readBytes(b, n);
-    }
-    inline void flush() override
-    {
-        _hs->flush();
-    }
-    inline void flush(const bool txOnly) override
-    {
-        _hs->flush(txOnly);
-    }
     size_t write(const uint8_t *b, const size_t n) override
     {
-        if (n == 0) {
+        if (b == nullptr || n == 0) {
             return 0;
         }
-        _unit->set_transmit(true);
-        const size_t written = _hs->write(b, n);
-        _hs->flush();  // block until TX complete before releasing DIR
-        _unit->set_transmit(false);
+        // The owner is always a UnitSIT3088: this decorator is created nowhere but
+        // UnitSIT3088::make_serial(). The cast happens here rather than in rebind(), because a
+        // move constructor calls rebind() while the derived object is still being built.
+        UnitSIT3088 *unit = static_cast<UnitSIT3088 *>(_owner);
+        unit->set_transmit(true);
+        const size_t written = HSSerial::write(b, n);
+        HSSerial::flush();  // block until TX complete before releasing DIR
+        unit->set_transmit(false);
         return written;
     }
-    size_t write(uint8_t b) override
+    size_t write(const uint8_t b) override
     {
-        _unit->set_transmit(true);
-        const size_t written = _hs->write(b);
-        _hs->flush();
-        _unit->set_transmit(false);
-        return written;
-    }
-    inline uint32_t baudRate() const override
-    {
-        return _hs->baudRate();
+        return write(&b, 1);
     }
 
-    HardwareSerial *_hs{};
-    UnitSIT3088 *_unit{};
+    // The owning unit has been moved; follow it.
+    void rebind(RS485Component *owner) noexcept override
+    {
+        _owner = owner;
+    }
+
+protected:
+    RS485Component *_owner{};
 };
 #endif  // ARDUINO
+
+#if !defined(ARDUINO) && defined(ESP_PLATFORM)
+//
+// ESP-IDF counterpart of DirControlledSerial: IDFSerial plus the DIR pin handling. Only write()
+// differs, so the read side is inherited as-is.
+//
+struct UnitSIT3088::DirControlledIDFSerial final : public rs485::detail::IDFSerial {
+    DirControlledIDFSerial(const uart_port_t port, UnitSIT3088 *unit) : rs485::detail::IDFSerial(port), _owner(unit)
+    {
+    }
+
+    size_t write(const uint8_t *b, const size_t n) override
+    {
+        if (b == nullptr || n == 0) {
+            return 0;
+        }
+        // See DirControlledSerial::write() for why the cast is sound and why it is done here.
+        UnitSIT3088 *unit = static_cast<UnitSIT3088 *>(_owner);
+        unit->set_transmit(true);
+        const size_t written = IDFSerial::write(b, n);
+        IDFSerial::flush();  // block until TX complete before releasing DIR
+        unit->set_transmit(false);
+        return written;
+    }
+    size_t write(const uint8_t b) override
+    {
+        return write(&b, 1);
+    }
+
+    // The owning unit has been moved; follow it.
+    void rebind(RS485Component *owner) noexcept override
+    {
+        _owner = owner;
+    }
+
+protected:
+    RS485Component *_owner{};
+};
+#endif  // !ARDUINO && ESP_PLATFORM
 
 // class UnitSIT3088
 const char UnitSIT3088::name[] = "UnitSIT3088";
@@ -111,20 +118,28 @@ UnitSIT3088::UnitSIT3088() : RS485Component(DEFAULT_ADDRESS)
 bool UnitSIT3088::begin()
 {
 #if defined(ESP_PLATFORM)
-    if (_sit_cfg.dir_pin < 0 || static_cast<int>(_sit_cfg.dir_pin) >= GPIO_NUM_MAX) {
-        M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin out of range (%d)", _sit_cfg.dir_pin);
+    if (_dir_pin < 0 || static_cast<int>(_dir_pin) >= GPIO_NUM_MAX) {
+        M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin out of range (%d)", _dir_pin);
         return false;
     }
 #else
-    if (_sit_cfg.dir_pin < 0) {
+    if (_dir_pin < 0) {
         M5_LIB_LOGE("UnitSIT3088::begin(): dir_pin must be set via config()");
         return false;
     }
 #endif
-    configure_dir_pin(_sit_cfg.dir_pin);
-    _configured_dir_pin = _sit_cfg.dir_pin;
+    configure_dir_pin(_dir_pin);
+    _configured_dir_pin = _dir_pin;
     set_transmit(false);  // start in RX mode
-    return RS485Component::begin();
+    if (!RS485Component::begin()) {
+        // The pin stays an output held low on purpose: that is the transceiver's receive state,
+        // and DIR is active high, so letting it float back to the internal pull-up would enable
+        // the driver and hold the whole bus (see the Caution section of README.md). Only the
+        // bookkeeping is undone, so the unit does not report a pin it never finished setting up.
+        _configured_dir_pin = -1;
+        return false;
+    }
+    return true;
 }
 
 void UnitSIT3088::configure_dir_pin(const int8_t pin)
@@ -145,6 +160,9 @@ void UnitSIT3088::configure_dir_pin(const int8_t pin)
 void UnitSIT3088::set_transmit(const bool tx_enable)
 {
 #if defined(ESP_PLATFORM)
+    if (_configured_dir_pin < 0) {
+        return;  // begin() never completed, so there is no pin to drive
+    }
     gpio_set_level(static_cast<gpio_num_t>(_configured_dir_pin), tx_enable ? 1 : 0);
 #else
     (void)tx_enable;
@@ -155,9 +173,16 @@ std::unique_ptr<UnitSIT3088::ISerial> UnitSIT3088::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)
     return std::unique_ptr<ISerial>(new DirControlledSerial(ad->impl()->getSerial(), this));
+#elif defined(ESP_PLATFORM)
+    const auto port = ad->uartPort();
+    if (port == UART_NUM_MAX || !uart_is_driver_installed(port)) {
+        M5_LIB_LOGE("Illegal adapter: no installed ESP-IDF UART port");
+        return std::unique_ptr<ISerial>();
+    }
+    return std::unique_ptr<ISerial>(new DirControlledIDFSerial(port, this));
 #else
     (void)ad;
-    M5_LIB_LOGE("UnitSIT3088::make_serial(): non-Arduino frameworks are not yet supported");
+    M5_LIB_LOGE("UnitSIT3088::make_serial(): this framework is not supported");
     return std::unique_ptr<ISerial>();
 #endif
 }

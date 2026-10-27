@@ -7,6 +7,7 @@
   UnitTest for Tab5 built-in RS-485 (UnitSIT3088)
 */
 #include <gtest/gtest.h>
+#include <utility>  // std::move
 #include <M5Unified.h>
 #include <M5UnitUnified.hpp>
 #include <M5UnitUnifiedRS485.hpp>  // Tab5BuiltinRS485 subclass
@@ -14,10 +15,44 @@
 #include <unit/unit_SIT3088.hpp>
 #include <wiring/m5_unit_unified_wiring.hpp>        // core wiring: defaultUartSerial
 #include <wiring/m5_unit_unified_rs485_wiring.hpp>  // RS485-local wiring: addTab5BuiltinRS485UART
-#include <type_traits>
 
 using namespace m5::unit::googletest;
 using namespace m5::unit;
+
+// Exposes what begin() captured, and counts the DIR writes the ISerial decorator makes. Both are
+// protected on the unit, because users have no business touching them.
+class Tab5Probe : public m5::unit::Tab5BuiltinRS485 {
+public:
+    int8_t capturedDirPin() const
+    {
+        return configured_dir_pin();
+    }
+    size_t transmitCalls() const
+    {
+        return _transmit_calls;
+    }
+    void resetTransmitCalls()
+    {
+        _transmit_calls = 0;
+    }
+
+protected:
+    void set_transmit(const bool tx_enable) override
+    {
+        ++_transmit_calls;
+        Tab5BuiltinRS485::set_transmit(tx_enable);
+    }
+
+private:
+    size_t _transmit_calls{};
+};
+
+// Brings a Tab5Probe up the way the wiring helper does. Each test gets a fresh unit from SetUp(),
+// so re-initialising the shared serial here is harmless.
+inline bool begin_probe(m5::unit::UnitUnified& units, Tab5Probe& probe)
+{
+    return m5::unit::rs485::wiring::addTab5BuiltinRS485UART(units, probe, 19200) && units.begin();
+}
 
 class TestTab5BuiltinRS485 : public UARTComponentTestBase<UnitSIT3088> {
 protected:
@@ -42,7 +77,7 @@ protected:
     }
 };
 
-TEST_F(TestTab5BuiltinRS485, WriteFlushFlag)
+TEST_F(TestTab5BuiltinRS485, WriteQueuesThenFlush)
 {
     SCOPED_TRACE(ustr);
     EXPECT_NE(serial, nullptr);
@@ -55,8 +90,10 @@ TEST_F(TestTab5BuiltinRS485, WriteFlushFlag)
     }
 
     const uint8_t b = 0x5A;
-    EXPECT_GT(unit->write(b, false), 0u);
-    EXPECT_GT(unit->write(b, true), 0u);
+    EXPECT_GT(unit->write(b), 0u);
+    // write() queues; flush() is what waits for the transmission to complete
+    unit->flush();
+    EXPECT_GT(unit->write(b), 0u);
 }
 
 TEST_F(TestTab5BuiltinRS485, DirPinConfigured)
@@ -132,20 +169,53 @@ TEST_F(TestTab5BuiltinRS485, WriteNullReturnsZero)
     EXPECT_EQ(unit->write(static_cast<const char*>(nullptr)), 0u);
 }
 
-// Verifies that Tab5BuiltinRS485's constructor alone (without the wiring helper)
-// bakes DIR = GPIO34 into config. Distinguishes ctor-set from wiring-set.
-TEST(Tab5BuiltinRS485Ctor, BakesDirPin34)
+// config_t is documented as a begin-time setting: begin() captures dir_pin and later writes to
+// config() must not move the pin the decorator drives. Only the pre-begin state is checked on the
+// host, because begin() cannot succeed there.
+TEST_F(TestTab5BuiltinRS485, BeginCapturesDirPinAndIgnoresLaterChanges)
 {
-    m5::unit::Tab5BuiltinRS485 unit;
-    EXPECT_EQ(unit.config().dir_pin, 34);
+    SCOPED_TRACE(ustr);
+
+    m5::unit::UnitUnified units;
+    Tab5Probe probe;
+    ASSERT_TRUE(begin_probe(units, probe));
+    EXPECT_EQ(probe.capturedDirPin(), 34);
+
+    auto cfg    = probe.config();
+    cfg.dir_pin = 7;  // a pin the Tab5 does not use for DIR
+    probe.config(cfg);
+    EXPECT_EQ(probe.config().dir_pin, 7);   // the setting took
+    EXPECT_EQ(probe.capturedDirPin(), 34);  // ... but what begin() captured did not move
+
+    // And the decorator still drives the captured pin on every write
+    probe.resetTransmitCalls();
+    const uint8_t buf[2] = {0x5A, 0xA5};
+    EXPECT_EQ(probe.write(buf, sizeof(buf)), sizeof(buf));
+    EXPECT_GE(probe.transmitCalls(), 2u);  // one for transmit, one to release the line
 }
 
-// Negative test: bare UnitSIT3088 (not Tab5BuiltinRS485) has dir_pin=-1 by default,
-// so begin() must fail. Confirms the safety guard in UnitSIT3088::begin().
-TEST(UnitSIT3088BeginGuard, FailsWhenDirPinUnset)
+// The decorator holds a pointer back to the unit it drives, and rebind() is what re-points it when
+// the unit moves. Deleting either rebind() override passes every host test, because the host never
+// installs a real decorator -- this is the only place the real one is exercised.
+//
+// Moving a unit after UnitUnified::add() is documented as unsupported (UnitUnified keeps the
+// address it was given), so this checks defensive behaviour, not a supported usage: whatever else
+// breaks, the decorator must drive the unit it was handed to and not the carcass of the old one.
+TEST_F(TestTab5BuiltinRS485, AMovedUnitKeepsDrivingTheDirPin)
 {
+    SCOPED_TRACE(ustr);
+
     m5::unit::UnitUnified units;
-    m5::unit::UnitSIT3088 unit;
-    EXPECT_FALSE(unit.begin());
-    (void)units;
+    Tab5Probe source;
+    ASSERT_TRUE(begin_probe(units, source));
+    source.resetTransmitCalls();
+
+    Tab5Probe moved{std::move(source)};
+    moved.resetTransmitCalls();
+
+    const uint8_t buf[2] = {0x33, 0xCC};
+    EXPECT_EQ(moved.write(buf, sizeof(buf)), sizeof(buf));
+
+    EXPECT_GE(moved.transmitCalls(), 2u) << "the decorator did not follow the move";
+    EXPECT_EQ(source.transmitCalls(), 0u) << "the decorator still drives the moved-from unit";
 }

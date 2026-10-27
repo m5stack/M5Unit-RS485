@@ -1,0 +1,158 @@
+name: Build(esp-idf-native)
+
+on:
+  push:
+    tags-ignore:
+      - '*.*.*'
+      - 'v*.*.*'
+    branches:
+      - '*'
+    paths:
+      - 'src/**.cpp'
+      - 'src/**.hpp'
+      - 'src/**.h'
+      - 'src/**.c'
+      - 'CMakeLists.txt'
+      - 'idf_component.yml'
+      - 'examples/UnitUnified/**'
+      - '.github/workflows/esp-idf-build-check.yml'
+  pull_request:
+    paths:
+      - 'src/**.cpp'
+      - 'src/**.hpp'
+      - 'src/**.h'
+      - 'src/**.c'
+      - 'CMakeLists.txt'
+      - 'idf_component.yml'
+      - 'examples/UnitUnified/**'
+      - '.github/workflows/esp-idf-build-check.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Cross design: variant coverage on esp32s3, chip coverage on every declared SoC with the default
+# GROVE variant (UnitRS485). The Tab5 built-in SIT3088 variant is esp32p4-only (fixed pins on the
+# board), so it gets its own job. esp32s2 is deliberately absent: M5Unified / M5GFX do not build
+# for S2 (neither of their CIs covers it), so it is not in idf_component.yml targets either.
+jobs:
+  # Variant coverage: every variant that physically exists on an esp32s3 board, on the latest IDF.
+  # IDF boundaries are covered by build-chips instead, so this job pins a single version.
+  build-variants:
+    name: ${{ matrix.idf }} esp32s3 ${{ matrix.example_config.label }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        idf: [v6.1]
+        example_config:
+          # UnitRS485 (U034, GROVE) is the default variant and the one build-chips uses.
+          - label: Transceiver-UnitRS485
+            example_path: examples/UnitUnified/Transceiver
+            variant: USING_UNIT_RS485
+          # HatRS485 (U067): Hat header boards include StickS3 (esp32s3).
+          - label: Transceiver-HatRS485
+            example_path: examples/UnitUnified/Transceiver
+            variant: USING_HAT_RS485
+          # Atomic RS485 Base (A131): Atom base boards include AtomS3 / AtomS3R (esp32s3).
+          - label: Transceiver-AtomicRS485Base
+            example_path: examples/UnitUnified/Transceiver
+            variant: USING_ATOMIC_RS485_BASE
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Kconfig variant
+        # The example's own sdkconfig.defaults is not read (top CMakeLists points SDKCONFIG_DEFAULTS
+        # at common/sdkconfig.defaults). Append the choice to common/ in the CI workspace only.
+        run: |
+          echo "" >> examples/UnitUnified/common/sdkconfig.defaults
+          echo "CONFIG_EXAMPLE_${{ matrix.example_config.variant }}=y" >> examples/UnitUnified/common/sdkconfig.defaults
+
+      - name: ESP-IDF build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.idf }}
+          target: esp32s3
+          path: ${{ matrix.example_config.example_path }}
+
+  # Chip coverage: the default GROVE variant on every SoC declared in idf_component.yml.
+  # esp32 = classic Xtensa (M5Unified legacy touch-deprecation path). esp32c3 / esp32c6 / esp32h2 =
+  # RISC-V single-core, the only targets that compile the app_main CONFIG_FREERTOS_UNICORE branch.
+  # esp32p4 (M5Stack Tab5) = RISC-V dual-core; the sdkconfig.defaults.esp32p4 overlay (chip-revision
+  # minimum keys) is applied automatically. esp32s3 stays here so the older IDF boundaries still
+  # cover its PSRAM / USB-CDC / M5GFX paths; only its latest-IDF row is dropped as a duplicate.
+  build-chips:
+    name: ${{ matrix.idf }} ${{ matrix.target }} Transceiver-UnitRS485
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        target: [esp32, esp32s3, esp32c3, esp32c5, esp32c6, esp32h2, esp32p4]
+        # IDF boundaries: 5.1.7 = oldest legacy-driver (5.0.x dropped: M5GFX needs esp_mm, added in
+        # 5.1), 5.4.4 = new driver/*_master.h + touch_sens.h era, 5.5.4 = latest 5.x, 6.1 = latest
+        # (warnings are errors by default there).
+        idf: [v5.1.7, v5.4.4, v5.5.4, v6.1]
+        exclude:
+          # esp32c5 is GA from IDF v5.5 (preview before that).
+          - target: esp32c5
+            idf: v5.1.7
+          - target: esp32c5
+            idf: v5.4.4
+          # esp32p4 is GA from IDF v5.3.
+          - target: esp32p4
+            idf: v5.1.7
+          # Duplicate of build-variants (esp32s3 x v6.1 x USING_UNIT_RS485).
+          - target: esp32s3
+            idf: v6.1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Kconfig variant
+        run: |
+          echo "" >> examples/UnitUnified/common/sdkconfig.defaults
+          echo "CONFIG_EXAMPLE_USING_UNIT_RS485=y" >> examples/UnitUnified/common/sdkconfig.defaults
+
+      - name: ESP-IDF build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.idf }}
+          target: ${{ matrix.target }}
+          path: examples/UnitUnified/Transceiver
+
+  # Tab5 built-in RS-485 (SIT3088 on fixed pins): esp32p4 only. This is the single variant that
+  # drives the DIR pin, so it is the only one that compiles DirControlledIDFSerial.
+  build-tab5:
+    name: ${{ matrix.idf }} esp32p4 Transceiver-Tab5BuiltinRS485
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        idf: [v5.4.4, v5.5.4, v6.1]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Kconfig variant
+        run: |
+          echo "" >> examples/UnitUnified/common/sdkconfig.defaults
+          echo "CONFIG_EXAMPLE_USING_TAB5_BUILTIN_RS485=y" >> examples/UnitUnified/common/sdkconfig.defaults
+
+      - name: ESP-IDF build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.idf }}
+          target: esp32p4
+          path: examples/UnitUnified/Transceiver

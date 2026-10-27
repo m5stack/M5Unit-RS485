@@ -9,13 +9,14 @@
  */
 #include "rs485_component.hpp"
 #include <cstring>
+#include <utility>
 #include <M5Utility.hpp>
-
-using namespace m5::utility::mmh3;
-using namespace m5::unit::types;
+#include "rs485_hs_serial.hpp"
+#include "rs485_idf_serial.hpp"
 
 namespace m5 {
 namespace unit {
+namespace {
 
 //
 // Null ISerial: used before begin() and on unsupported frameworks so that all Serial-compat
@@ -46,6 +47,10 @@ struct NullSerial final : public RS485Component::ISerial {
     {
         return 0;
     }
+    inline size_t readBytes(uint8_t *, const size_t, const uint32_t) override
+    {
+        return 0;
+    }
     inline void flush() override
     {
     }
@@ -56,7 +61,7 @@ struct NullSerial final : public RS485Component::ISerial {
     {
         return 0;
     }
-    inline size_t write(uint8_t) override
+    inline size_t write(const uint8_t) override
     {
         return 0;
     }
@@ -66,138 +71,144 @@ struct NullSerial final : public RS485Component::ISerial {
     }
 };
 
-#if defined(ARDUINO)
-//
-// Arduino HardwareSerial-backed ISerial. Direct pass-through.
-//
-struct UUSerial final : public RS485Component::ISerial {
-    explicit UUSerial(HardwareSerial *hs) : _hs(hs)
-    {
-    }
-    inline int available() override
-    {
-        return _hs->available();
-    }
-    inline int availableForWrite() override
-    {
-        return _hs->availableForWrite();
-    }
-    inline int peek() override
-    {
-        return _hs->peek();
-    }
-    inline int read() override
-    {
-        return _hs->read();
-    }
-    inline size_t read(uint8_t *b, const size_t n) override
-    {
-        return _hs->read(b, n);
-    }
-    inline size_t readBytes(uint8_t *b, const size_t n) override
-    {
-        return _hs->readBytes(b, n);
-    }
-    inline void flush() override
-    {
-        _hs->flush();
-    }
-    inline void flush(const bool txOnly) override
-    {
-        _hs->flush(txOnly);
-    }
-    inline size_t write(const uint8_t *b, const size_t n) override
-    {
-        return _hs->write(b, n);
-    }
-    inline size_t write(uint8_t b) override
-    {
-        return _hs->write(b);
-    }
-    inline uint32_t baudRate() const override
-    {
-        return _hs->baudRate();
-    }
-    HardwareSerial *_hs{};
-};
-#endif  // ARDUINO
+// NullSerial holds no state, so one shared instance serves every component. A function-local
+// static keeps it independent of the initialization order between translation units, which a
+// component defined as a global object in user code would otherwise depend on.
+RS485Component::ISerial *null_serial()
+{
+    static NullSerial instance;
+    return &instance;
+}
+
+}  // namespace
 
 // class RS485Component
-RS485Component::RS485Component(const uint8_t addr) : Component(addr)
+RS485Component::RS485Component(const uint8_t addr) : Component(addr), _serial(null_serial(), SerialDeleter{false})
 {
-    _serial.reset(new NullSerial);
+}
+
+void RS485Component::install_serial(std::unique_ptr<ISerial> serial)
+{
+    if (!serial) {
+        return;
+    }
+    _serial = SerialPtr(serial.release(), SerialDeleter{true});
+}
+
+// Only an owned backend is bound to a single component. The fallback is shared by every component,
+// so handing it an owner pointer would be meaningless at best.
+void RS485Component::rebind_serial() noexcept
+{
+    if (_serial.get_deleter().owned) {
+        _serial->rebind(this);
+    }
+}
+
+RS485Component::RS485Component(RS485Component &&other) noexcept
+    : Component(std::move(other)), _cfg(other._cfg), _serial(std::move(other._serial))
+{
+    other._serial = SerialPtr(null_serial(), SerialDeleter{false});
+    rebind_serial();
+}
+
+RS485Component &RS485Component::operator=(RS485Component &&other) noexcept
+{
+    if (this != &other) {
+        Component::operator=(std::move(other));
+        _cfg               = other._cfg;
+        _serial            = std::move(other._serial);
+        other._serial      = SerialPtr(null_serial(), SerialDeleter{false});
+        rebind_serial();
+    }
+    return *this;
 }
 
 std::unique_ptr<RS485Component::ISerial> RS485Component::make_serial(AdapterUART *ad)
 {
 #if defined(ARDUINO)
-    return std::unique_ptr<ISerial>(new UUSerial(ad->impl()->getSerial()));
+    return std::unique_ptr<ISerial>(new rs485::detail::HSSerial(ad->impl()->getSerial()));
+#elif defined(ESP_PLATFORM)
+    // AdapterUART::uartPort() reports UART_NUM_MAX for an adapter that was not built from a port
+    // (i.e. one holding a HardwareSerial), which this backend cannot drive.
+    const auto port = ad->uartPort();
+    if (port == UART_NUM_MAX || !uart_is_driver_installed(port)) {
+        M5_LIB_LOGE("Illegal adapter: no installed ESP-IDF UART port");
+        return std::unique_ptr<ISerial>();
+    }
+    return std::unique_ptr<ISerial>(new rs485::detail::IDFSerial(port));
 #else
     (void)ad;
-    // ESP-IDF native support is planned; see #11.
     return std::unique_ptr<ISerial>(new NullSerial);
 #endif
 }
 
 bool RS485Component::begin()
 {
-#if defined(ARDUINO)
+#if defined(ARDUINO) || defined(ESP_PLATFORM)
     auto ad = asAdapter<AdapterUART>(Adapter::Type::UART);
-    if (!ad || !ad->impl()->getSerial()) {
+    if (!ad) {
         M5_LIB_LOGE("Illegal adapter");
         return false;
     }
-    _serial = make_serial(ad);
-    if (!_serial) {
+#if defined(ARDUINO)
+    if (!ad->impl()->getSerial()) {
+        M5_LIB_LOGE("Illegal adapter");
         return false;
     }
+#endif
+    auto serial = make_serial(ad);
+    if (!serial) {
+        return false;
+    }
+    install_serial(std::move(serial));
 
     if (_cfg.flushRX) {
-        const uint32_t start = m5::utility::millis();
-        while (m5::utility::millis() - start < 100) {
+        const auto start = m5::utility::millis();
+        while (!m5::utility::hasElapsed(start, 100)) {
             ad->flushRX();
             m5::utility::delay(1);
         }
     }
     return true;
 #else
-    M5_LIB_LOGE("RS485Component::begin(): non-Arduino frameworks are not yet supported");
+    M5_LIB_LOGE("RS485Component::begin(): this framework is not supported");
     return false;
 #endif
 }
 
-size_t RS485Component::write(const uint8_t d, const bool flush)
+size_t RS485Component::write(const uint8_t d)
 {
-    size_t n = _serial->write(d);
-    if (flush && n > 0) {
-        _serial->flush(true);
-    }
-    return n;
+    return _serial->write(d);
 }
 
-size_t RS485Component::write(const uint8_t *buffer, const size_t size, const bool flush)
+size_t RS485Component::write(const uint8_t *buffer, const size_t size)
 {
     if (!buffer || size == 0) {
         return 0;
     }
-    size_t n = _serial->write(buffer, size);
-    if (flush && n > 0) {
-        _serial->flush(true);
-    }
-    return n;
+    return _serial->write(buffer, size);
 }
 
-size_t RS485Component::write(const char *buffer, const size_t size, const bool flush)
+size_t RS485Component::write(const char *buffer, const size_t size)
 {
-    return write(reinterpret_cast<const uint8_t *>(buffer), size, flush);
+    return write(reinterpret_cast<const uint8_t *>(buffer), size);
 }
 
-size_t RS485Component::write(const char *s, const bool flush)
+size_t RS485Component::write(const char *s)
 {
     if (!s) {
         return 0;
     }
-    return write(reinterpret_cast<const uint8_t *>(s), strlen(s), flush);
+    return write(reinterpret_cast<const uint8_t *>(s), std::strlen(s));
+}
+
+size_t RS485Component::write_waiting(const uint8_t *buffer, const size_t size)
+{
+    const size_t n = write(buffer, size);
+    if (n > 0) {
+        _serial->flush(true);
+    }
+    return n;
 }
 
 }  // namespace unit
